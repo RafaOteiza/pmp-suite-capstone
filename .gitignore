@@ -1,0 +1,33 @@
+# Dependencias y artefactos generados
+**/node_modules/
+**/dist/
+**/build/
+**/.expo/
+**/coverage/
+**/__pycache__/
+**/scratch/
+*.py[cod]
+
+# Configuración local y credenciales
+**/.env
+**/.env.*
+!**/.env.example
+**/serviceAccount*.json
+**/firebase-admin*.json
+**/*service-account*.json
+**/*service_account*.json
+**/pmp-suite-dev-*.json
+*.pem
+*.p12
+*.pfx
+*.key
+
+# Metadatos locales de herramientas
+.agents/
+.codex/
+.DS_Store
+Thumbs.db
+*.log
+
+# Repositorios anidados
+**/.git/

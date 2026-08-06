@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Firebase Token Test</title>
+</head>
+<body>
+  <h2>Firebase Token Test</h2>
+
+  <input id="email" placeholder="Email">
+  <input id="pass" type="password" placeholder="Password">
+  <button id="login">Login</button>
+
+  <pre id="out"></pre>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+
+    // 🔴 PEGA AQUÍ TU firebaseConfig 🔴
+    const firebaseConfig = {
+    apiKey: "AIzaSyDSxv0oW-h2liaJfu8jdWYXzRkBLjpoCaE",
+    authDomain: "pmp-suite-dev.firebaseapp.com",
+    projectId: "pmp-suite-dev",
+    storageBucket: "pmp-suite-dev.firebasestorage.app",
+    messagingSenderId: "383041180100",
+    appId: "1:383041180100:web:6a5cbf4fbd3c0405119491"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    document.getElementById("login").onclick = async () => {
+      const email = document.getElementById("email").value;
+      const pass = document.getElementById("pass").value;
+
+      const cred = await signInWithEmailAndPassword(auth, email, pass);
+      const token = await cred.user.getIdToken(true);
+
+      document.getElementById("out").textContent = token;
+      console.log(token);
+    };
+  </script>
+</body>
+</html>
