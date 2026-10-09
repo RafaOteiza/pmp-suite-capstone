@@ -269,3 +269,81 @@
 | solicitud repuesto sin PoD | 422/409 |
 | cierre Lab con prueba rechazada | 422 |
 | último Admin desactivado | 409/403 |
+
+
+# Matriz de trazabilidad de casos de uso
+
+| UC | Actor principal | RF relacionados | Interfaz/API principal | Postcondición verificable |
+|---|---|---|---|---|
+| UC-01 | Logística | RF-ACT | POST /api/activos | maestro + ALTA_ACTIVO, sin OS |
+| UC-02 | Logística | RF-ACT / RF-INV | /activos/recepcion/* | HABILITADO_INSTALACION |
+| UC-03 | Logística | RF-REQ / RF-OS | POST /api/requerimientos | caso + OS + referencia opcional |
+| UC-04 | Logística | RF-TER | POST /api/os/asignar-retiro | técnico Terreno asignado |
+| UC-05 | Técnico Terreno | RF-TER | validar/discrepancia/confirmar-retiro | tránsito a Bodega |
+| UC-06 | Logística | RF-BOD | recepción-terreno/validar + receive | custodia Bodega |
+| UC-07 | Logística | RF-BOD / RF-LAB | dispatch-lab | tránsito Lab/ciclo |
+| UC-08 | Jefe Lab | RF-LAB | custody RECEPCION | recepción + SLA |
+| UC-09 | Jefe Lab | RF-LAB | PUT /lab/assign | carga técnica |
+| UC-10 | Técnico Lab | RF-LTW | /lab/work/:codigoOs | diagnóstico/avance |
+| UC-11 | Técnico Lab + Logística | RF-REP | /lab/request-part + /bodega/solicitudes | solicitud/entrega |
+| UC-12 | Técnico Lab | RF-LTW | POST /lab/finish | cierre técnico, custodia Lab |
+| UC-13 | Jefe Lab | RF-LAB | custody SALIDA | tránsito a Bodega |
+| UC-14 | Logística | RF-BOD | PUT /bodega/receive | custodia Bodega |
+| UC-15 | Logística | RF-BOD / RF-QA | dispatch-qa | tránsito QA |
+| UC-16 | QA | RF-QA | QA validar/action | recepción QA |
+| UC-17 | QA | RF-QA | QA action | hito Ambiente |
+| UC-18 | QA | RF-QA | QA action | pruebas guardadas |
+| UC-19 | QA | RF-QA | QA action | dictamen Operativo |
+| UC-20 | QA | RF-QA | QA action | dictamen Rechazado + motivo |
+| UC-21 | QA + Logística | RF-QA / RF-BOD | salida QA + receive | custodia Bodega |
+| UC-22 | Logística | RF-INV | despacho validar/confirmar | IN con stock_origen_evento |
+| UC-23 | Logística | RF-INV | despacho validar/confirmar | IN con stock_origen_os |
+| UC-24 | Técnico Terreno | RF-TER / RF-INV | completar-instalacion | activo operativo |
+| UC-25 | Rol autorizado | RF-TRZ | bridge buscar/historial | línea de tiempo |
+| UC-26 | Técnico Terreno | RF-MOB / RF-TRZ | historial técnico | DTO técnico restringido |
+| UC-27 | Admin | RF-USR | POST /admin/users | Firebase + PostgreSQL |
+| UC-28 | Admin | RF-USR | PUT/PATCH users | rol efectivo actualizado |
+| UC-29 | Usuario/Admin | RF-AUT / RF-USR | auth/password/reset | credencial Firebase |
+| UC-30 | Logística | RF-BRG | POST /api/bridge | correlación append-only |
+| UC-31 | Admin/Gerente | RF-DASH | /dashboard/executive | KPI global |
+| UC-32 | Jefe Lab | RF-DASH / RF-LAB | /lab/supervision | KPI/carga/SLA |
+| UC-33 | Logística | RF-DASH / RF-BOD | /bodega/dashboard | KPI logísticos |
+| UC-34 | QA | RF-DASH / RF-QA | /qa/dashboard | etapas QA |
+| UC-35 | Admin/Gerente | RF-IA | /ai/predictive-report | score heurístico |
+
+# Precondiciones transversales
+
+1. Usuario autenticado y activo.
+2. Rol/capacidad autorizados.
+3. Identidad de activo coherente.
+4. OS/caso existente cuando el UC lo requiere.
+5. Evidencia física vigente para movimientos.
+6. Ciclo correcto de Lab/QA.
+7. Recurso asignado al técnico cuando aplica.
+
+# Postcondiciones transversales
+
+Una mutación válida debe dejar:
+
+- estado/custodia coherentes;
+- evento/auditoría correspondiente;
+- relaciones de identidad inalteradas;
+- reintento seguro;
+- ningún efecto parcial si la transacción falla.
+
+# Escenarios de excepción comunes
+
+| Excepción | Respuesta del sistema |
+|---|---|
+| usuario sin permiso | 403 |
+| recurso inexistente | 404 |
+| evidencia faltante/stale | 409 |
+| tipo/serie incompatible | 409/422 |
+| transición no permitida | 409 |
+| flujo retirado | 410 |
+| dato de negocio inválido | 422 |
+| conflicto de duplicidad | 409 |
+
+# Evidencia relacionada
+
+La correspondencia requisito→implementación→prueba se detalla en `08_Pruebas/MATRIZ_TRAZABILIDAD_V2.0.md`. La correspondencia proceso→sistema se detalla en `BPMN/MATRIZ_BPMN_SISTEMA_V2.0.md`.
