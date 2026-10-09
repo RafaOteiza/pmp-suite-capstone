@@ -1,3 +1,5 @@
+> **PROCEDIMIENTO HISTÓRICO.** Corresponde a una fase previa de migración/validación de Gerencia. El RBAC vigente incluye siete roles y la separación Admin/Gerente/Jefe Laboratorio documentada en `08_Pruebas/Separacion_Roles_RBAC_2026-10-09.md`. No ejecutar este procedimiento como receta actual sin revisar el código y contexto.
+
 # Fase 3D: revocación y validación final
 
 Este procedimiento se prepara para una ejecución futura expresamente autorizada. No debe ejecutarse durante la preparación de la Fase 3D.

@@ -1,3 +1,5 @@
+> **Adenda de activación manual — 09-10-2026:** después de la ejecución documentada en este informe, se verificó manualmente una cuenta Administrador independiente, se incorporaron cuentas adicionales de Admin/Gerencia y la cuenta de Rafael Oteiza fue transferida a `jefe_laboratorio` mediante la interfaz de Usuarios. La comprobación visual confirmó el nuevo rol. Esta adenda no altera los resultados automatizados originales ni publica credenciales/UID.
+
 # Separación RBAC — Gerencia, Administración y Jefatura de Laboratorio
 
 Fecha: 09-10-2026. Estado: **implementado y probado en código; activación de cuentas reales pendiente**.

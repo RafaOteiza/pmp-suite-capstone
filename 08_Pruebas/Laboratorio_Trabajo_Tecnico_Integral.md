@@ -1,3 +1,5 @@
+> **Nota RBAC 09-10-2026:** las referencias de esta evidencia a permisos de Admin/Logística reflejan la fecha de la prueba. La autorización vigente posterior separa Admin, Logística y Jefe Laboratorio; prevalece `Separacion_Roles_RBAC_2026-10-09.md`. El contenido técnico del flujo se conserva como evidencia.
+
 # Trabajo técnico de laboratorio — auditoría y cierre
 
 ## Corrección vigente — responsabilidades Laboratorio/Bodega (2026-10-07)
