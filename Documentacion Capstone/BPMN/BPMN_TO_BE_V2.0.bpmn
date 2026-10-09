@@ -5,6 +5,9 @@
  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
  id="Definitions_TOBE_V2" targetNamespace="https://pmp-suite.local/bpmn">
+ <bpmn:collaboration id="Collaboration_TOBE">
+  <bpmn:participant id="Participant_TOBE" name="Proceso integrado PMP Suite TO-BE" processRef="Process_TOBE_V2"/>
+ </bpmn:collaboration>
  <bpmn:process id="Process_TOBE_V2" name="PMP Suite TO-BE — Physical First" isExecutable="false">
   <bpmn:laneSet id="LaneSet_TOBE_V2">
    <bpmn:lane id="Lane_Terreno" name="Técnico Terreno"><bpmn:flowNodeRef>Start_TOBE</bpmn:flowNodeRef><bpmn:flowNodeRef>TO_Reportar</bpmn:flowNodeRef><bpmn:flowNodeRef>TO_ValidRetiro</bpmn:flowNodeRef><bpmn:flowNodeRef>TO_ConfRetiro</bpmn:flowNodeRef><bpmn:flowNodeRef>TO_Instalar</bpmn:flowNodeRef><bpmn:flowNodeRef>End_TOBE</bpmn:flowNodeRef></bpmn:lane>
@@ -102,7 +105,8 @@
   <bpmn:sequenceFlow id="T44" name="Nuevo ciclo vía Bodega" sourceRef="TO_Reingreso" targetRef="TO_SalLab"/>
  </bpmn:process>
  <bpmndi:BPMNDiagram id="Diagram_TOBE_V2">
-  <bpmndi:BPMNPlane id="Plane_TOBE_V2" bpmnElement="Process_TOBE_V2">
+  <bpmndi:BPMNPlane id="Plane_TOBE_V2" bpmnElement="Collaboration_TOBE">
+   <bpmndi:BPMNShape id="Participant_TOBE_di" bpmnElement="Participant_TOBE" isHorizontal="true"><dc:Bounds x="40" y="80" width="6690" height="900"/></bpmndi:BPMNShape>
    <bpmndi:BPMNShape id="Lane_Terreno_di" bpmnElement="Lane_Terreno" isHorizontal="true"><dc:Bounds x="80" y="80" width="6650" height="150"/></bpmndi:BPMNShape>
    <bpmndi:BPMNShape id="Lane_Logistica_di" bpmnElement="Lane_Logistica" isHorizontal="true"><dc:Bounds x="80" y="230" width="6650" height="150"/></bpmndi:BPMNShape>
    <bpmndi:BPMNShape id="Lane_JefeLab_di" bpmnElement="Lane_JefeLab" isHorizontal="true"><dc:Bounds x="80" y="380" width="6650" height="150"/></bpmndi:BPMNShape>

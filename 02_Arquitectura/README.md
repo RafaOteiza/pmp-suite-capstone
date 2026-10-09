@@ -41,8 +41,9 @@ Incluye:
 8. [Modelo/Diccionario Físico](MODELO_DATOS_DICCIONARIO_V2.0.md)
 9. [Modelo de Estados, Custodia y Eventos](MODELO_ESTADOS_EVENTOS_V2.0.md)
 10. [Catálogo API](CATALOGO_API_V2.0.md)
-11. [Casos/Requerimientos/Despacho](CASOS_REQUERIMIENTOS_DESPACHO_V2.0.md)
-12. [Proyección Ubuntu](DEPLOYMENT_UBUNTU_V2.0.md)
+11. [Decisiones Arquitectónicas](DECISIONES_ARQUITECTONICAS_V2.0.md)
+12. [Casos/Requerimientos/Despacho](CASOS_REQUERIMIENTOS_DESPACHO_V2.0.md)
+13. [Proyección Ubuntu](DEPLOYMENT_UBUNTU_V2.0.md)
 
 ## 3. BPMN
 

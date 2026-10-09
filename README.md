@@ -90,6 +90,7 @@ BPMN: [AS-IS](Documentacion%20Capstone/BPMN/BPMN_AS_IS_V2.0.md) · [TO-BE](Docum
 - [Arquitectura Integral](02_Arquitectura/Arquitectura_Integral_PMP_Suite_V2.0.md)
 - [Modelo de Datos / Diccionario](02_Arquitectura/MODELO_DATOS_DICCIONARIO_V2.0.md)
 - [Catálogo API](02_Arquitectura/CATALOGO_API_V2.0.md)
+- [Decisiones Arquitectónicas](02_Arquitectura/DECISIONES_ARQUITECTONICAS_V2.0.md)
 
 ### Análisis funcional
 

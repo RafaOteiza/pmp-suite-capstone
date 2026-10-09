@@ -5,6 +5,9 @@
  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
  id="Definitions_ASIS_V2" targetNamespace="https://pmp-suite.local/bpmn">
+ <bpmn:collaboration id="Collaboration_ASIS">
+  <bpmn:participant id="Participant_ASIS" name="Proceso de mantenimiento AS-IS" processRef="Process_ASIS_V2"/>
+ </bpmn:collaboration>
  <bpmn:process id="Process_ASIS_V2" name="PMP Suite AS-IS — proceso fragmentado" isExecutable="false">
   <bpmn:laneSet id="LaneSet_ASIS_V2">
    <bpmn:lane id="Lane_Bodega" name="Bodega / Mersan"><bpmn:flowNodeRef>Start_ASIS</bpmn:flowNodeRef><bpmn:flowNodeRef>AS_Preparar</bpmn:flowNodeRef><bpmn:flowNodeRef>AS_Guia</bpmn:flowNodeRef><bpmn:flowNodeRef>AS_GuiaOK</bpmn:flowNodeRef><bpmn:flowNodeRef>AS_Urgencia</bpmn:flowNodeRef><bpmn:flowNodeRef>AS_Enviar</bpmn:flowNodeRef><bpmn:flowNodeRef>AS_RecibirBodega</bpmn:flowNodeRef><bpmn:flowNodeRef>End_ASIS</bpmn:flowNodeRef></bpmn:lane>
@@ -77,7 +80,8 @@
   <bpmn:sequenceFlow id="A33" sourceRef="AS_Rechazo" targetRef="AS_Conciliar"/>
  </bpmn:process>
  <bpmndi:BPMNDiagram id="Diagram_ASIS_V2">
-  <bpmndi:BPMNPlane id="Plane_ASIS_V2" bpmnElement="Process_ASIS_V2">
+  <bpmndi:BPMNPlane id="Plane_ASIS_V2" bpmnElement="Collaboration_ASIS">
+   <bpmndi:BPMNShape id="Participant_ASIS_di" bpmnElement="Participant_ASIS" isHorizontal="true"><dc:Bounds x="40" y="80" width="3940" height="900"/></bpmndi:BPMNShape>
    <bpmndi:BPMNShape id="Lane_Bodega_di" bpmnElement="Lane_Bodega" isHorizontal="true"><dc:Bounds x="80" y="80" width="3900" height="150"/></bpmndi:BPMNShape>
    <bpmndi:BPMNShape id="Lane_Jefatura_di" bpmnElement="Lane_Jefatura" isHorizontal="true"><dc:Bounds x="80" y="230" width="3900" height="150"/></bpmndi:BPMNShape>
    <bpmndi:BPMNShape id="Lane_Tecnico_di" bpmnElement="Lane_Tecnico" isHorizontal="true"><dc:Bounds x="80" y="380" width="3900" height="150"/></bpmndi:BPMNShape>
