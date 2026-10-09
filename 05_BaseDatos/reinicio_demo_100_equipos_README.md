@@ -1,3 +1,5 @@
+> **SCRIPT DE DEMOSTRACIÓN DESTRUCTIVO — NO USAR EN LA BASE HABITUAL.** Se conserva para un entorno descartable/controlado. No representa el procedimiento normal de PMP Suite.
+
 # Reinicio controlado del dataset demostrativo PMP Suite
 
 Estado: **preparado, no ejecutado**.

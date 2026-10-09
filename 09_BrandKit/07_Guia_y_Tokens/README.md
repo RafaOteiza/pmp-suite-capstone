@@ -1,23 +1,61 @@
-# PMP Suite — Kit de marca oficial
+# PMP Suite — Guía de marca y tokens
 
-Kit reconstruido a partir del concepto seleccionado. El isotipo combina la silueta de una consola/equipo embarcado, indicadores de estado, una ruta conectada y puntos de control del ciclo de mantenimiento.
+## Marca
 
-## Colores
+El isotipo combina equipo embarcado, nodos de estado y una ruta conectada. La marca debe conservar proporciones y legibilidad.
 
-| Color | HEX | Uso |
+## Paleta base
+
+| Token | HEX | Uso |
 |---|---|---|
-| Navy | `#0D1B2A` | Marca principal, textos y fondos oscuros |
-| Azul | `#1565C0` | Tecnología, movimiento y “Suite” |
-| Turquesa | `#00B4B0` | Conectividad y operación |
-| Gris | `#6B7280` | Apoyo y textos secundarios |
-| Gris claro | `#E5E7EB` | Fondos y divisores |
+| Navy | `#0D1B2A` | navegación, fondo oscuro, marca |
+| Azul | `#1565C0` | primario, acción, información |
+| Turquesa | `#00B4B0` | conectividad, acento |
+| Gris | `#6B7280` | texto secundario |
+| Gris claro | `#E5E7EB` | bordes/divisores |
 
-Tipografía: Inter; fallback recomendado: Arial/Helvetica. Eslogan: **CONTROL. MAINTAIN. MOVE FORWARD.**
+## Semántica de producto
 
-## Uso
+La semántica operacional se mantiene separada de los colores de marca:
 
-- En fondos claros, usar las versiones `Color`.
-- En fondos oscuros, usar `Fondo_Oscuro` o `Blanco`.
-- No alterar proporciones, colores, grosores ni separación entre isotipo y logotipo.
-- Mantener un área libre mínima equivalente al diámetro del nodo azul del isotipo.
-- Para máxima fidelidad utilizar SVG; PNG está incluido para sistemas sin soporte vectorial.
+- **Success / verde:** correcto, recibido, aprobado, listo.
+- **Warning / ámbar:** pendiente, atención, espera.
+- **Danger / rojo:** error, bloqueo o criticidad.
+- **Info / azul:** tránsito, proceso o información.
+- **Neutral / gris:** sin datos, inactivo o no medido.
+
+Nunca usar color como única señal: acompañar con texto y/o icono.
+
+## Tipografía
+
+Inter como preferida; fallback Arial/Helvetica/sans-serif.
+
+## Componentes
+
+Web y Mobile deben reutilizar tokens/componentes compartidos para:
+
+- botones;
+- inputs;
+- cards;
+- KPI;
+- badges;
+- alertas;
+- estados vacíos;
+- tablas/paneles.
+
+## Densidad
+
+La Web usa una escala compacta aproximada a la experiencia buscada por el proyecto, sin aplicar `zoom` CSS global. La sidebar mantiene su jerarquía y tamaño propio.
+
+## Temas
+
+Claro y oscuro conservan la misma semántica y contraste. La marca debe usar la variante adecuada para cada fondo.
+
+## Logos
+
+- fondo claro: versión Color;
+- fondo oscuro: Fondo Oscuro o Blanco;
+- evitar deformación, recolor arbitrario o sombras no definidas;
+- preferir SVG cuando sea posible.
+
+Eslogan oficial: **CONTROL. MAINTAIN. MOVE FORWARD.**

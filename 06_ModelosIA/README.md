@@ -1,32 +1,45 @@
-# Módulo 06 — Inteligencia Artificial (Mantenimiento Predictivo)
+# Módulo 06 — Inteligencia operacional
 
-Este módulo implementa las capacidades de **IA y Análisis Avanzado** de la PMP Suite. Su objetivo es transformar los datos históricos de fallas en conocimiento accionable para prevenir reincidencias y optimizar el stock.
+**Estado:** PoC / apoyo analítico  
+**Actualización:** 09-10-2026
 
-## 🧠 Modelos Implementados
+## Qué usa actualmente la aplicación
 
-### 1. Modelo de Predicción de Reincidencia (Random Forest)
-*   **Archivo:** `src/maintenance_model.py`
-*   **Propósito:** Clasificar equipos como "Alto Riesgo de Falla" basado en su historial.
-*   **Variables (Features):**
-    *   `MTBF`: Mean Time Between Failure (Promedio de días entre fallas).
-    *   `FailureCount`: Cantidad total de ingresos al laboratorio.
-    *   `CommonIssue`: Tipo de falla más frecuente (EMV, Barcode, Power).
-    *   `Age`: Antigüedad del registro del equipo.
+`src/analyzer.py` consulta `pmp.ordenes_servicio` y construye un score heurístico de reincidencia:
 
-### 2. Analizador de Anomalías de Flota
-*   **Archivo:** `src/analyzer.py`
-*   **Propósito:** Detectar patrones atípicos, como buses específicos que dañan lectores QR de forma recurrente debido a problemas de vibración o voltaje.
+- fallas previas;
+- coincidencia EMV;
+- identificación de fallas de lector/QR como dato descriptivo.
 
-## 🛠️ Requisitos
-*   Python 3.10+
-*   Pandas & Scikit-learn
-*   Psycopg2 (Conexión a PostgreSQL)
+El score actual se calcula con una regla explícita basada en reincidencia y EMV. La interfaz debe presentarlo como **heurística de reincidencia**, no como probabilidad calibrada de falla.
 
-## 🚀 Cómo ejecutar el análisis
-```bash
-cd 06_ModelosIA/src
-python analyzer.py
+## Qué más contiene el módulo
+
+- `maintenance_model.py`: Random Forest sobre datos sintéticos de demostración.
+- `entrenar_modelo_pmp.py`: entrenamiento experimental sobre `equipos_historial.csv`.
+- `construir_dataset_ia.py`: preparación de dataset.
+- `predecir_falla_pmp.py`: inferencia experimental.
+- `modelos/`: artefactos de modelos cuando se generan.
+- `datasets/`: datasets de trabajo.
+
+## Importante
+
+No se debe afirmar una precisión, recall o porcentaje de eficacia como vigente si no existe una evaluación reproducible fechada para el modelo y dataset correspondiente.
+
+El resultado analítico:
+
+- no crea OS;
+- no mueve stock;
+- no decide bajas;
+- no sustituye diagnóstico técnico;
+- sirve para priorizar inspección.
+
+## Entorno
+
+```powershell
+cd 06_ModelosIA
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
----
-> Esta capa de IA permite a la gerencia de mantenimiento pasar de una estrategia **Reactiva** (reparar lo que se rompe) a una **Proactiva** (reemplazar equipos antes de que fallen en el bus).
+La API ejecuta el analizador y consume JSON.

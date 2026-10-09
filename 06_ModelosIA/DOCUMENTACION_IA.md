@@ -1,65 +1,68 @@
-# Documentación: Módulo de Mantenimiento Predictivo (IA)
-## PMP Suite v5.0 - Inteligencia Artificial para Logística Inversa
+# Documentación de Inteligencia Operacional
 
-### 1. Visión General
-El módulo de Inteligencia Artificial de la PMP Suite ha sido diseñado para resolver uno de los problemas más críticos en la gestión de flotas tecnológicas: los **equipos "Limón"** (equipos con fallas recurrentes) y el **mantenimiento reactivo**.
+## 1. Alcance actual
 
-Mediante el uso de modelos de aprendizaje supervisado, el sistema es capaz de predecir la probabilidad de que un equipo falle nuevamente en un periodo corto de tiempo después de ser reparado.
+PMP Suite incluye una capa de apoyo para identificar reincidencia y priorizar revisión de activos. En el estado vigente de la aplicación, el motor expuesto al dashboard se basa en la lógica de `src/analyzer.py`.
 
----
+## 2. Motor vigente
 
-### 2. Metodología y Modelos
+El analizador consulta órdenes de servicio y calcula:
 
-#### 2.1 Modelo Principal: Random Forest (Bosque Aleatorio)
-Se seleccionó **Random Forest** como el algoritmo núcleo debido a su robustez y capacidad para manejar variables categóricas y numéricas sin necesidad de una normalización compleja.
+- número de fallas previas por serie;
+- presencia de términos EMV;
+- presencia de términos Barcode/QR/Lector;
+- score heurístico.
 
-*   **¿Por qué Random Forest?**
-    *   **Manejo de No-Linealidad:** Las fallas de equipos no siempre siguen una progresión lineal con el tiempo.
-    *   **Importancia de Características:** El modelo permite identificar qué variable (ej. tipo de falla o frecuencia de uso) está pesando más en el riesgo de un activo.
-    *   **Bajo Overfitting:** Gracias al ensamblaje de múltiples árboles de decisión.
+Fórmula implementada:
 
-#### 2.2 Variables de Entrada (Features)
-El modelo analiza datos extraídos directamente de la base de datos PostgreSQL:
-1.  **Serie del Equipo:** Identificador único para el rastreo histórico.
-2.  **Tipo de Equipo:** Validador vs. Consola (cada uno tiene curvas de falla distintas).
-3.  **Frecuencia de Reingreso:** Cuántas veces ha pasado por el laboratorio en los últimos 6 meses.
-4.  **MTBF (Mean Time Between Failure):** Tiempo promedio que el equipo sobrevive en terreno antes de fallar.
-5.  **Correlación de Falla:** Relación entre fallas específicas (ej. si falla el EMV, hay un 60% de probabilidad de falla futura en el lector QR).
+```text
+riesgo_score = clip(fallas_previas * 0.3 + es_emv * 0.5, 0, 1)
+```
 
----
+Por lo tanto, el valor mostrado **no debe describirse como probabilidad estadística calibrada**.
 
-### 3. Arquitectura del Módulo
+## 3. Random Forest experimental
 
-El flujo de datos sigue un patrón de **Microservicio Híbrido**:
+El repositorio también contiene dos líneas de experimentación:
 
-1.  **Extracción (ETL):** Un script en Python (`analyzer.py`) se conecta a la base de datos `pmp_suite` y extrae el historial de órdenes de servicio.
-2.  **Procesamiento:** Se limpian los datos y se calculan las métricas de riesgo.
-3.  **Inferencia:** El modelo entrenado evalúa cada activo en operación.
-4.  **Exposición (API Bridge):** El backend de Node.js actúa como orquestador, ejecutando el motor de IA y capturando su salida en formato JSON.
-5.  **Visualización:** El frontend (React) interpreta el JSON y genera los indicadores visuales.
+1. `maintenance_model.py`: dataset sintético para demostración técnica.
+2. `entrenar_modelo_pmp.py`: RandomForestClassifier sobre features de histórico preparado.
 
----
+Estas líneas son PoC y requieren evaluación reproducible antes de considerarse motor productivo.
 
-### 4. Componentes de Interfaz (Frontend)
+## 4. Buenas prácticas documentales
 
-#### 4.1 AI Risk Panel (Semáforo de Riesgo)
-Ubicado en los Dashboards generales, clasifica los activos críticos en tres niveles:
-*   🔴 **Riesgo Crítico (>70%):** Equipos con alta probabilidad de falla inminente. Se recomienda retiro preventivo.
-*   🟡 **Riesgo Medio (40%-70%):** Equipos en observación por reincidencia moderada.
-*   🟢 **Riesgo Bajo (<40%):** Operación normal.
+Para declarar resultados de ML deben registrarse:
 
-#### 4.2 Página de Estrategia Predictiva
-Página dedicada (`/ia/predicciones`) que muestra:
-*   **Análisis de Tendencias:** Correlaciones detectadas por el modelo (ej. fallas EMV vs. antigüedad).
-*   **Métricas de Desempeño:** Precisión del modelo (actualmente 91.4%) y MTBF estimado de la flota.
+- dataset y versión;
+- tamaño/muestra;
+- features;
+- target;
+- train/test split;
+- umbral;
+- métricas;
+- matriz de confusión;
+- fecha y commit;
+- limitaciones.
 
----
+## 5. Arquitectura
 
-### 5. Beneficios Estratégicos
-*   **Reducción de Costos:** Menos traslados de técnicos a terreno por fallas repetitivas.
-*   **Disponibilidad de Flota:** Mejora el uptime de los buses al asegurar que solo equipos con bajo riesgo salgan a operación.
-*   **Toma de Decisiones:** Proporciona datos científicos a los jefes de taller para dar de baja equipos obsoletos basándose en su "score de confiabilidad" y no solo en intuición.
+```text
+PostgreSQL
+→ analyzer.py
+→ JSON
+→ API Node
+→ panel Web
+```
 
----
-**Desarrollado para:** Tesis de Ingeniería - PMP Suite Gold Edition
-**Tecnologías:** Python 3.11, Scikit-learn, Pandas, Node.js, React.
+La consulta es de solo lectura.
+
+## 6. Interpretación
+
+El score ayuda a priorizar activos para inspección. No es un dictamen de reparación, QA ni baja de activo.
+
+## 7. Pendientes
+
+- decidir si el cierre Capstone presenta la heurística vigente o un modelo ML evaluado;
+- conservar evidencia de entrenamiento si se utiliza Random Forest;
+- evitar métricas decorativas o no reproducibles.
