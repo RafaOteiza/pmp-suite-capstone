@@ -41,7 +41,6 @@ Se verificó manualmente la administración de usuarios y la actualización de R
 - fixture Web pendiente;
 - validación nativa de cámara/lector;
 - pruebas dedicadas de rendimiento y seguridad;
-- Docker solicitado por el instructivo;
 - evidencia manual final QA → Bodega → reinstalación.
 
 ## Conclusión

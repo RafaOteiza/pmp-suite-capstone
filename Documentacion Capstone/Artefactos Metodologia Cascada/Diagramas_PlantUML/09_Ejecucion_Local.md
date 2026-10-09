@@ -24,4 +24,3 @@ MOB --> API : LAN
 @enduml
 ```
 
-Docker no se representa porque aún no existe una implementación certificada en el repositorio.

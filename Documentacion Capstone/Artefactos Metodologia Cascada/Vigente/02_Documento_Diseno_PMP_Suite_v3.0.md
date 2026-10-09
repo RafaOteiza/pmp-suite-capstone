@@ -80,7 +80,7 @@ Entidades principales:
 
 ## Diseño de despliegue
 
-Entorno actual nativo: PostgreSQL + API Node + Vite + Expo + Python. Ubuntu/Nginx/PM2 es proyección. Docker está pendiente frente a la exigencia académica.
+Entorno actual nativo: PostgreSQL + API Node + Vite + Expo + Python. Ubuntu/Nginx/PM2 se mantiene como proyección de despliegue servidor.
 
 ## Diagramas
 

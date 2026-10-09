@@ -45,7 +45,6 @@ Desarrollar e integrar PMP Suite como una plataforma funcional que centralice y 
 - entorno académico/local;
 - Firebase y PostgreSQL deben mantener consistencia;
 - pruebas destructivas solo en entorno aislado;
-- Docker solicitado por el instructivo está pendiente;
 - Mobile requiere validación física final.
 
 ## Equipo y responsabilidades

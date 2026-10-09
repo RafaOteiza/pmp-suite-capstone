@@ -28,7 +28,6 @@ Los DOCX v2.0 fueron trasladados a `Historial/2026-09-23_v2.0/`. Las versiones p
 - historial técnico restringido para Terreno;
 - documentación IA corregida;
 - resultados de pruebas actualizados;
-- brecha Docker explicitada conforme al instructivo Capstone.
 
 ## Regla de precedencia
 

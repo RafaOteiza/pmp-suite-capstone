@@ -76,15 +76,6 @@ npm run build
 
 Mobile dispone de su suite propia según `07_Mobile/package.json`.
 
-## Docker — brecha de Capstone
-
-El instructivo Capstone solicita Dockerfile/docker-compose como evidencia de despliegue. **El repositorio vigente no dispone todavía de una solución Docker certificada.** No se debe afirmar que Docker está implementado.
-
-Antes del cierre final se debe:
-
-1. implementar contenedores reproducibles; o
-2. obtener una excepción/ajuste formal del docente y documentarla.
-
 ## Proyección Ubuntu
 
 Nginx + PM2 puede utilizarse como despliegue servidor después de validación. Actualmente es una proyección, no una certificación productiva.

@@ -45,7 +45,6 @@ Verificar reglas de negocio, RBAC, integridad, custodia, UX e integración sin c
 - cámara/lector real y Safe Area;
 - rendimiento;
 - seguridad dedicada;
-- Docker;
 - recorrido final hasta reinstalación.
 
 ## Evidencia
