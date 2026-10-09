@@ -1,33 +1,35 @@
-# Vigencia de los artefactos Cascada
+# Vigencia de los artefactos de metodología Cascada
 
-Actualización: 15 de septiembre de 2026.
+**Línea vigente:** v3.0 — 09-10-2026
 
-## Referencias funcionales vigentes
+## Documentos vigentes
 
-- [Casos, Ingreso de requerimientos y despacho por escaneo](../../02_Arquitectura/CASOS_REQUERIMIENTOS_DESPACHO.md): diagnóstico, modelo, códigos, Capstone frente a integración futura y guión E2E.
-- [Bridge: correlación externa e historial del activo](../../08_Pruebas/BRIDGE_CORRELACION_Y_HISTORIAL.md): contrato Bridge vigente y preservación de datos históricos.
-- [Nomenclatura logística](../../08_Pruebas/NOMENCLATURA_LOGISTICA.md): separación de stock, asignación, tránsito físico y equipos en operación.
-- [UX del despacho desde Bodega](../../08_Pruebas/UX_DESPACHO_BODEGA.md): evidencia del ajuste previo de errores inline y validación física.
+Los artefactos actualizados se encuentran en `Vigente/`:
 
-En caso de contradicción, las descripciones operacionales Bridge anteriores quedan sustituidas por las dos primeras referencias. Las pruebas de cada documento corresponden a su fecha y versión; no prueban automáticamente la evolución siguiente.
+1. `00_Documento_Inicio_Proyecto_PMP_Suite_v3.0.md`
+2. `01_SRS_Simplificado_PMP_Suite_v3.0.md`
+3. `02_Documento_Diseno_PMP_Suite_v3.0.md`
+4. `03_Plan_Pruebas_Evidencias_PMP_Suite_v3.0.md`
+5. `04_Manual_Tecnico_Despliegue_PMP_Suite_v3.0.md`
 
-## DOCX conservados como evidencia histórica
+Se mantienen fuentes PlantUML actualizadas en `Diagramas_PlantUML/`.
 
-Los binarios no se eliminaron ni se modificaron en esta actualización. Se mantienen sus contenidos e imágenes para preservar la evidencia académica. Esta tabla delimita su vigencia:
+## Versiones históricas
 
-| Archivo | Clasificación y advertencia |
-|---|---|
-| `00_Documento_Inicio_Proyecto_PMP_Suite.docx` | **FLUJO RETIRADO / HISTÓRICO** en la descripción de Bridge como preparación, asignación y creación de mantenimiento. El contexto académico conserva su valor histórico. |
-| `01_SRS_Simplificado_PMP_Suite.docx` | **FLUJO RETIRADO / HISTÓRICO** en RF-BRG-01 a RF-BRG-05 y definición de Bridge operacional. Sustituir su lectura funcional por las referencias vigentes. |
-| `02_Documento_Diseno_PMP_Suite.docx` | **FLUJO RETIRADO / HISTÓRICO** en clases/ERD Bridge operativo, relación uno a uno como proceso actual y Figura 6. Las tablas antiguas siguen conservadas para datos históricos. |
-| `03_Plan_Pruebas_Evidencias_PMP_Suite.docx` | **EVIDENCIA HISTÓRICA** en escenarios que crean/asignan/completan Bridge y resultados de la línea base previa. Las pruebas vigentes deben ejecutarse sobre el contrato de correlación. |
-| `04_Manual_Tecnico_Despliegue_PMP_Suite.docx` | Manual de la línea base anterior. Sus instrucciones deben complementarse con las migraciones aditivas actuales; no ejecutar rollback/reset históricos para adoptar el nuevo flujo. |
-| `Historial/2026-09-12_pre_actualizacion/*.docx` | **ARCHIVO HISTÓRICO** anterior a la línea base documentada. No constituye especificación funcional vigente. |
+Los DOCX v2.0 fueron trasladados a `Historial/2026-09-23_v2.0/`. Las versiones previas permanecen en su historial original. No deben utilizarse para describir RBAC, custodia o flujos actuales.
 
-Las fuentes PlantUML 05, 06, 07 y 08 también contienen avisos históricos. Sus imágenes antiguas incrustadas en DOCX conservan esa misma condición; no deben reutilizarse en una nueva defensa como representación actual de Bridge.
+## Cambio principal respecto de v2.0
 
-## Alcance académico
+- siete roles oficiales, incluyendo `jefe_laboratorio`;
+- Admin sin wildcard operacional;
+- Gerente de solo lectura;
+- Laboratorio con bandeja de recepción, asignación y trabajo separados;
+- QA autónomo;
+- historial técnico restringido para Terreno;
+- documentación IA corregida;
+- resultados de pruebas actualizados;
+- brecha Docker explicitada conforme al instructivo Capstone.
 
-PMP Suite es autónomo. Durante el Capstone, Aranda u otros requerimientos externos se registran de forma asistida en **Ingreso de requerimientos**. PMP genera sus propias OS y Bridge conserva las referencias externas. Una futura integración comercial en SONDA podrá automatizar el ingreso mediante API/Web Service/webhook/ETL; no forma parte del alcance implementado para el Capstone y no cambia el modelo central de trazabilidad.
+## Regla de precedencia
 
-Se mantiene Expo SDK 57. Esta actualización documental no agrega Docker ni diagramas Docker. La exportación móvil no sustituye la validación en un dispositivo físico.
+Código vigente → ERS v5 → Arquitectura → pruebas fechadas → artefactos Cascada v3.0 → versiones históricas.

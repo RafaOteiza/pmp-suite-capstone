@@ -1,21 +1,26 @@
-# Índice de evidencias Capstone — PMP Suite
+# Índice de evidencias académicas — PMP Suite
 
-Este directorio conserva resultados reproducibles del cierre técnico. Las
-evidencias se agrupan por fecha y usan el prefijo `EV-<ÁREA>-<NÚMERO>`.
+**Actualización:** 09-10-2026
 
-| ID | Fecha | Área | Resultado | Archivo |
-|---|---|---|---|---|
-| EV-OP-001 | 14-09-2026 | Flujo operacional y escaneo físico | Aprobado, 9/9 etapas | `2026-09-14/EV-OP-001_Flujo_Operacional_Escaneo.md` |
-| EV-MOB-001 | 14-09-2026 | Aplicación móvil Expo/Android | Bundle aprobado; prueba física pendiente | `2026-09-14/EV-MOB-001_Validacion_Movil.md` |
+Esta carpeta funciona como índice académico. El detalle técnico completo se conserva en `08_Pruebas/`.
 
-## Convención de estados
+| ID | Fecha | Estado | Evidencia |
+|---|---|---|---|
+| EV-OP-001 | 14-09-2026 | Histórica aprobada | Flujo E2E línea base |
+| EV-MOB-001 | 14-09-2026 | Histórica parcial | Bundle Mobile previo |
+| EV-CIERRE-001 | 09-10-2026 | Vigente | Estado técnico/RBAC/UX y brechas |
 
-- **Aprobado:** resultado automatizado o manual reproducible, con precondiciones
-  y salida registrada.
-- **Parcial:** una parte técnica fue comprobada, pero falta una validación manual
-  o de entorno.
-- **Pendiente:** todavía no existe una ejecución válida.
-- **Bloqueado:** existe una dependencia externa identificada que impide ejecutar.
+## Regla de lectura
 
-Las capturas de pantalla deben usar el mismo identificador de su caso y no deben
-mostrar contraseñas, tokens, archivos `.env` ni credenciales.
+Las evidencias de septiembre representan el sistema de esa fecha. No deben utilizarse para describir el RBAC actual cuando contradicen la separación implementada el 09-10-2026.
+
+Para permisos actuales consultar `08_Pruebas/Separacion_Roles_RBAC_2026-10-09.md`.
+
+## Convención
+
+- **Aprobado:** ejecución reproducible y resultado esperado.
+- **Parcial:** validación incompleta.
+- **Pendiente:** sin ejecución válida.
+- **Histórica:** válida para la fecha, no necesariamente para el contrato actual.
+
+No adjuntar contraseñas, tokens, `.env`, UID o service accounts.
