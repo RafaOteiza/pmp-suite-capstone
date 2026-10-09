@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_ASIS_V2" targetNamespace="https://pmp-suite.local/bpmn">
+  <bpmn:process id="Process_ASIS_V2" name="PMP Suite AS-IS" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_ASIS">
+      <bpmn:lane id="Lane_Bodega" name="Bodega / Mersan">
+        <bpmn:flowNodeRef>Start_ASIS</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_Enviar</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Jefatura" name="Jefatura Laboratorio">
+        <bpmn:flowNodeRef>Task_Recibir</bpmn:flowNodeRef><bpmn:flowNodeRef>Gateway_Doc</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_Conciliar</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_Registrar</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_Asignar</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_Despacho</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Tecnico" name="Técnico Laboratorio">
+        <bpmn:flowNodeRef>Task_Diagnosticar</bpmn:flowNodeRef><bpmn:flowNodeRef>Gateway_Diag</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_Reparar</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_PoD</bpmn:flowNodeRef><bpmn:flowNodeRef>Task_Probar</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_QA" name="QA">
+        <bpmn:flowNodeRef>Task_QA</bpmn:flowNodeRef><bpmn:flowNodeRef>Gateway_QA</bpmn:flowNodeRef><bpmn:flowNodeRef>End_ASIS</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <bpmn:startEvent id="Start_ASIS" name="Equipo retirado / enviado"/>
+    <bpmn:task id="Task_Enviar" name="Enviar equipo y antecedentes"/>
+    <bpmn:task id="Task_Recibir" name="Recibir equipo"/>
+    <bpmn:exclusiveGateway id="Gateway_Doc" name="¿Antecedentes completos?"/>
+    <bpmn:task id="Task_Conciliar" name="Conciliar guía, tarjetón, correo y planillas"/>
+    <bpmn:task id="Task_Registrar" name="Registrar ingreso en control interno"/>
+    <bpmn:task id="Task_Asignar" name="Asignar trabajo técnico"/>
+    <bpmn:task id="Task_Diagnosticar" name="Diagnosticar"/>
+    <bpmn:exclusiveGateway id="Gateway_Diag" name="Resultado diagnóstico"/>
+    <bpmn:task id="Task_Reparar" name="Reparar / esperar repuesto"/>
+    <bpmn:task id="Task_PoD" name="Documentar PoD en registro separado"/>
+    <bpmn:task id="Task_Probar" name="Ejecutar pruebas"/>
+    <bpmn:task id="Task_Despacho" name="Preparar despacho por lote"/>
+    <bpmn:task id="Task_QA" name="Control QA"/>
+    <bpmn:exclusiveGateway id="Gateway_QA" name="¿Aprobado?"/>
+    <bpmn:endEvent id="End_ASIS" name="Equipo devuelto / informado"/>
+
+    <bpmn:sequenceFlow id="F1" sourceRef="Start_ASIS" targetRef="Task_Enviar"/>
+    <bpmn:sequenceFlow id="F2" sourceRef="Task_Enviar" targetRef="Task_Recibir"/>
+    <bpmn:sequenceFlow id="F3" sourceRef="Task_Recibir" targetRef="Gateway_Doc"/>
+    <bpmn:sequenceFlow id="F4" name="Sí/No" sourceRef="Gateway_Doc" targetRef="Task_Conciliar"/>
+    <bpmn:sequenceFlow id="F5" sourceRef="Task_Conciliar" targetRef="Task_Registrar"/>
+    <bpmn:sequenceFlow id="F6" sourceRef="Task_Registrar" targetRef="Task_Asignar"/>
+    <bpmn:sequenceFlow id="F7" sourceRef="Task_Asignar" targetRef="Task_Diagnosticar"/>
+    <bpmn:sequenceFlow id="F8" sourceRef="Task_Diagnosticar" targetRef="Gateway_Diag"/>
+    <bpmn:sequenceFlow id="F9" name="Reparable" sourceRef="Gateway_Diag" targetRef="Task_Reparar"/>
+    <bpmn:sequenceFlow id="F10" name="PoD" sourceRef="Gateway_Diag" targetRef="Task_PoD"/>
+    <bpmn:sequenceFlow id="F11" sourceRef="Task_Reparar" targetRef="Task_Probar"/>
+    <bpmn:sequenceFlow id="F12" sourceRef="Task_PoD" targetRef="Task_Probar"/>
+    <bpmn:sequenceFlow id="F13" sourceRef="Task_Probar" targetRef="Task_Despacho"/>
+    <bpmn:sequenceFlow id="F14" sourceRef="Task_Despacho" targetRef="Task_QA"/>
+    <bpmn:sequenceFlow id="F15" sourceRef="Task_QA" targetRef="Gateway_QA"/>
+    <bpmn:sequenceFlow id="F16" name="Aprobado" sourceRef="Gateway_QA" targetRef="End_ASIS"/>
+    <bpmn:sequenceFlow id="F17" name="Rechazado" sourceRef="Gateway_QA" targetRef="Task_Conciliar"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_ASIS"><bpmndi:BPMNPlane id="Plane_ASIS" bpmnElement="Process_ASIS_V2"/></bpmndi:BPMNDiagram>
+</bpmn:definitions>

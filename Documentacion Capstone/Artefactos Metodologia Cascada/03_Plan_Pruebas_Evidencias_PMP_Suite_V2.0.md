@@ -1,52 +1,103 @@
 # 03 — Plan de Pruebas y Evidencias PMP Suite V2.0
 
-## Objetivo
+## 1. Objetivo
 
-Verificar reglas de negocio, RBAC, integridad, custodia, UX e integración sin comprometer la base habitual.
+Comprobar requisitos funcionales, RBAC, integridad, custodia, concurrencia, UX e integración.
 
-## Estrategia
+## 2. Niveles de prueba
 
-1. unitarias/contratos;
-2. integración HTTP;
-3. RBAC;
-4. PostgreSQL efímero;
-5. E2E por flujo;
-6. build/export;
-7. visual responsive;
-8. prueba manual Web/Mobile.
+### Unitarias / contratos
+Validaciones, helpers, autorización y reglas de dominio.
 
-## Matriz principal
+### HTTP / RBAC
+Respuestas de rutas según actor y acción.
+
+### Integración DB
+Esquema real sobre PostgreSQL efímero.
+
+### E2E
+Recorridos completos con aplicación real y dependencias controladas.
+
+### Visual
+Responsive, temas, overflow y estados.
+
+### Mobile
+Mocks/export + validación física pendiente.
+
+### Manual
+Recorrido de usuario sobre entorno habitual controlado.
+
+## 3. Matriz
 
 | Área | Casos |
 |---|---|
-| Auth/RBAC | cuenta activa, rol, 401/403, scope propio |
-| Activos | alta, identidad, modelo/marca, recepción inicial |
-| Terreno | falla, retiro, instalación, historial |
-| Bodega | recepción, despacho, inventario, repuestos |
-| Laboratorio | recepción, SLA, asignación, trabajo, salida |
-| QA | recepción, Ambiente, pruebas, dictamen, salida |
-| Bridge | correlación/búsqueda, sin operaciones |
-| IA | lectura, deduplicación, error controlado |
-| UX | claro/oscuro, responsive, focus/overflow |
+| Auth | token, cuenta, rol, conflictos |
+| Usuarios | alta/edición/último Admin |
+| Activos | alta/identidad/recepción |
+| Casos | Aranda/Interno/duplicados |
+| Terreno | falla/retiro/instalación |
+| Bodega | recepción/despachos/stock |
+| Lab | recepción/asignación/SLA/trabajo |
+| Repuestos | solicitud/entrega/idempotencia |
+| QA | etapas/dictamen/salida |
+| Bridge | correlación sin operaciones |
+| Trazabilidad | serie/OS/referencia |
+| Dashboards | conteos únicos |
+| IA | JSON/lectura/semántica |
+| UX | responsive/tema/feedback |
 
-## Estado documentado 09-10-2026
+## 4. Controles negativos
 
-- Backend: 118/118.
-- Web: 176/177.
-- Mobile: 210/210 con mocks.
-- Build Web: aprobado.
-- RBAC HTTP: 99 solicitudes aprobadas.
-- E2E operacional y Lab: aprobados.
-- Visual RBAC: 150 renderizados.
+- rol inválido;
+- OS ajena;
+- evidencia faltante;
+- evidencia vieja;
+- estación incorrecta;
+- activo incompatible;
+- transición fuera de estado;
+- duplicado;
+- reintento con distinto contexto;
+- cierre sin prueba;
+- repuesto sin PoD;
+- stock insuficiente;
+- QA legacy;
+- autoedición Admin.
 
-## Fallos/pendientes
+## 5. Resultado vigente
 
-- un fixture Web;
-- cámara/lector real y Safe Area;
-- rendimiento;
-- seguridad dedicada;
-- recorrido final hasta reinstalación.
+- Backend 118/118.
+- Web 176/177.
+- Mobile 210/210 mocks.
+- Build Web aprobado.
+- RBAC 99 requests.
+- E2E Lab aprobado.
+- E2E operacional aprobado.
+- Responsive/RBAC 150 renders.
 
-## Evidencia
+## 6. Pendientes
 
-`08_Pruebas/` contiene el detalle por fecha. `Documentacion Capstone/Evidencias/` funciona como índice académico.
+- fixture Web useAuth;
+- cámara/QR dispositivo;
+- Safe Area/teclado;
+- recorrido QA→Bodega→reinstalación;
+- rendimiento/seguridad de cierre.
+
+## 7. Evidencia
+
+Cada caso debe registrar:
+
+- ID;
+- versión/commit;
+- fecha;
+- precondiciones;
+- datos;
+- actor;
+- pasos;
+- esperado;
+- obtenido;
+- estado;
+- evidencia.
+
+## 8. Trazabilidad
+
+Consultar `08_Pruebas/MATRIZ_TRAZABILIDAD_V2.0.md`.

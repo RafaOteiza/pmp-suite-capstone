@@ -1,52 +1,82 @@
-# 7. Base de datos y ERD
+# Arquitectura 07 — Base de Datos / ERD V2.0
 
-**Versión:** V2.0
+**Versión:** V2.0  
+**Motor:** PostgreSQL · esquema `pmp`
 
-**Base:** PostgreSQL — esquema `pmp`  
-**Actualización:** 09-10-2026
+## 1. Principio
 
-## Principios
+El modelo separa:
 
-- Activos maestros separados en validadores y consolas.
-- Identidad lógica: tipo + serie.
-- `pmp.usuarios` contiene rol/estado efectivo y vínculo Firebase.
-- `pmp.ordenes_servicio` representa intervenciones.
-- `pmp.flujo_eventos` conserva hechos del flujo.
-- `pmp.escaneos_equipos` y evidencias de dominio respaldan identidad física.
-- Casos y referencias externas son relaciones, no identidades sustitutas.
-- Movimientos actuales no deben inferirse solo de una fecha o estado legacy.
+- maestros;
+- activos;
+- caso/requerimiento;
+- OS/intervención;
+- evidencia física;
+- eventos;
+- reparación;
+- stock/repuestos;
+- QA;
+- correlaciones externas.
 
-## Entidades principales
+La identidad de activo es lógica: `tipo_equipo + serie`.
 
-| Entidad | Propósito |
-|---|---|
-| `usuarios` | identidad operacional, rol, activo, Firebase UID |
-| `validadores` / `consolas` | maestros de activos |
-| `ordenes_servicio` | OS PMP |
-| `casos_operacionales` | necesidad/caso |
-| `bridge_referencias` | correlación externa |
-| `flujo_eventos` | historial de hechos |
-| `escaneos_equipos` | evidencia de lecturas |
-| `registro_reparaciones` | trabajo técnico |
-| `repuestos`, `solicitudes_repuestos`, `solicitud_items` | stock y solicitudes |
-| `estados`, `ubicaciones`, `os_transiciones` | catálogos/flujo |
-| `buses`, `terminales`, `pst`, `terminal_pst` | contexto operacional |
+## 2. Inventario
 
-## Relación simplificada
+### Maestros/configuración
+
+`estados`, `ubicaciones`, `usuarios`, `terminales`, `pst`, `terminal_pst`, `buses`, `config_estado_ubicacion`, `repuestos`.
+
+### Operacionales
+
+`validadores`, `consolas`, `casos_operacionales`, `ordenes_servicio`, `flujo_eventos`, `escaneos_equipos`, `os_historial_activo`, `registro_reparaciones`, `solicitudes_repuestos`, `solicitud_items`, `bridge_referencias`, `bridges`, `bridge_mantenimiento`, `instalaciones_equipos`, `qa_inspecciones`, `guias`, `guia_detalle`.
+
+## 3. Relaciones principales
 
 ```mermaid
 erDiagram
-  USUARIOS ||--o{ ORDENES_SERVICIO : asignaciones
-  CASOS_OPERACIONALES ||--o{ ORDENES_SERVICIO : agrupa
-  ORDENES_SERVICIO ||--o{ FLUJO_EVENTOS : eventos
-  ORDENES_SERVICIO ||--o{ ESCANEOS_EQUIPOS : evidencia
-  ORDENES_SERVICIO ||--o{ REGISTRO_REPARACIONES : trabajo
-  ORDENES_SERVICIO ||--o{ BRIDGE_REFERENCIAS : correlacion
-  ORDENES_SERVICIO ||--o{ SOLICITUDES_REPUESTOS : solicita
+ USUARIOS ||--o{ ORDENES_SERVICIO : participa
+ VALIDADORES ||--o{ ORDENES_SERVICIO : activo
+ CONSOLAS ||--o{ ORDENES_SERVICIO : activo
+ CASOS_OPERACIONALES ||--o{ ORDENES_SERVICIO : agrupa
+ ORDENES_SERVICIO ||--o{ FLUJO_EVENTOS : registra
+ ORDENES_SERVICIO ||--o{ ESCANEOS_EQUIPOS : evidencia
+ ORDENES_SERVICIO ||--o{ OS_HISTORIAL_ACTIVO : audita
+ ORDENES_SERVICIO ||--o{ REGISTRO_REPARACIONES : trabajo
+ ORDENES_SERVICIO ||--o{ SOLICITUDES_REPUESTOS : solicita
+ SOLICITUDES_REPUESTOS ||--o{ SOLICITUD_ITEMS : contiene
+ REPUESTOS ||--o{ SOLICITUD_ITEMS : entrega
+ ORDENES_SERVICIO ||--o{ BRIDGE_REFERENCIAS : correlaciona
+ TERMINALES ||--o{ TERMINAL_PST : habilita
+ PST ||--o{ TERMINAL_PST : opera
+ GUIAS ||--o{ GUIA_DETALLE : contiene
 ```
 
-## Migraciones
+## 4. Integridad
 
-Las migraciones aditivas se encuentran en `05_BaseDatos/migraciones/`. Las migraciones vigentes son la única fuente versionada para reconstruir la evolución del esquema.
+- PK/FK y checks de tipo/serie.
+- historial append-only;
+- identidad OS inmutable;
+- caso y relaciones críticas inmutables;
+- referencias externas validadas contra OS/activo;
+- evento de stock inicial consumible una vez;
+- AMID único cuando existe;
+- transacciones y locks en escrituras críticas.
 
-Para el detalle exacto de columnas y restricciones, usar el DDL/migraciones vigentes; este documento es una vista arquitectónica.
+## 5. Custodia
+
+La ubicación real no se deduce solo desde `estado_id`; se construye con:
+
+- ubicación;
+- eventos de entrada/salida;
+- último escaneo/evidencia;
+- ciclo Lab/QA;
+- estado;
+- stock origen.
+
+## 6. Diccionario completo
+
+Tipos, campos, restricciones, secuencias, vistas, triggers y decisiones están documentados en:
+
+[MODELO_DATOS_DICCIONARIO_V2.0.md](MODELO_DATOS_DICCIONARIO_V2.0.md)
+
+La fuente física definitiva continúa siendo PostgreSQL + migraciones.

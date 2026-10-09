@@ -1,75 +1,96 @@
 # 01 — SRS Simplificado PMP Suite V2.0
 
-## 1. Alcance
+## 1. Propósito
 
-Sistema Web/Mobile para gestionar el ciclo de mantenimiento de validadores y consolas, con API, PostgreSQL, Firebase y analítica de apoyo.
+Este documento resume la ERS completa de PMP Suite para el artefacto Cascada. El catálogo exhaustivo se encuentra en:
 
-## 2. Actores
+`01_Requerimientos/ERS_PMP_Suite_V2.0.md`.
 
-`admin`, `gerente`, `jefe_laboratorio`, `logistica`, `qa`, `tecnico_laboratorio`, `tecnico_terreno`.
+## 2. Sistema
 
-## 3. Requisitos funcionales principales
+PMP Suite integra gestión de activos, casos, órdenes, movimientos físicos, Laboratorio, QA, stock, trazabilidad, Mobile y analítica.
 
-### Activos
-- Identidad por tipo + serie.
-- Alta de maestro separada de OS.
-- Regla modelo/marca compartida.
-- Recepción inicial Physical First.
+## 3. Actores
 
-### Casos y OS
-- Caso, OS, activo y referencia externa son conceptos distintos.
-- MV/MC para mantenimiento; PDV/PDC para PoD; IN para instalación.
-- IN creada solo al confirmar salida a Terreno.
-- Bridge solo correlaciona.
+- Admin.
+- Gerente.
+- Jefe Laboratorio.
+- Logística.
+- QA.
+- Técnico Laboratorio.
+- Técnico Terreno.
 
-### Terreno
-- Mis órdenes y carga propia.
-- Reporte de falla sobre activo en operación.
-- Retiro con evidencia física o contingencia autorizada.
-- Historial técnico restringido.
+## 4. Grupos de requisitos
 
-### Bodega
-- Recepciones y despachos por custodia real.
-- Inventario de activos y disponibilidad.
-- Repuestos y alertas.
-- PPU/terminal/operador coherentes.
+| Grupo | Alcance |
+|---|---|
+| RF-AUT | autenticación/sesión |
+| RF-USR | usuarios/roles |
+| RF-MST | maestros |
+| RF-ACT | activos/recepción inicial |
+| RF-REQ | casos/requerimientos |
+| RF-OS | nomenclatura/relaciones |
+| RF-TER | Terreno |
+| RF-BOD | Bodega |
+| RF-LAB | custodia Lab |
+| RF-LTW | trabajo técnico |
+| RF-REP | repuestos |
+| RF-QA | QA |
+| RF-INV | inventario/instalación |
+| RF-BRG | referencias externas |
+| RF-TRZ | trazabilidad |
+| RF-DASH | reportes/KPI |
+| RF-IA | analítica |
+| RF-UX/MOB | Web/Mobile |
 
-### Laboratorio
-- Bandeja En camino/Recibidos/Incidencias/Historial.
-- SLA desde recepción física vigente.
-- Jefe asigna; técnico ejecuta su carga.
-- Diagnóstico, intervención, pruebas y resultado.
-- Salida física separada.
+## 5. Requisitos críticos
 
-### QA
-- Recepción, Ambiente, Pruebas, Dictamen y Despacho.
-- QA toma su trabajo.
-- Dictamen no mueve custodia.
-- Rechazo conserva antecedentes.
+1. Identidad = tipo + serie.
+2. Physical First.
+3. Evidencia independiente por movimiento.
+4. Admin sin wildcard.
+5. Gerente read-only.
+6. Jefe Lab controla custodia/asignación Lab.
+7. Técnico Lab solo su carga.
+8. QA autónomo.
+9. Bridge solo correlación.
+10. IN al despacho.
+11. Stock inicial sin OS.
+12. Repuesto consumido solo por entrega Bodega.
+13. Historial append-only.
+14. Error no equivale a cero.
 
-### Administración
-- Firebase autentica.
-- PostgreSQL define rol.
-- Admin gestiona usuarios.
-- Gerencia es read-only.
-- No existe wildcard Admin.
+## 6. RNF
 
-### Analítica
-- Lectura PostgreSQL.
-- Heurística/modelo debe identificarse correctamente.
-- No ejecuta acciones.
+### Seguridad
+Firebase + PostgreSQL + autorización por acción/recurso.
 
-## 4. Requisitos no funcionales
+### Integridad
+Transacciones, locks, FKs, checks, idempotencia.
 
-- seguridad y denegación por defecto;
-- transacciones para movimientos críticos;
-- idempotencia controlada;
-- errores diferenciados;
-- responsive y claro/oscuro;
-- trazabilidad por evento;
-- secretos fuera de Git;
-- pruebas destructivas aisladas.
+### Rendimiento
+Paginación, índices y pruebas aisladas.
 
-## 5. Criterios de aceptación
+### UX
+Responsive, claro/oscuro, semántica consistente y feedback inline.
 
-El detalle verificable se mantiene en `01_Requerimientos/ERS_PMP_Suite_V2.0.md` y en `08_Pruebas/`.
+### Mantenibilidad
+Servicios de dominio, reglas compartidas y documentación V2.0.
+
+## 7. Trazabilidad
+
+La matriz requisito→código→prueba se encuentra en:
+
+`08_Pruebas/MATRIZ_TRAZABILIDAD_V2.0.md`.
+
+## 8. Criterios de aceptación
+
+- identidad incorrecta bloqueada;
+- evidencia vieja bloqueada;
+- rol incorrecto 403;
+- flujo legacy 410;
+- stock doble consumido bloqueado;
+- cierre técnico sin pruebas aprobado bloqueado;
+- QA rechazado vuelve con contexto;
+- dashboards sin doble conteo;
+- historial por serie consistente.

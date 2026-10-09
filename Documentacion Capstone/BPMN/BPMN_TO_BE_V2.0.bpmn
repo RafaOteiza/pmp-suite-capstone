@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" id="Defs_TOBE_V2" targetNamespace="https://pmp-suite.local/bpmn">
+  <bpmn:process id="Process_TOBE_V2" name="PMP Suite TO-BE" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_TOBE">
+      <bpmn:lane id="Lane_Terreno" name="Técnico Terreno">
+        <bpmn:flowNodeRef>Start_TOBE</bpmn:flowNodeRef><bpmn:flowNodeRef>T_Reportar</bpmn:flowNodeRef><bpmn:flowNodeRef>T_Retiro</bpmn:flowNodeRef><bpmn:flowNodeRef>T_Instalar</bpmn:flowNodeRef><bpmn:flowNodeRef>End_TOBE</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Logistica" name="Logística / Bodega">
+        <bpmn:flowNodeRef>B_RecibirTerreno</bpmn:flowNodeRef><bpmn:flowNodeRef>B_SalirLab</bpmn:flowNodeRef><bpmn:flowNodeRef>B_RecibirLab</bpmn:flowNodeRef><bpmn:flowNodeRef>B_SalirQA</bpmn:flowNodeRef><bpmn:flowNodeRef>B_RecibirQA</bpmn:flowNodeRef><bpmn:flowNodeRef>B_DespacharTerreno</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_JefeLab" name="Jefe Laboratorio">
+        <bpmn:flowNodeRef>L_Recibir</bpmn:flowNodeRef><bpmn:flowNodeRef>L_Asignar</bpmn:flowNodeRef><bpmn:flowNodeRef>L_Salida</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_TecLab" name="Técnico Laboratorio">
+        <bpmn:flowNodeRef>L_Diagnostico</bpmn:flowNodeRef><bpmn:flowNodeRef>L_Reparacion</bpmn:flowNodeRef><bpmn:flowNodeRef>L_Pruebas</bpmn:flowNodeRef><bpmn:flowNodeRef>L_Cierre</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_QA2" name="QA">
+        <bpmn:flowNodeRef>Q_Recibir</bpmn:flowNodeRef><bpmn:flowNodeRef>Q_Ambiente</bpmn:flowNodeRef><bpmn:flowNodeRef>Q_Pruebas</bpmn:flowNodeRef><bpmn:flowNodeRef>Q_Dictamen</bpmn:flowNodeRef><bpmn:flowNodeRef>Q_Gateway</bpmn:flowNodeRef><bpmn:flowNodeRef>Q_Salida</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <bpmn:startEvent id="Start_TOBE" name="Falla detectada"/>
+    <bpmn:task id="T_Reportar" name="Reportar falla / crear caso-OS"/>
+    <bpmn:task id="T_Retiro" name="Validar y confirmar retiro físico"/>
+    <bpmn:task id="B_RecibirTerreno" name="Confirmar recepción Bodega"/>
+    <bpmn:task id="B_SalirLab" name="Validar y confirmar salida a Laboratorio"/>
+    <bpmn:task id="L_Recibir" name="Confirmar recepción Laboratorio"/>
+    <bpmn:task id="L_Asignar" name="Asignar técnico"/>
+    <bpmn:task id="L_Diagnostico" name="Diagnosticar"/>
+    <bpmn:task id="L_Reparacion" name="Reparar / resolver repuesto"/>
+    <bpmn:task id="L_Pruebas" name="Manual / Test MK"/>
+    <bpmn:task id="L_Cierre" name="Finalizar trabajo técnico"/>
+    <bpmn:task id="L_Salida" name="Confirmar salida Laboratorio"/>
+    <bpmn:task id="B_RecibirLab" name="Confirmar recepción Bodega"/>
+    <bpmn:task id="B_SalirQA" name="Confirmar salida a QA"/>
+    <bpmn:task id="Q_Recibir" name="Confirmar recepción QA"/>
+    <bpmn:task id="Q_Ambiente" name="Instalación Ambiente"/>
+    <bpmn:task id="Q_Pruebas" name="Pruebas QA"/>
+    <bpmn:task id="Q_Dictamen" name="Registrar dictamen"/>
+    <bpmn:exclusiveGateway id="Q_Gateway" name="¿Operativo?"/>
+    <bpmn:task id="Q_Salida" name="Confirmar salida QA"/>
+    <bpmn:task id="B_RecibirQA" name="Confirmar recepción Bodega"/>
+    <bpmn:task id="B_DespacharTerreno" name="Validar/confirmar despacho y crear IN"/>
+    <bpmn:task id="T_Instalar" name="Completar instalación"/>
+    <bpmn:endEvent id="End_TOBE" name="Activo en operación"/>
+
+    <bpmn:sequenceFlow id="T1" sourceRef="Start_TOBE" targetRef="T_Reportar"/>
+    <bpmn:sequenceFlow id="T2" sourceRef="T_Reportar" targetRef="T_Retiro"/>
+    <bpmn:sequenceFlow id="T3" sourceRef="T_Retiro" targetRef="B_RecibirTerreno"/>
+    <bpmn:sequenceFlow id="T4" sourceRef="B_RecibirTerreno" targetRef="B_SalirLab"/>
+    <bpmn:sequenceFlow id="T5" sourceRef="B_SalirLab" targetRef="L_Recibir"/>
+    <bpmn:sequenceFlow id="T6" sourceRef="L_Recibir" targetRef="L_Asignar"/>
+    <bpmn:sequenceFlow id="T7" sourceRef="L_Asignar" targetRef="L_Diagnostico"/>
+    <bpmn:sequenceFlow id="T8" sourceRef="L_Diagnostico" targetRef="L_Reparacion"/>
+    <bpmn:sequenceFlow id="T9" sourceRef="L_Reparacion" targetRef="L_Pruebas"/>
+    <bpmn:sequenceFlow id="T10" sourceRef="L_Pruebas" targetRef="L_Cierre"/>
+    <bpmn:sequenceFlow id="T11" sourceRef="L_Cierre" targetRef="L_Salida"/>
+    <bpmn:sequenceFlow id="T12" sourceRef="L_Salida" targetRef="B_RecibirLab"/>
+    <bpmn:sequenceFlow id="T13" sourceRef="B_RecibirLab" targetRef="B_SalirQA"/>
+    <bpmn:sequenceFlow id="T14" sourceRef="B_SalirQA" targetRef="Q_Recibir"/>
+    <bpmn:sequenceFlow id="T15" sourceRef="Q_Recibir" targetRef="Q_Ambiente"/>
+    <bpmn:sequenceFlow id="T16" sourceRef="Q_Ambiente" targetRef="Q_Pruebas"/>
+    <bpmn:sequenceFlow id="T17" sourceRef="Q_Pruebas" targetRef="Q_Dictamen"/>
+    <bpmn:sequenceFlow id="T18" sourceRef="Q_Dictamen" targetRef="Q_Gateway"/>
+    <bpmn:sequenceFlow id="T19" name="Operativo" sourceRef="Q_Gateway" targetRef="Q_Salida"/>
+    <bpmn:sequenceFlow id="T20" name="Rechazado" sourceRef="Q_Gateway" targetRef="Q_Salida"/>
+    <bpmn:sequenceFlow id="T21" sourceRef="Q_Salida" targetRef="B_RecibirQA"/>
+    <bpmn:sequenceFlow id="T22" name="Operativo" sourceRef="B_RecibirQA" targetRef="B_DespacharTerreno"/>
+    <bpmn:sequenceFlow id="T23" name="Rechazado" sourceRef="B_RecibirQA" targetRef="B_SalirLab"/>
+    <bpmn:sequenceFlow id="T24" sourceRef="B_DespacharTerreno" targetRef="T_Instalar"/>
+    <bpmn:sequenceFlow id="T25" sourceRef="T_Instalar" targetRef="End_TOBE"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_TOBE"><bpmndi:BPMNPlane id="Plane_TOBE" bpmnElement="Process_TOBE_V2"/></bpmndi:BPMNDiagram>
+</bpmn:definitions>

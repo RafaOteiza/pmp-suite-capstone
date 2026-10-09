@@ -1,43 +1,53 @@
-# 1. Contexto del sistema
+# Arquitectura 01 — Contexto V2.0
 
 **Versión:** V2.0
 
-## Objetivo
+## Problema
 
-PMP Suite centraliza trazabilidad y mantenimiento de validadores y consolas a través de Terreno, Bodega, Laboratorio y QA.
+PMP Suite centraliza un proceso donde la información de validadores/consolas estaba fragmentada entre áreas, planillas, correos, guías y registros técnicos, dificultando determinar identidad, custodia, estado e historial.
+
+Detalle: `Documentacion Capstone/00_PROBLEMATICA_Y_CONTEXTO_V2.0.md`.
 
 ## Actores
 
 | Actor | Interacción |
 |---|---|
-| Gerente | Supervisión ejecutiva de solo lectura |
-| Administrador | Usuarios, roles, seguridad y supervisión global |
-| Jefe Laboratorio | Custodia, asignación y supervisión de Laboratorio |
-| Logística | Bodega, inventario, repuestos, retiros y despachos |
-| QA | Recepción, pruebas, dictamen y despacho QA |
-| Técnico Laboratorio | Trabajo técnico sobre su carga |
-| Técnico Terreno | Fallas, retiro e instalación |
-| Firebase | Proveedor de identidad |
-| PostgreSQL | Persistencia y autoridad operacional |
-| Aranda/u otro externo | Referencia correlacionada; no integración automática en el Capstone |
+| Gerente | supervisión ejecutiva de solo lectura |
+| Admin | usuarios, seguridad y supervisión |
+| Jefe Laboratorio | recepción, asignación, SLA y salida Lab |
+| Logística | Bodega, inventario, repuestos y movimientos |
+| QA | recepción, Ambiente, pruebas, dictamen y salida |
+| Técnico Lab | diagnóstico/reparación/pruebas |
+| Técnico Terreno | fallas, retiro e instalación |
+| Firebase | identidad |
+| PostgreSQL | persistencia/rol efectivo |
+| Analizador Python | priorización de reincidencia |
+| Aranda | referencia externa asistida, no integración automática |
 
-## Contexto C4 simplificado
+## Contexto
 
 ```mermaid
 flowchart LR
-  U[Usuarios PMP] --> W[Web PMP Suite]
-  T[Técnico Terreno] --> M[Mobile PMP Suite]
-  W --> API[API Node / Express]
-  M --> API
-  API --> DB[(PostgreSQL pmp)]
-  API --> FB[Firebase Admin]
-  API --> PY[Analizador Python]
-  EXT[Aranda / referencias externas] -. correlación asistida .-> API
+ TERR[Terreno] --> MOB[Mobile]
+ OPS[Usuarios Web] --> WEB[Web]
+ MOB --> API[API Node/Express]
+ WEB --> API
+ API --> DB[(PostgreSQL)]
+ API --> FB[Firebase]
+ API --> IA[Python IA]
+ IA --> DB
+ EXT[Aranda] -. referencia .-> API
 ```
 
-## Límites
+## Límite del sistema
 
-- PMP Suite no asume una integración automática con Aranda.
-- Consultar una pantalla no cambia custodia.
-- Analítica no ejecuta decisiones ni movimientos.
-- Admin no reemplaza a los actores operacionales.
+PMP Suite comienza en el registro/operación de activos y controla las intervenciones/movimientos que se confirman en su flujo. No reemplaza procesos externos no integrados automáticamente.
+
+## Principios
+
+- tipo+serie;
+- Physical First;
+- RBAC;
+- historial append-only;
+- caso ≠ OS ≠ activo ≠ referencia;
+- error ≠ ausencia de datos.

@@ -1,19 +1,29 @@
-# Artefactos de Metodología Cascada — PMP Suite V2.0
+# Artefactos Metodología Cascada — PMP Suite V2.0
 
-**Actualización:** 09-10-2026
+## Artefactos
 
-Esta carpeta contiene una única línea vigente. Las versiones previas fueron retiradas del árbol actual.
+1. [Documento de Inicio](00_Documento_Inicio_Proyecto_PMP_Suite_V2.0.md)
+2. [SRS Simplificado](01_SRS_Simplificado_PMP_Suite_V2.0.md)
+3. [Documento de Diseño](02_Documento_Diseno_PMP_Suite_V2.0.md)
+4. [Plan de Pruebas](03_Plan_Pruebas_Evidencias_PMP_Suite_V2.0.md)
+5. [Manual Técnico](04_Manual_Tecnico_Despliegue_PMP_Suite_V2.0.md)
 
-## Artefactos V2.0
+## Documentos de profundidad asociados
 
-1. `00_Documento_Inicio_Proyecto_PMP_Suite_V2.0.md`
-2. `01_SRS_Simplificado_PMP_Suite_V2.0.md`
-3. `02_Documento_Diseno_PMP_Suite_V2.0.md`
-4. `03_Plan_Pruebas_Evidencias_PMP_Suite_V2.0.md`
-5. `04_Manual_Tecnico_Despliegue_PMP_Suite_V2.0.md`
+- Problemática/contexto V2.0.
+- ERS completa V2.0.
+- Arquitectura Integral V2.0.
+- Modelo/Diccionario de Datos V2.0.
+- Catálogo API V2.0.
+- BPMN AS-IS/TO-BE V2.0.
+- Casos de Uso V2.0.
+- Reportes/KPI V2.0.
+- Matriz de Trazabilidad V2.0.
 
-Los diagramas vigentes se encuentran en `Diagramas_PlantUML/` y usan el sufijo `_V2.0`.
+## Diagramas
 
-## Precedencia documental
+`Diagramas_PlantUML/` contiene fuentes versionadas. Los BPMN se encuentran en `../BPMN/`.
 
-Código vigente → ERS V2.0 → Arquitectura V2.0 → Pruebas V2.0 → Artefactos Cascada V2.0.
+## Precedencia
+
+Código vigente → ERS → Arquitectura/DB → pruebas/trazabilidad → artefactos académicos.

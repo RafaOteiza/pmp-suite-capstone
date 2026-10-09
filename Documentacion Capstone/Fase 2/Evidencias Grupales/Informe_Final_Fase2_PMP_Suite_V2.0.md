@@ -1,156 +1,439 @@
-# Informe Final — Proyecto APT PMP Suite
+# Informe Final — Proyecto APT PMP Suite V2.0
 
-**Versión:** V2.0
-
-**Estado:** borrador de cierre actualizado al 09-10-2026  
-**Equipo:** Rafael Oteiza, Matías Garrido, Luis Arenas
+**Versión:** V2.0  
+**Estado:** borrador final técnico-académico  
+**Equipo:** Rafael Oteiza · Matías Garrido · Luis Arenas  
+**Actualización:** 09-10-2026
 
 ## Abstract — Español
 
-PMP Suite es una plataforma tecnológica orientada a centralizar la trazabilidad y gestión del ciclo de mantenimiento de validadores y consolas del transporte público. La solución integra aplicación Web, API REST, PostgreSQL, Firebase Authentication, aplicación móvil Expo y una capa de analítica operacional. El proyecto permite administrar activos, requerimientos, órdenes de servicio, retiros, recepciones, movimientos físicos, diagnóstico, reparación, QA, repuestos y reinstalación, aplicando control por roles y trazabilidad por tipo y serie. Durante el desarrollo se reforzaron la seguridad, la separación de responsabilidades y el modelo Physical First, evitando que una consulta o validación se interprete como cambio de custodia. El resultado es una solución funcional y demostrable en entorno académico, con pruebas automatizadas y E2E aisladas, además de brechas de cierre claramente identificadas.
+PMP Suite es una plataforma integral de gestión y trazabilidad orientada al mantenimiento de validadores y consolas utilizados en transporte público. La solución integra una aplicación Web, API REST, PostgreSQL, Firebase Authentication, aplicación Mobile Expo y analítica operacional. El sistema administra activos, casos, órdenes de servicio, fallas, retiros, recepciones, despachos, Laboratorio, QA, repuestos, stock, instalación y trazabilidad por activo. La arquitectura adopta un modelo Physical First para mantener coherencia entre el registro y la custodia real, junto con RBAC de siete roles y eventos históricos append-only. El proyecto alcanzó una versión funcional avanzada y demostrable en un entorno académico, respaldada por pruebas automatizadas, E2E y documentación técnica V2.0.
 
 ## Abstract — English
 
-PMP Suite is a technology platform designed to centralize traceability and maintenance-cycle management for validators and onboard consoles used in public transport. The solution integrates a Web application, REST API, PostgreSQL, Firebase Authentication, an Expo mobile application and an operational analytics layer. It manages assets, requirements, service orders, withdrawals, physical receipts and dispatches, diagnosis, repairs, QA, spare parts and reinstallation while enforcing role-based access and type-plus-serial traceability. During development, the team strengthened security, segregation of duties and the Physical First model so that consultation or validation cannot be interpreted as a custody change. The result is a functional and demonstrable academic solution supported by automated and isolated end-to-end tests, with the remaining closing gaps explicitly identified.
+PMP Suite is an integrated maintenance management and traceability platform for validators and onboard consoles used in public transport operations. The solution combines a Web application, REST API, PostgreSQL, Firebase Authentication, an Expo Mobile application and operational analytics. The system manages assets, cases, service orders, failures, withdrawals, physical receipts and dispatches, laboratory work, QA, spare parts, stock, installation and asset-level traceability. Its architecture adopts a Physical First model to keep system records aligned with actual custody, together with seven-role RBAC and append-only historical events. The project reached an advanced, functional and demonstrable academic version supported by automated tests, isolated end-to-end verification and V2.0 technical documentation.
 
-## 1. Relevancia del proyecto APT
+# 1. Relevancia del proyecto
 
-El mantenimiento de equipos tecnológicos embarcados requiere coordinar Terreno, Bodega, Laboratorio, QA y supervisión. Cuando cada área utiliza registros separados, aparecen conciliaciones manuales, inconsistencias y pérdida de trazabilidad.
+## 1.1 Situación inicial
 
-PMP Suite centraliza el historial de cada activo y diferencia claramente caso, OS, activo físico y referencia externa. Su valor para Ingeniería en Informática está en integrar procesos, datos, seguridad, arquitectura, software Web/Mobile y pruebas en una solución sistémica.
+El proceso de mantenimiento involucra múltiples áreas y registros.
 
-## 2. Objetivos
+En el AS-IS:
 
-### Objetivo general
+- Bodega/Mersan prepara y envía equipos;
+- Laboratorio recibe guía/tarjetón/series por distintos canales;
+- pueden existir ingresos urgentes sin guía;
+- información puede estar incompleta;
+- el Laboratorio mantiene control interno;
+- técnicos diagnostican/reparan;
+- PoD se controla adicionalmente;
+- QA mantiene su propio registro;
+- analistas consultan estado por correo/reportes;
+- las áreas concilian manualmente.
 
-Desarrollar e integrar PMP Suite como una plataforma funcional que centralice y haga trazable el ciclo de mantenimiento de validadores y consolas del transporte público, apoyando la gestión operacional y la toma de decisiones.
+## 1.2 Problema
 
-### Objetivos específicos
+No existía una única fuente para responder:
 
-1. Analizar y documentar problemática, actores, requisitos y reglas de negocio.
-2. Diseñar arquitectura y modelo de datos relacional con integridad y trazabilidad.
-3. Desarrollar e integrar usuarios, activos, OS, eventos, Terreno, Bodega, Laboratorio, QA y repuestos.
-4. Validar mediante pruebas funcionales, roles, reglas de negocio e integración.
-5. Documentar resultados, limitaciones y continuidad.
+- ubicación;
+- custodia;
+- OS/caso;
+- diagnóstico;
+- reparación;
+- QA;
+- repuestos;
+- disponibilidad;
+- historial.
 
-## 3. Metodología
+## 1.3 Valor
 
-Se aplicó una secuencia de ingeniería compatible con el enfoque tradicional solicitado para los artefactos académicos: definición, diseño, construcción, pruebas y cierre. Dentro de la construcción se utilizaron incrementos cortos para validar procesos complejos antes de consolidarlos.
+PMP Suite centraliza estos datos y agrega controles que evitan inconsistencias.
 
-Esta combinación fue pertinente porque el dominio exigía trazabilidad documental, pero también retroalimentación frecuente sobre reglas físicas y permisos.
+# 2. Objetivos
 
-## 4. Desarrollo
+## General
 
-### 4.1 Arquitectura
+Desarrollar e integrar PMP Suite como plataforma funcional que centralice y haga trazable el ciclo de mantenimiento de validadores y consolas.
 
-- Frontend Web React/TypeScript/Vite.
-- Backend Node/Express.
-- PostgreSQL, esquema `pmp`.
-- Firebase Authentication/Admin.
-- Mobile Expo/React Native.
-- Analítica Python.
+## Específicos
 
-### 4.2 Modelo operacional
+1. formalizar problemática/requisitos;
+2. diseñar arquitectura;
+3. construir modelo de datos;
+4. implementar módulos;
+5. aplicar seguridad;
+6. validar procesos;
+7. documentar resultados.
 
-El sistema implementa:
+# 3. Metodología
 
-- identidad de activo tipo + serie;
-- maestro de validadores y consolas;
-- casos y OS PMP;
-- referencias externas mediante Bridge;
-- retiro e instalación Terreno;
-- custodia Bodega;
-- recepción, asignación y trabajo técnico Lab;
-- QA autónomo por etapas;
-- repuestos/stock;
-- historial y trazabilidad.
+Se utilizó una secuencia de ingeniería compatible con Cascada:
 
-### 4.3 Seguridad y roles
+1. definición;
+2. requisitos;
+3. diseño;
+4. construcción;
+5. integración;
+6. pruebas;
+7. cierre.
 
-Roles oficiales:
+La implementación interna fue incremental para reducir riesgo técnico.
 
-`admin`, `gerente`, `jefe_laboratorio`, `logistica`, `qa`, `tecnico_laboratorio`, `tecnico_terreno`.
+# 4. AS-IS / TO-BE
 
-Firebase autentica; PostgreSQL define rol efectivo. Admin no tiene wildcard operacional y Gerencia es de solo lectura.
+## AS-IS
 
-### 4.4 Aplicación Mobile
+Información distribuida y conciliación manual.
 
-Terreno dispone de Mis órdenes, instalación, reporte de falla, retiro con cámara/contingencia, historial técnico, perfil, seguridad y tema automático/claro/oscuro.
+## TO-BE
 
-### 4.5 Validación
+```text
+Operación
+→ Falla
+→ Retiro
+→ Bodega
+→ Laboratorio
+→ Bodega
+→ QA
+→ Bodega
+→ Instalación
+→ Operación
+```
 
-Última línea documentada:
+Los diagramas BPMN están disponibles en `Documentacion Capstone/BPMN/`.
 
-- Backend: 118/118.
-- Web: 176/177.
-- Mobile con mocks: 210/210.
-- Build Web: aprobado.
-- RBAC HTTP: 99 solicitudes aprobadas.
-- E2E operacional y Laboratorio: aprobados en entorno aislado.
+# 5. Requisitos
 
-## 5. Dificultades, facilitadores y ajustes
+La ERS V2.0 contiene el contrato vigente por dominio:
+
+- Auth.
+- Usuarios.
+- Activos.
+- Requerimientos.
+- OS.
+- Terreno.
+- Bodega.
+- Laboratorio.
+- Repuestos.
+- QA.
+- Inventario.
+- Bridge.
+- Trazabilidad.
+- Dashboards.
+- IA.
+- Web/Mobile.
+- RNF.
+
+La matriz de trazabilidad conecta requisito→implementación→prueba.
+
+# 6. Arquitectura
+
+## 6.1 Contenedores
+
+| Contenedor | Tecnología |
+|---|---|
+| Web | React/Vite |
+| Mobile | Expo/React Native |
+| API | Node/Express |
+| DB | PostgreSQL |
+| Auth | Firebase |
+| IA | Python |
+
+## 6.2 Seguridad
+
+```text
+Firebase
+→ usuario PostgreSQL
+→ rol efectivo
+→ autorización por acción
+→ scope por recurso
+→ servicio
+→ transacción
+```
+
+## 6.3 Physical First
+
+Validar evidencia no equivale a confirmar movimiento.
+
+Cada entrada/salida tiene evidencia independiente.
+
+# 7. Modelo de datos
+
+El esquema `pmp` contiene 26 tablas clasificadas entre maestros/configuración y operación/historia.
+
+Entidades principales:
+
+- usuarios;
+- validadores;
+- consolas;
+- casos_operacionales;
+- ordenes_servicio;
+- flujo_eventos;
+- escaneos_equipos;
+- os_historial_activo;
+- registro_reparaciones;
+- repuestos;
+- solicitudes;
+- bridge_referencias;
+- QA;
+- guías.
+
+Se utilizan:
+
+- FKs;
+- checks;
+- índices;
+- secuencias;
+- triggers;
+- vistas;
+- locks;
+- transacciones.
+
+Fuente: `02_Arquitectura/MODELO_DATOS_DICCIONARIO_V2.0.md`.
+
+# 8. Nomenclatura OS
+
+- MV: mantenimiento validador.
+- MC: mantenimiento consola.
+- PDV: PoD validador.
+- PDC: PoD consola.
+- IN: instalación.
+
+La IN es independiente y se crea al despacho.
+
+# 9. Gestión de activos
+
+## Alta
+
+Registra maestro + ALTA_ACTIVO.
+
+## Recepción inicial
+
+Genera:
+
+- RECEPCION_INICIAL;
+- HABILITADO_INSTALACION.
+
+No genera mantenimiento.
+
+# 10. Terreno
+
+Mobile/Web permiten:
+
+- reporte de falla;
+- retiro;
+- discrepancia;
+- PoD;
+- instalación;
+- historial técnico.
+
+# 11. Bodega
+
+Gestiona:
+
+- recepciones;
+- despachos;
+- inventario;
+- stock;
+- repuestos;
+- retiros;
+- instalación.
+
+# 12. Laboratorio
+
+## Jefe Laboratorio
+
+- recepción;
+- asignación;
+- supervisión;
+- SLA;
+- salida.
+
+## Técnico
+
+- diagnóstico;
+- reparación;
+- Manual/Test MK;
+- PoD;
+- solicitud descriptiva de repuesto;
+- cierre técnico.
+
+# 13. Repuestos
+
+El técnico no administra inventario.
+
+Logística:
+
+- selecciona repuesto;
+- define cantidad;
+- valida stock;
+- entrega;
+- descuenta en transacción.
+
+# 14. QA
+
+Etapas:
+
+1. recepción;
+2. Ambiente;
+3. pruebas;
+4. dictamen;
+5. salida.
+
+OPERATIVO/RECHAZADO no implica despacho.
+
+# 15. Trazabilidad
+
+Por tipo+serie se combinan:
+
+- OS;
+- eventos;
+- evidencia;
+- reparación;
+- QA;
+- referencias;
+- instalaciones.
+
+Terreno recibe una proyección técnica reducida.
+
+# 16. Bridge
+
+Bridge V2.0 es correlación.
+
+No:
+
+- crea mantenimiento;
+- asigna técnico;
+- cambia custodia;
+- mueve stock.
+
+# 17. Dashboards
+
+## Ejecutivo
+
+Parque, OS, distribución y tendencias.
+
+## Bodega
+
+Stock, custodia, pendientes y repuestos.
+
+## Laboratorio
+
+SLA, carga, estados e incidencias.
+
+## QA
+
+Etapas y dictámenes.
+
+# 18. IA
+
+`analyzer.py` calcula una heurística:
+
+```text
+fallas_previas * 0.3 + es_emv * 0.5
+```
+
+No es una probabilidad calibrada.
+
+# 19. Pruebas
+
+| Verificación | Resultado |
+|---|---:|
+| Backend | 118/118 |
+| Web | 176/177 |
+| Mobile mocks | 210/210 |
+| Build Web | aprobado |
+| RBAC HTTP | 99 |
+| E2E Lab | aprobado |
+| E2E integral | aprobado |
+| responsive | 150 |
+
+# 20. Evidencias
+
+- código;
+- commits;
+- ERS;
+- arquitectura;
+- DB;
+- BPMN;
+- API;
+- casos;
+- reportes;
+- matriz de trazabilidad;
+- pruebas;
+- capturas;
+- recorrido manual.
+
+# 21. Innovación
+
+El valor diferencial no es solo digitalizar registros.
+
+PMP Suite integra:
+
+- identidad física;
+- custodia;
+- trazabilidad;
+- roles;
+- Web/Mobile;
+- stock;
+- QA;
+- analítica.
+
+El principio Physical First reduce la brecha entre estado digital y realidad física.
+
+# 22. Dificultades y ajustes
 
 ### Dificultades
 
-- el alcance inicial creció;
-- las reglas de custodia exigieron mayor separación de estados/eventos;
-- permisos históricos eran demasiado amplios;
-- la documentación quedó desfasada respecto del código;
-- Mobile requirió resolver red, Expo y comportamiento nativo;
-- la evidencia académica y técnica necesitó normalización.
+- alcance;
+- custodia;
+- roles;
+- documentación;
+- Mobile/hardware;
+- coherencia entre módulos.
 
 ### Ajustes
 
-- Physical First;
-- Jefe Laboratorio como rol independiente;
-- Admin sin permisos físicos implícitos;
-- Gerente solo lectura;
-- Bridge solo correlación;
+- Jefe Lab;
+- Admin sin wildcard;
 - QA autónomo;
-- historial Terreno restringido;
-- UI Web/Mobile normalizada;
-- documentación de IA corregida para no confundir heurística con probabilidad ML.
+- Bridge correlación;
+- IN al despacho;
+- stock inicial sin OS;
+- historial técnico restringido;
+- documentación V2.0.
 
-## 6. Evidencias y resultados
+# 23. Limitaciones
 
-La evidencia está distribuida en:
+- hardware Mobile aún requiere validación completa;
+- un fixture Web pendiente;
+- rendimiento/seguridad de cierre pendientes;
+- no existe integración automática Aranda;
+- Ubuntu es proyección, no producción certificada.
 
-- código y commits;
-- ERS y arquitectura;
-- migraciones/modelo;
-- pruebas y reportes de `08_Pruebas/`;
-- capturas Web/Mobile;
-- recorridos manuales;
-- bitácora de cierre;
-- artefactos Cascada vigentes.
+# 24. Proyección
 
-## 7. Innovación y aporte de valor
+El proyecto puede evolucionar hacia:
 
-PMP Suite no se limita a digitalizar una planilla. Su aporte está en integrar identidad física, custodia, órdenes, historial, roles, Web/Mobile y analítica bajo un mismo modelo.
+- integración empresarial;
+- analítica con datasets evaluados;
+- automatización de reportes;
+- monitoreo/observabilidad;
+- despliegue productivo.
 
-Elementos diferenciadores:
+# 25. Conclusión
 
-- Physical First;
-- historial unificado por activo;
-- separación caso/OS/referencia;
-- RBAC por responsabilidad real;
-- continuidad Web/Mobile;
-- analítica de reincidencia como apoyo y no como automatismo.
+PMP Suite cumple el objetivo de integrar múltiples competencias de Ingeniería en Informática en una solución sistémica.
 
-## 8. Limitaciones y pendientes
+El resultado demuestra que una plataforma operacional robusta requiere coherencia entre:
 
-- Validación nativa completa de cámara/lector.
-- Un fixture Web pendiente.
-- Rendimiento y seguridad dedicados aún por documentar.
-- El despliegue Ubuntu/Nginx/PM2 es una proyección, no producción certificada.
-- La analítica actual no debe presentarse como probabilidad calibrada de falla.
+- procesos;
+- datos;
+- roles;
+- evidencia;
+- arquitectura;
+- pruebas;
+- documentación.
 
-## 9. Intereses y proyección profesional
-
-El proyecto permitió aplicar gestión, arquitectura, modelamiento de datos, backend, frontend, Mobile, seguridad y QA sobre un problema real. También confirmó la relevancia de roles profesionales vinculados a arquitectura de soluciones, liderazgo técnico, desarrollo Full Stack, ingeniería de datos y aseguramiento de calidad.
-
-Las reflexiones individuales de cada integrante deben incorporarse en inglés en la versión entregable, conforme a la pauta oficial.
-
-## 10. Conclusión grupal
-
-PMP Suite demuestra la integración de competencias del perfil de egreso en una solución sistémica y trazable. El principal aprendizaje fue que la calidad no depende solo de que una pantalla funcione, sino de que identidad, permisos, datos, custodia, pruebas y documentación sean coherentes entre sí. El proyecto alcanzó un estado funcional avanzado; el cierre debe concentrarse en las brechas declaradas y no en incorporar módulos nuevos.
+El cierre del Capstone debe priorizar la validación final y la demostración de estos elementos, no aumentar el alcance.

@@ -1,24 +1,63 @@
 # Documentación Capstone — PMP Suite V2.0
 
+**Versión:** V2.0  
 **Actualización:** 09-10-2026
 
-La documentación académica se consolidó en una única línea V2.0. La carpeta **Fase 1 permanece intacta**. Las versiones intermedias y archivos duplicados fueron eliminados del árbol actual.
+La V2.0 es la línea documental completa del sistema vigente. **Fase 1 permanece intacta** por decisión del equipo.
 
-## Estructura
+## Núcleo documental
 
-- `Fase 1/` — intocable por decisión del equipo.
-- `Fase 2/` — plantillas oficiales y entregables V2.0.
-- `Artefactos Metodologia Cascada/` — artefactos y diagramas V2.0.
-- `Evidencias/` — evidencia académica vigente.
-- `Referencias Oficiales/` — fuentes institucionales.
-- `BITACORA_CIERRE_CAPSTONE_V2.0.md` — estado de cierre.
+### Contexto
 
-## Fuentes de verdad
+- [Problemática y contexto](00_PROBLEMATICA_Y_CONTEXTO_V2.0.md)
+- [Casos de uso y escenarios](06_CASOS_DE_USO_Y_ESCENARIOS_V2.0.md)
+- [Reportes y KPI](07_REPORTES_KPI_V2.0.md)
 
-1. código vigente;
-2. `01_Requerimientos/ERS_PMP_Suite_V2.0.md`;
-3. `02_Arquitectura/`;
-4. `08_Pruebas/`;
-5. artefactos Cascada V2.0.
+### BPMN
 
-Las versiones eliminadas siguen recuperables mediante el historial Git, pero no forman parte de la entrega vigente.
+- [AS-IS](BPMN/BPMN_AS_IS_V2.0.md)
+- [TO-BE](BPMN/BPMN_TO_BE_V2.0.md)
+- archivos `.bpmn` incluidos para herramienta BPMN.
+
+### Requerimientos
+
+`../01_Requerimientos/ERS_PMP_Suite_V2.0.md`
+
+### Arquitectura
+
+- `../02_Arquitectura/Arquitectura_Integral_PMP_Suite_V2.0.md`
+- `../02_Arquitectura/MODELO_DATOS_DICCIONARIO_V2.0.md`
+- `../02_Arquitectura/CATALOGO_API_V2.0.md`
+
+### Pruebas
+
+- `../08_Pruebas/INFORME_PRUEBAS_V2.0.md`
+- `../08_Pruebas/MATRIZ_TRAZABILIDAD_V2.0.md`
+
+## Artefactos Cascada
+
+- Documento de Inicio V2.0.
+- SRS Simplificado V2.0.
+- Documento de Diseño V2.0.
+- Plan de Pruebas V2.0.
+- Manual Técnico V2.0.
+- Diagramas PlantUML V2.0.
+
+## Fase 2
+
+Contiene plantillas oficiales y entregables grupales/individuales V2.0.
+
+## Fuentes oficiales
+
+Los documentos institucionales se conservan sin modificarlos.
+
+## Regla de calidad documental
+
+Cada afirmación debe poder clasificarse como:
+
+- implementada;
+- probada;
+- validada manualmente;
+- pendiente/proyectada.
+
+No se rellenan vacíos técnicos con supuestos.

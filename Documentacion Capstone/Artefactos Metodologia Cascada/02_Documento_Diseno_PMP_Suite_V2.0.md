@@ -1,71 +1,78 @@
 # 02 — Documento de Diseño PMP Suite V2.0
 
-## Arquitectura
+## 1. Arquitectura
 
 ```text
 Web React/Vite ─┐
-                ├─ API Node/Express ─ PostgreSQL
-Mobile Expo ────┘         │
-                          ├─ Firebase
-                          └─ Python IA
+                ├── API Node/Express ── PostgreSQL (pmp)
+Mobile Expo ────┘          │
+                           ├── Firebase
+                           └── Python IA
 ```
 
-## Capas
+La especificación completa está en:
 
-- Presentación Web/Mobile.
-- API/Routes.
-- Middleware identidad/autorización.
-- Servicios de dominio.
-- Persistencia PostgreSQL.
+- `02_Arquitectura/Arquitectura_Integral_PMP_Suite_V2.0.md`
+- `02_Arquitectura/MODELO_DATOS_DICCIONARIO_V2.0.md`
+- `02_Arquitectura/CATALOGO_API_V2.0.md`
 
-## Modelo de identidad
+## 2. Capas
 
-Activo = `tipo_equipo + serie`.
+1. Presentación Web/Mobile.
+2. Navegación/RBAC de presentación.
+3. API REST.
+4. Middleware de identidad.
+5. Autorización por acción.
+6. Servicios de dominio.
+7. Persistencia/eventos/evidencia.
+8. Analítica de lectura.
 
-Reglas:
-- 72 → CVB35 / Mikroelektronika.
-- 74/75 → CVB45 / Mikroelektronika.
-- Consola → N9715 / Waysion.
+## 3. Componentes
 
-## Componentes de dominio
-
-- usuarios/RBAC;
-- activos;
-- casos/OS;
-- Bridge;
-- escaneos/evidencias;
-- Terreno;
-- Bodega;
-- Laboratorio;
-- QA;
-- repuestos;
-- dashboards;
+- Auth/usuarios.
+- Activos.
+- Requerimientos.
+- OS/Terreno.
+- Bodega.
+- Laboratorio.
+- QA.
+- Repuestos.
+- Escaneo/evidencia.
+- Bridge.
+- Trazabilidad.
+- Dashboards.
 - IA.
 
-## Diseño de seguridad
+## 4. Modelo de seguridad
 
 ```text
-Firebase token
+Firebase ID Token
+→ validar identidad
 → usuario PostgreSQL activo
-→ autorización por acción
-→ scope de recurso/asignación
-→ servicio de dominio
+→ rol efectivo
+→ authorize(action)
+→ scope del recurso
+→ transacción
 ```
 
-Admin no tiene wildcard.
+## 5. Diseño Physical First
 
-## Diseño Physical First
+Una captura válida genera evidencia. La transición ocurre en una segunda operación explícita.
 
-Cada movimiento utiliza dos pasos lógicos:
+Las evidencias se atan a:
 
-1. validar evidencia/identidad;
-2. confirmar el movimiento.
+- estación;
+- usuario;
+- activo;
+- OS/evento;
+- propósito;
+- ciclo;
+- contexto;
+- fecha.
 
-La evidencia de un movimiento no sirve para otro.
+## 6. Modelo de datos
 
-## Datos
-
-Entidades principales:
+26 tablas clasificadas por la herramienta de verificación. Núcleo:
 
 - usuarios;
 - validadores/consolas;
@@ -74,14 +81,51 @@ Entidades principales:
 - flujo_eventos;
 - escaneos_equipos;
 - registro_reparaciones;
+- solicitudes/repuestos;
 - bridge_referencias;
-- repuestos/solicitudes;
-- ubicaciones/estados/buses/terminales/PST.
+- os_historial_activo;
+- guías/maestros.
 
-## Diseño de despliegue
+## 7. Modelo de estados
 
-Entorno actual nativo: PostgreSQL + API Node + Vite + Expo + Python. Ubuntu/Nginx/PM2 se mantiene como proyección de despliegue servidor.
+Los IDs históricos se complementan con estados derivados desde eventos para representar tránsito, asignación, disponibilidad y etapas QA.
 
-## Diagramas
+## 8. Concurrencia
 
-Las fuentes actualizadas se mantienen en `Diagramas_PlantUML/`.
+- transacciones;
+- FOR UPDATE;
+- advisory locks;
+- índices únicos;
+- firmas de payload;
+- reintentos idempotentes.
+
+## 9. Web
+
+Rutas protegidas por capacidades; Sidebar adaptado por rol; procesos en páginas/paneles inline.
+
+## 10. Mobile
+
+Terreno consume misma API: login, jornada, OS, falla, retiro, instalación, historial y cuenta.
+
+## 11. Diagramas
+
+- C4/contexto.
+- Componentes.
+- Comunicación.
+- ERD.
+- casos de uso;
+- secuencia;
+- BPMN AS-IS;
+- BPMN TO-BE.
+
+## 12. Decisiones
+
+| Decisión | Razón |
+|---|---|
+| PostgreSQL como rol efectivo | evitar permisos por claims desactualizados |
+| eventos append-only | trazabilidad |
+| Jefe Lab independiente | segregación |
+| QA autónomo | reflejar responsabilidad real |
+| Bridge solo correlación | eliminar motor paralelo |
+| IN al despacho | representar hecho físico |
+| stock inicial sin OS | evitar OS ficticia |

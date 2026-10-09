@@ -1,19 +1,43 @@
-# Pruebas y Evidencias PMP Suite
+# Pruebas y Evidencias PMP Suite V2.0
 
-**Versión documental:** V2.0  
+**Versión:** V2.0  
 **Actualización:** 09-10-2026
 
-La carpeta V2.0 conserva únicamente documentación técnica que representa el estado vigente.
+## Documentos vigentes
 
-## Documentos
+- [Informe general](INFORME_PRUEBAS_V2.0.md)
+- [RBAC y seguridad](RBAC_SEGURIDAD_V2.0.md)
+- [Flujos operacionales](FLUJOS_OPERACIONALES_V2.0.md)
+- [UX/experiencia](UX_EXPERIENCIA_V2.0.md)
+- [Matriz de trazabilidad](MATRIZ_TRAZABILIDAD_V2.0.md)
 
-- [INFORME_PRUEBAS_V2.0.md](INFORME_PRUEBAS_V2.0.md) — estado general.
-- [RBAC_SEGURIDAD_V2.0.md](RBAC_SEGURIDAD_V2.0.md) — roles, autorización e identidad.
-- [FLUJOS_OPERACIONALES_V2.0.md](FLUJOS_OPERACIONALES_V2.0.md) — Physical First y flujo integral.
-- [UX_EXPERIENCIA_V2.0.md](UX_EXPERIENCIA_V2.0.md) — Web/Mobile y experiencia por rol.
+## Última línea registrada
 
-Los informes intermedios, evidencias generadas y flujos retirados fueron eliminados del árbol actual; su trazabilidad permanece en Git.
+| Suite | Resultado |
+|---|---:|
+| Backend | 118/118 |
+| Web | 176/177 |
+| Mobile mocks | 210/210 |
+| Build Web | aprobado |
+| RBAC HTTP | 99 requests |
+| E2E Lab | aprobado |
+| E2E integral | aprobado |
+| responsive | 150 renders |
 
-## Regla de evidencia
+## Pendientes declarados
 
-Una prueba se declara aprobada solo si existe una ejecución identificable. Simulación, navegador y dispositivo físico se distinguen explícitamente. Las escrituras destructivas deben ejecutarse en entornos aislados.
+- fixture Web;
+- cámara/lector/Safe Area en dispositivo;
+- QA→Bodega→reinstalación manual;
+- rendimiento/seguridad final.
+
+## Criterio
+
+No se confunde:
+
+- implementado;
+- verificado automáticamente;
+- validado manualmente;
+- validado en hardware.
+
+Las pruebas destructivas usan entornos aislados.
