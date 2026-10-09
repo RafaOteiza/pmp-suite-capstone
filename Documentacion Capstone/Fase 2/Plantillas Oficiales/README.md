@@ -1,14 +1,7 @@
-# Plantillas oficiales — Fase 2
+# Plantillas Oficiales — Fase 2
 
-Archivos institucionales Duoc UC conservados **sin modificar**.
+**Contexto documental del repositorio:** V2.0
 
-Incluye:
+Los archivos de esta carpeta son plantillas y pautas institucionales Duoc UC. Se conservan sin modificar y no se renombran internamente como versiones del proyecto.
 
-- Guía 2.4 — Desarrollo Proyecto APT.
-- Guía 2.6 — Informe Final Proyecto APT.
-- Diario de Reflexión Fase 2.
-- Autoevaluación de Avance Fase 2.
-- Formativa de Avance Fase 2.
-- Planillas de evaluación de avance y final.
-
-Los contenidos desarrollados del proyecto se encuentran en las carpetas `Evidencias Grupales/` y `Evidencias Individuales/`.
+Los entregables desarrollados de PMP Suite se encuentran en `../Evidencias Grupales/` y `../Evidencias Individuales/`.

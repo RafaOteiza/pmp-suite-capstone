@@ -1,7 +1,7 @@
-# Referencias oficiales
+# Referencias Oficiales
 
-Documentos institucionales conservados como fuente normativa y **sin modificaciones**.
+**Contexto documental del repositorio:** V2.0
 
-- `Instructivo CAPSTONE 2026.pdf`
+Esta carpeta conserva documentos institucionales utilizados como referencia académica. Sus archivos originales no se modifican ni se reinterpretan como versiones propias de PMP Suite.
 
-Cuando una decisión técnica del proyecto difiera de una exigencia del instructivo, la documentación debe registrarla como brecha, ajuste o excepción; no debe ocultarse ni presentarse como cumplida.
+La implementación y documentación vigente del proyecto se encuentran en la línea PMP Suite V2.0.
