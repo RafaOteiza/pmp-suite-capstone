@@ -25,7 +25,7 @@ Credenciales y `.env` permanecen fuera de Git. Mobile debe usar una URL API alca
 
 ## Producción
 
-Ubuntu + Nginx + PM2 se mantiene como proyección de despliegue, no como entorno productivo certificado. Docker está fuera del alcance actual.
+Ubuntu + Nginx + PM2 se mantiene como proyección de despliegue, no como entorno productivo certificado.
 
 ## Pruebas
 

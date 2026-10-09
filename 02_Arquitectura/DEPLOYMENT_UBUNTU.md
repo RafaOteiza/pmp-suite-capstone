@@ -32,7 +32,6 @@ El desarrollo habitual utiliza PostgreSQL, Node/Express, Vite, Python y Expo SDK
 - No usar los scripts de reinicio demo como migración productiva.
 - No ejecutar estrés sobre la base real.
 - No publicar service accounts, `.env`, dumps o respaldos.
-- Docker no forma parte del alcance actual.
 
 ## Verificación posterior
 

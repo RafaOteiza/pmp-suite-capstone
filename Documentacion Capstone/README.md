@@ -43,7 +43,6 @@ PMP Suite dispone de un núcleo funcional integrado Web/API/PostgreSQL/Firebase/
 - Validación nativa completa de cámara/lector/Safe Area en dispositivo.
 - Cierre del fixture Web pendiente.
 - Pruebas dedicadas de rendimiento/seguridad en entorno descartable.
-- **Docker:** el instructivo Capstone lo solicita como evidencia de despliegue; el proyecto actual opera con servicios nativos y todavía no dispone de Dockerfile/docker-compose vigentes. Debe implementarse o formalizarse con el docente antes de la entrega final.
 - Finalizar la evidencia individual de Matías Garrido y Luis Arenas para Fase 2 si corresponde.
 
 ## Repositorio

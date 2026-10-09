@@ -132,7 +132,6 @@ Firebase autentica. PostgreSQL determina cuenta activa y rol efectivo.
 
 - Entorno habitual: Windows + PostgreSQL + Node + Vite + Expo.
 - Ubuntu/Nginx/PM2 es proyección de despliegue; no está certificada como entorno productivo.
-- Docker queda fuera del alcance actual.
 
 ## 5. Fuentes de verificación
 

@@ -27,4 +27,3 @@ Esta carpeta describe la arquitectura real del sistema. Los diagramas y textos s
 - Regla modelo/marca compartida en `shared/assetIdentity.js`.
 - Estado derivado de hechos/eventos; no confiar solo en representación visual.
 - Escrituras críticas transaccionales e idempotencia controlada.
-- Docker no forma parte del alcance actual.

@@ -62,7 +62,6 @@ No se documentan contraseñas ni UID.
 
 | Prioridad | Brecha | Tratamiento |
 |---|---|---|
-| Alta | Docker solicitado por instructivo | Implementar o acordar excepción formal; no declarar cumplido mientras falte |
 | Alta | Recorrido físico completo Mobile | Ejecutar cámara/QR/contingencia en dispositivo y guardar evidencia |
 | Media | Fixture Web 176/177 | Corregir mock y repetir suite |
 | Media | Rendimiento y seguridad | Ejecutar en entorno aislado y documentar |
