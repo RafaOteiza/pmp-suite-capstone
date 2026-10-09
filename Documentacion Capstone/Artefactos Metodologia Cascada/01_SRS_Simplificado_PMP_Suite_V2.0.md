@@ -72,4 +72,4 @@ Sistema Web/Mobile para gestionar el ciclo de mantenimiento de validadores y con
 
 ## 5. Criterios de aceptación
 
-El detalle verificable se mantiene en `01_Requerimientos/ERS_PMP_Suite_v5_0.md` y en `08_Pruebas/`.
+El detalle verificable se mantiene en `01_Requerimientos/ERS_PMP_Suite_V2.0.md` y en `08_Pruebas/`.

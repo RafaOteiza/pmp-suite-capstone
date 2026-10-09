@@ -16,4 +16,4 @@ Las fuentes de esta carpeta representan el modelo vigente. Las imágenes PNG ant
 | 08 | Secuencia flujo principal | falla → Lab → QA → Bodega |
 | 09 | Ejecución local | topología de desarrollo |
 
-Regla: si un diagrama contradice `01_Requerimientos/ERS_PMP_Suite_v5_0.md` o el código vigente, prevalecen esas fuentes.
+Regla: si un diagrama contradice `01_Requerimientos/ERS_PMP_Suite_V2.0.md` o el código vigente, prevalecen esas fuentes.
