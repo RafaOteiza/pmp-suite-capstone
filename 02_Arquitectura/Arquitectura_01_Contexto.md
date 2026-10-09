@@ -1,40 +1,41 @@
-# 1. Visión General del Sistema (Contexto C4)
+# 1. Contexto del sistema
 
-Este documento proporciona una vista de alto nivel del sistema PMP Suite, mostrando cómo interactúa con los usuarios y otros sistemas externos. Se utiliza la notación C4 Model (Vista de Contexto).
+## Objetivo
 
-## Descripción
+PMP Suite centraliza trazabilidad y mantenimiento de validadores y consolas a través de Terreno, Bodega, Laboratorio y QA.
 
-El Sistema PMP Suite es una aplicación integral diseñada para gestionar el ciclo de vida de los equipos (validadores y consolas) en un proceso que abarca desde el ingreso de órdenes de servicio hasta la reparación, control de calidad, gestión de repuestos y despacho. Interactúa con diferentes tipos de usuarios y tiene una integración clave con Firebase Authentication.
+## Actores
 
-## Actores y Sistemas Externos
+| Actor | Interacción |
+|---|---|
+| Gerente | Supervisión ejecutiva de solo lectura |
+| Administrador | Usuarios, roles, seguridad y supervisión global |
+| Jefe Laboratorio | Custodia, asignación y supervisión de Laboratorio |
+| Logística | Bodega, inventario, repuestos, retiros y despachos |
+| QA | Recepción, pruebas, dictamen y despacho QA |
+| Técnico Laboratorio | Trabajo técnico sobre su carga |
+| Técnico Terreno | Fallas, retiro e instalación |
+| Firebase | Proveedor de identidad |
+| PostgreSQL | Persistencia y autoridad operacional |
+| Aranda/u otro externo | Referencia correlacionada; no integración automática en el Capstone |
 
-*   **Usuario PMP (Persona):** Representa a todos los usuarios del sistema (Administrador, Jefe de Taller, Técnico de Laboratorio, Técnico de Terreno, QA, Logística/Bodega).
-*   **Firebase Authentication (Sistema):** Servicio externo utilizado para la autenticación de usuarios.
-*   **Sistema de Correo Electrónico (Sistema):** Utilizado para enviar enlaces de reseteo de contraseña y posibles notificaciones.
+## Contexto C4 simplificado
 
-## Diagrama de Contexto (C4 Model - Nivel 1)
-
-Aquí tienes un prompt para generar un Diagrama de Contexto utilizando PlantUML. Puedes copiar este código en una herramienta que soporte PlantUML para visualizar el diagrama.
-
-```plantuml
-@startuml PMP_Context_Diagram
-
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
-
-TITLE Sistema PMP Suite - Diagrama de Contexto (Nivel 1)
-
-Person(user, "Usuario PMP", "Administrador, Jefe de Taller, Técnico de Laboratorio, Técnico de Terreno, QA, Logística/Bodega")
-
-System(pmp_suite, "Sistema PMP Suite", "Gestiona el ciclo de vida de equipos y órdenes de servicio")
-
-System_Ext(firebase_auth, "Firebase Authentication", "Servicio de autenticación de usuarios")
-System_Ext(email_system, "Sistema de Correo Electrónico", "Envío de notificaciones y enlaces de reseteo")
-
-Rel(user, pmp_suite, "Usa")
-Rel(pmp_suite, firebase_auth, "Autentica usuarios vía")
-Rel(pmp_suite, email_system, "Envía correos electrónicos vía")
-
-@enduml
+```mermaid
+flowchart LR
+  U[Usuarios PMP] --> W[Web PMP Suite]
+  T[Técnico Terreno] --> M[Mobile PMP Suite]
+  W --> API[API Node / Express]
+  M --> API
+  API --> DB[(PostgreSQL pmp)]
+  API --> FB[Firebase Admin]
+  API --> PY[Analizador Python]
+  EXT[Aranda / referencias externas] -. correlación asistida .-> API
 ```
 
----
+## Límites
+
+- PMP Suite no asume una integración automática con Aranda.
+- Consultar una pantalla no cambia custodia.
+- Analítica no ejecuta decisiones ni movimientos.
+- Admin no reemplaza a los actores operacionales.

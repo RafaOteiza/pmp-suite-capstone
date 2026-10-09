@@ -1,53 +1,68 @@
-# 2. Arquitectura de Componentes del Backend (v5.0 Gold Edition)
+# 2. Arquitectura Backend
 
-Este documento describe la estructura interna del Backend del Sistema PMP Suite, detallando los componentes principales y sus interacciones. Se utiliza la notación C4 Model (Vista de Contenedores, enfocada en los componentes lógicos del backend).
+## Stack
 
-## Descripción
+Node.js + Express + PostgreSQL `pg` + Firebase Admin SDK.
 
-El backend es una API RESTful de alto desempeño desarrollada con Node.js y Express.js. Su función principal es servir datos a los frontends (web y móvil), gestionar la lógica de negocio central, asegurar la integridad relacional mediante bloqueos transaccionales y sincronizarse con Firebase Authentication.
+## Capas
 
-La línea base de cierre incorpora Bridge como capa de correlación externa, la identificación física por serie o AMID y la separación de permisos por rol.
-
-## Componentes Principales
-
-*   **Servidor API (Node.js/Express):** Componente principal que expone las API REST. Incluye el orquestador de rutas y el middleware de manejo de errores global.
-*   **Módulo de Autenticación (Firebase Admin SDK):** Verifica los tokens Firebase. PostgreSQL determina el rol efectivo y el estado activo del usuario.
-*   **Módulo de Autorización (Middlewares de Roles):** Colección de middlewares de grano fino (`ensureUser`, `requireAnyRole`) que protegen cada endpoint.
-*   **Módulo de Base de Datos (PostgreSQL Pool):** Gestiona la conexión persistente. Implementa integridad referencial y lógica defensiva mediante sub-selects y triggers automáticos.
-*   **Bridge de correlación:** Vincula una serie de validador o consola, una OS PMP existente y una referencia externa. No asigna técnicos, crea OS ni modifica stock. La API conserva múltiples relaciones por activo y expone su historial completo. La migración aditiva `002_bridge_correlacion.sql` conserva los datos e identificadores históricos.
-*   **Módulo de Lógica de Negocio (Controladores):** Contiene las reglas del flujo logístico (Transito ➔ Bodega ➔ Lab ➔ QA).
-*   **Módulo de IA Predictiva (Hybrid Bridge):** Subsistema híbrido que orquesta la ejecución de modelos de Machine Learning (Python/Scikit-learn) para la detección de activos de alto riesgo ("Limones").
-*   **Módulo de Configuración Segura:** Gestiona la carga de secretos y variables de entorno (`dotenv`).
-
-## Diagrama de Contenedores del Backend (C4 Model - Nivel 2)
-
-Aquí tienes un prompt para generar un Diagrama de Contenedores del Backend utilizando PlantUML. Este diagrama muestra los principales módulos lógicos dentro del sistema "PMP Suite" (el "Contenedor" en este nivel).
-
-```plantuml
-@startuml PMP_Backend_Containers
-
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-
-TITLE Sistema PMP Suite - Arquitectura de Componentes del Backend (Contenedores)
-
-System_Boundary(pmp_suite, "Sistema PMP Suite") {
-    Container(backend_api, "Backend REST API", "Node.js / Express.js", "API principal para la gestión de PMP")
-}
-
-System_Ext(postgresql_db, "Base de Datos PostgreSQL", "Base de Datos Relacional", "Almacena todos los datos del sistema PMP")
-System_Ext(firebase_auth_ext, "Firebase Authentication", "Servicio de Autenticación", "Gestiona la autenticación de usuarios")
-System_Ext(frontend_web, "Frontend Web PMP", "Aplicación Web React", "Interfaz de usuario para roles administrativos y de gestión")
-System_Ext(frontend_mobile, "Frontend Móvil PMP", "Aplicación Móvil React Native", "Interfaz de usuario para técnicos de terreno y laboratorio")
-System_Ext(ia_module, "Módulo de IA", "Scripts Python", "Realiza predicciones de falla de equipos")
-
-Rel(frontend_web, backend_api, "Consume", "HTTP/JSON")
-Rel(frontend_mobile, backend_api, "Consume", "HTTP/JSON")
-Rel(backend_api, postgresql_db, "Lee y Escribe", "SQL/TCP")
-Rel(backend_api, firebase_auth_ext, "Verifica y Administra Usuarios", "Firebase Admin SDK")
-Rel(backend_api, ia_module, "Orquesta análisis", "Child Process / JSON")
-Rel(ia_module, postgresql_db, "Consulta histórica", "Psycopg2")
-
-@enduml
+```text
+Routes
+  ↓
+Middleware de identidad / autorización
+  ↓
+Services de dominio
+  ↓
+PostgreSQL
 ```
 
----
+### Middleware
+
+Las rutas protegidas aplican autenticación Firebase y resolución del usuario PostgreSQL. Las acciones sensibles usan `src/security/authorization.js`, cuya política es explícita y de denegación por defecto.
+
+No existe wildcard de Administrador.
+
+### Servicios de dominio relevantes
+
+- identidad y gestión de activos;
+- requerimientos/casos;
+- retiro Terreno;
+- recepción y despacho Bodega;
+- inventario logístico;
+- custodia y trabajo Laboratorio;
+- custodia y trabajo QA;
+- Bridge/correlación;
+- historial técnico;
+- supervisión ejecutiva.
+
+## Transacciones
+
+Movimientos físicos, creación de IN, entrega de repuestos y administración sensible deben revalidar dentro de la transacción y aplicar bloqueos cuando corresponde.
+
+## Custodia
+
+```text
+validar evidencia
+≠
+confirmar movimiento
+```
+
+La validación identifica el activo/contexto. Solo la confirmación autorizada cambia el estado/custodia y registra eventos.
+
+## Errores
+
+Los servicios usan errores de dominio para diferenciar:
+
+- evidencia faltante/antigua;
+- transición incompatible;
+- recurso no asignado;
+- falta de permisos;
+- conflicto de identidad;
+- repetición incompatible.
+
+## Seguridad
+
+- Firebase UID no sustituye el rol PostgreSQL.
+- No registrar body sensible, token ni contraseña en logs de autorización.
+- Técnicos se validan contra la asignación real de la OS.
+- Admin no recibe permisos operacionales implícitos.
