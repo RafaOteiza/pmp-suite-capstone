@@ -1,45 +1,41 @@
-# Requisitos de órdenes de servicio
+# Órdenes de Servicio, casos e intervenciones
 
-## Propósito
+**Estado:** vigente — 09-10-2026
 
-La orden de servicio representa el mantenimiento o instalación de un validador
-o una consola. Vincula el activo con bus, terminal, PST, responsables, estado y
-registros operacionales.
+## Conceptos
 
-## Requisitos funcionales
+| Concepto | Función |
+|---|---|
+| Caso/requerimiento | Agrupa una necesidad operacional |
+| OS PMP | Intervención concreta de un activo |
+| Activo | Identidad física tipo + serie |
+| Referencia externa | Identificador Aranda u otro, correlacionado mediante Bridge |
 
-- **RF OS 01** El técnico de terreno debe crear una orden con datos maestros
-  válidos y una falla descrita.
-- **RF OS 02** Cada orden debe referenciar exactamente un validador o una
-  consola existente.
-- **RF OS 03** El sistema debe generar un código único según el tipo de orden.
-- **RF OS 04** El administrador debe asignar órdenes de laboratorio a un técnico
-  activo.
-- **RF OS 05** El usuario operacional debe modificar únicamente órdenes dentro
-  de su rol y asignación.
-- **RF OS 06** Admin y gerente deben consultar el listado global; el gerente no
-  puede crear ni modificar órdenes.
-- **RF OS 07** El sistema debe permitir filtros y paginación controlada en los
-  listados globales.
-- **RF OS 08** La orden debe mostrar su historial de movimientos, reparaciones,
-  QA e instalación cuando existan.
-- **RF OS 09** Los movimientos físicos deben exigir un escaneo válido de la
-  estación correspondiente.
+No deben fusionarse.
 
-## Requisitos no funcionales
+## Nomenclatura
 
-- **RNF OS 01** Las consultas deben ser parametrizadas.
-- **RNF OS 02** Las transiciones deben rechazar estados previos incompatibles.
-- **RNF OS 03** Los listados deben limitar la cantidad máxima de resultados por
-  página.
-- **RNF OS 04** Los errores deben devolver códigos y mensajes uniformes sin
-  información sensible.
-- **RNF OS 05** Los registros históricos deben conservar responsable y fecha.
+- Validador mantenimiento: `MV-...`
+- Consola mantenimiento: `MC-...`
+- PoD validador: `PDV-...`
+- PoD consola: `PDC-...`
+- Instalación: `IN-xxxxxx`
 
-## Roles
+La IN usa secuencia PMP independiente del caso/referencia externa.
 
-- `tecnico_terreno`: creación y cierre de sus órdenes de terreno.
-- `admin`: consulta global, asignaciones y administración autorizada.
-- `gerente`: consulta global de solo lectura.
-- `logistica`, `tecnico_laboratorio` y `qa`: acciones de su etapa mediante las
-  rutas operacionales correspondientes.
+## Requisitos
+
+- **RF-OS-01:** Toda OS debe referenciar un activo existente.
+- **RF-OS-02:** La identidad tipo + serie de una OS no debe alterarse para representar otro activo.
+- **RF-OS-03:** Un caso puede relacionar varias OS/activos sin mezclar sus historiales.
+- **RF-OS-04:** PoD conocido desde el origen utiliza PDV/PDC.
+- **RF-OS-05:** Reportar falla no crea ni corrige el maestro del activo.
+- **RF-OS-06:** Una OS de reparación no se reutiliza para instalar un reemplazo.
+- **RF-OS-07:** La IN nace con despacho físico confirmado desde Bodega.
+- **RF-OS-08:** Estados y custodia deben ser coherentes; un tránsito no equivale a recepción.
+- **RF-OS-09:** Técnicos solo pueden operar OS asignadas a ellos.
+- **RF-OS-10:** Cierres técnicos, dictámenes y movimientos físicos son acciones distintas.
+
+## Historial
+
+El historial de activo agrupa intervenciones del mismo tipo + serie. La vista para Terreno se restringe a información técnica útil; supervisión autorizada puede consultar mayor contexto según rol.

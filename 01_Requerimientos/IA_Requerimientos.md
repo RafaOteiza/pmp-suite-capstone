@@ -1,37 +1,30 @@
-# Requisitos del módulo de inteligencia operacional
+# Inteligencia operacional / analítica
+
+**Estado:** vigente — 09-10-2026
 
 ## Propósito
 
-El módulo analiza datos históricos de mantenimiento y entrega un reporte de
-riesgo para apoyar la revisión ejecutiva. No modifica órdenes, estados,
-inventario ni usuarios.
+La capa analítica prioriza activos para revisión usando históricos de PostgreSQL. Es una función de apoyo y **no toma decisiones operacionales ni modifica datos**.
 
 ## Requisitos funcionales
 
-- **RF IA 01** El backend debe ejecutar `06_ModelosIA/src/analyzer.py` con el
-  intérprete de `06_ModelosIA/.venv`.
-- **RF IA 02** El analizador debe conectarse a PostgreSQL mediante la variable de
-  entorno configurada para el proyecto.
-- **RF IA 03** El endpoint debe entregar una respuesta JSON válida.
-- **RF IA 04** Los roles `admin` y `gerente` deben consultar el reporte.
-- **RF IA 05** Los roles operacionales no autorizados deben recibir HTTP 403.
-- **RF IA 06** El analizador debe operar en modo de lectura y no cambiar datos
-  operacionales.
+- **RF-IA-01:** El backend ejecuta el analizador Python configurado para el proyecto.
+- **RF-IA-02:** El analizador consulta PostgreSQL en modo lectura.
+- **RF-IA-03:** La salida debe ser JSON válido y no exponer secretos.
+- **RF-IA-04:** Admin y Gerente pueden consultar el reporte vigente.
+- **RF-IA-05:** Roles no autorizados reciben 403.
+- **RF-IA-06:** Una fila representa un activo tipo + serie; no deben mostrarse duplicados por OS.
+- **RF-IA-07:** El frontend debe indicar el método de análisis realmente utilizado.
+- **RF-IA-08:** Un score es criterio de inspección/priorización, no diagnóstico ni orden automática.
+
+## Estado técnico actual
+
+El repositorio contiene scripts de PoC/entrenamiento y un analizador usado por la aplicación. La vista actual identifica explícitamente una **heurística de reincidencia** cuando ese es el motor ejecutado. Los documentos no deben presentar precisión, recall o porcentajes de eficacia como vigentes si no provienen de una evaluación reproducible asociada a una versión concreta.
 
 ## Requisitos no funcionales
 
-- **RNF IA 01** Las dependencias deben declararse en `requirements.txt` e
-  instalarse dentro de `.venv`.
-- **RNF IA 02** Una caída de Python o PostgreSQL debe producir un error
-  controlado sin exponer DSN, credenciales ni stack trace al cliente.
-- **RNF IA 03** Los umbrales y características del modelo solo deben modificarse
-  después de una evaluación documentada.
-- **RNF IA 04** La evidencia académica debe identificar dataset, variables,
-  preparación, algoritmo, métricas, limitaciones y fecha de evaluación.
-
-## Criterios de aceptación
-
-- `import psycopg2` funciona en el entorno real del módulo.
-- Admin y gerente reciben una respuesta funcional distinta de HTTP 500.
-- Un rol no autorizado recibe HTTP 403.
-- El frontend no recibe secretos ni trazas internas cuando el servicio falla.
+- Entorno Python aislado.
+- Dependencias declaradas.
+- Error controlado ante caída de Python/PostgreSQL.
+- Sin credenciales/rutas sensibles en la respuesta.
+- Dataset, features, umbral y métricas deben quedar fechados cuando se evalúe un modelo ML.

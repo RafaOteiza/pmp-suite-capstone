@@ -1,3 +1,5 @@
+> **DOCUMENTO HISTÓRICO.** Esta ERS v4.0 se conserva para trazabilidad académica. No describe completamente el RBAC, custodia Physical First, Jefatura de Laboratorio ni flujos vigentes al 09-10-2026. Para decisiones actuales usar [ERS v5.0](ERS_PMP_Suite_v5_0.md).
+
 # Especificación de Requisitos de Software (ERS) - PMP Suite v4.0
 
 ## 1. Introducción
