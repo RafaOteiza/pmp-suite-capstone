@@ -76,7 +76,7 @@ Operación
 → Operación
 ```
 
-BPMN: [AS-IS](Documentacion%20Capstone/BPMN/BPMN_AS_IS_V2.0.md) · [TO-BE](Documentacion%20Capstone/BPMN/BPMN_TO_BE_V2.0.md)
+BPMN: [AS-IS](Documentacion%20Capstone/BPMN/BPMN_AS_IS_V2.0.md) · [TO-BE](Documentacion%20Capstone/BPMN/BPMN_TO_BE_V2.0.md) · [Matriz BPMN→Sistema](Documentacion%20Capstone/BPMN/MATRIZ_BPMN_SISTEMA_V2.0.md)
 
 ## Documentación técnica
 
@@ -110,9 +110,16 @@ BPMN: [AS-IS](Documentacion%20Capstone/BPMN/BPMN_AS_IS_V2.0.md) · [TO-BE](Docum
 - [Artefactos Cascada](Documentacion%20Capstone/Artefactos%20Metodologia%20Cascada/README_V2.0.md)
 - Fase 1 permanece intacta.
 
+## Requisitos y trazabilidad
+
+La ERS V2.0 identifica **20 reglas de negocio, 210 requisitos funcionales y 38 requisitos no funcionales**. La matriz detallada relaciona cada uno con actor, prioridad, implementación y prueba.
+
+- [ERS V2.0](01_Requerimientos/ERS_PMP_Suite_V2.0.md)
+- [Matriz de trazabilidad](08_Pruebas/MATRIZ_TRAZABILIDAD_V2.0.md)
+
 ## Modelo de datos
 
-El esquema `pmp` utiliza maestros, activos, casos, OS, eventos, evidencia física, reparación, QA, repuestos, guías y referencias. El inventario verificado clasifica 26 tablas.
+El esquema `pmp` utiliza maestros, activos, casos, OS, eventos, evidencia física, reparación, QA, repuestos, guías y referencias. El inventario verificado clasifica **26 tablas**. El diccionario documenta campos, relaciones, restricciones, secuencias, vistas, triggers, read models y procedencia de migraciones.
 
 ## API
 

@@ -5,126 +5,106 @@
 
 ## 1. Objetivo
 
-Representar el proceso previo a la centralización, incluyendo canales paralelos, registros manuales y puntos de conciliación.
+Representar el proceso real previo a la centralización, incluyendo entradas documentales desfasadas, registros paralelos, conciliaciones manuales, PoD y QA.
 
-## 2. Pools/Lanes
+## 2. Pool y lanes
 
-**Pool: Proceso de mantenimiento actual**
+**Pool conceptual:** Proceso de mantenimiento AS-IS.
 
-- Bodega/Mersan
-- Laboratorio/Jefatura
-- Técnico Laboratorio
-- QA
-- Analistas/Cliente
-- Gestión PoD
+1. Bodega / Mersan.
+2. Jefatura Laboratorio.
+3. Técnico Laboratorio.
+4. QA.
+5. Analistas / Cliente.
+6. Gestión PoD.
 
-## 3. Flujo AS-IS
+El archivo `BPMN_AS_IS_V2.0.bpmn` contiene las mismas seis lanes y puede abrirse en un modelador BPMN 2.0.
+
+## 3. Flujo nominal
+
+1. Bodega/Mersan prepara lote y antecedentes.
+2. Si existe guía, se prepara; en urgencias el equipo puede enviarse antes de la documentación formal y las series/antecedentes circulan por correo.
+3. Jefatura recibe el equipo físico.
+4. Se valida si los antecedentes son suficientes.
+5. Cuando faltan datos, se solicita información a analistas/cliente.
+6. Se concilian guía, tarjetón, correo y planillas.
+7. Se registra el ingreso en el control interno de Laboratorio.
+8. Jefatura asigna el trabajo.
+9. Técnico diagnostica.
+10. Según diagnóstico: reparación, espera de repuesto, NFF o PoD.
+11. Si existe PoD, se genera informe técnico y seguimiento paralelo.
+12. Se ejecutan pruebas.
+13. Se registra/informa solución.
+14. Jefatura prepara despacho por lote.
+15. QA controla.
+16. Si QA rechaza, el caso reingresa a conciliación/trabajo técnico; si aprueba, Bodega recibe el equipo.
+
+## 4. Gateways
+
+| Gateway | Condiciones |
+|---|---|
+| ¿Guía disponible? | Sí / No-urgencia |
+| ¿Antecedentes suficientes? | Sí / incompletos |
+| Resultado diagnóstico | Reparable, falla diferente, repuesto, PoD, NFF |
+| ¿QA aprobado? | Aprobado / rechazado |
+
+## 5. Excepciones reales
+
+- equipo recibido sin guía formal;
+- serie comunicada por correo;
+- tarjetón faltante;
+- tarjetón/dato incompatible;
+- necesidad de repuesto;
+- PoD;
+- NFF;
+- rechazo QA;
+- consultas manuales de estado durante el ciclo;
+- despachos en lotes distintos al día de reparación.
+
+## 6. Fragmentación de información
+
+La misma serie puede aparecer en registros independientes de Mersan/Bodega, Laboratorio, QA, analistas y gestión PoD. El proceso requiere conciliación manual y depende de correos, guía, tarjetón y conocimiento operativo.
+
+## 7. Dolor operacional
+
+| Dimensión | Consecuencia |
+|---|---|
+| Identidad | riesgo de discrepancia entre equipo y antecedente |
+| Custodia | tránsito y recepción pueden confundirse |
+| Estado | distintas planillas pueden mostrar estados diferentes |
+| SLA | difícil fijar inicio real de permanencia |
+| Repuestos | coordinación fuera del registro técnico |
+| PoD | informe y seguimiento paralelo |
+| QA | rechazo/aprobación en otra fuente |
+| Consulta | reconstrucción manual ante requerimientos del cliente |
+| Historial | reincidencia por serie exige unir múltiples registros |
+
+## 8. Diagrama de lectura rápida
 
 ```mermaid
 flowchart TB
- subgraph B["Bodega / Mersan"]
-   B1[Retirar / agrupar equipo]
-   B2[Preparar guía o informar urgencia]
-   B3[Enviar equipo]
-   B4[Recibir equipo reparado / QA]
- end
- subgraph J["Jefatura Laboratorio"]
-   J1[Recibir equipo]
-   J2{¿Guía / antecedentes disponibles?}
-   J3[Conciliar serie, tarjetón, correo y planillas]
-   J4[Registrar ingreso en control interno]
-   J5[Asignar trabajo]
-   J6[Preparar despacho por lote]
- end
- subgraph T["Técnico Laboratorio"]
-   T1[Diagnosticar]
-   T2{Resultado}
-   T3[Reparar]
-   T4[Solicitar / esperar repuesto]
-   T5[Registrar PoD]
-   T6[Ejecutar pruebas]
-   T7[Informar solución]
- end
- subgraph Q["QA"]
-   Q1[Recibir información/equipo]
-   Q2[Ejecutar control]
-   Q3{¿Aprobado?}
-   Q4[Informar rechazo]
-   Q5[Informar aprobación]
- end
- subgraph A["Analistas / Cliente"]
-   A1[Enviar series / antecedentes por correo]
-   A2[Consultar estado]
-   A3[Conciliar reportes]
- end
- subgraph P["Gestión PoD"]
-   P1[Informe técnico]
-   P2[Planilla / seguimiento separado]
- end
-
- B1-->B2-->B3-->J1
- A1-.correo.->J2
- J1-->J2
- J2--Sí-->J3
- J2--No / urgencia-->J3
- J3-->J4-->J5-->T1
- T1-->T2
- T2--Reparable-->T3-->T6
- T2--Repuesto-->T4-->T3
- T2--PoD-->T5-->P1-->P2
- T5-->T6
- T2--NFF-->T6
- T6-->T7-->J6
- J6-->Q1-->Q2-->Q3
- Q3--No-->Q4-->J3
- Q3--Sí-->Q5-->B4
- A2-.consulta manual.->J4
- J4-.planillas/correos.->A3
+ B[Preparar lote / guía o urgencia] --> J[Recibir equipo]
+ J --> G{¿Antecedentes suficientes?}
+ G -- No --> A[Solicitar series/antecedentes]
+ A --> C[Conciliar guía + tarjetón + correo + planillas]
+ G -- Sí --> C
+ C --> R[Registrar ingreso]
+ R --> AS[Asignar trabajo]
+ AS --> D[Diagnosticar]
+ D --> DG{Resultado}
+ DG -- Reparable --> RP[Reparar]
+ DG -- Repuesto --> ER[Esperar repuesto] --> RP
+ DG -- PoD --> P[Informe + planilla PoD]
+ DG -- NFF --> PR[Pruebas]
+ P --> PR
+ RP --> PR
+ PR --> DS[Despacho por lote]
+ DS --> Q[QA]
+ Q --> QG{¿Aprobado?}
+ QG -- No --> C
+ QG -- Sí --> F[Recepción Bodega / cierre de ciclo]
 ```
 
-## 4. Gateways y excepciones
+## 9. Relación con problemática
 
-### G1 — Documentación de ingreso
-
-Puede existir guía, información parcial o ingreso urgente. Esto obliga a conciliar antecedentes manualmente.
-
-### G2 — Diagnóstico
-
-Resultados posibles:
-
-- falla confirmada;
-- falla diferente;
-- NFF;
-- PoD;
-- necesidad de repuesto;
-- otro diagnóstico técnico.
-
-### G3 — QA
-
-QA puede aprobar o rechazar. Un rechazo provoca reingreso al circuito técnico y nueva conciliación.
-
-## 5. Puntos de dolor AS-IS
-
-| Punto | Problema |
-|---|---|
-| Recepción | guía/tarjetón/correo pueden llegar desfasados |
-| Identidad | la serie puede aparecer en registros distintos |
-| Registro | múltiples planillas sin sincronización |
-| Custodia | difícil distinguir tránsito de recepción real |
-| Asignación | seguimiento manual de carga |
-| Reparación | antecedentes técnicos distribuidos |
-| Repuestos | coordinación separada |
-| PoD | informe/planilla paralela |
-| QA | resultados en otro registro |
-| Despacho | lotes y fechas no necesariamente alineados a una única fuente |
-| Consulta | reconstrucción manual ante preguntas de estado |
-
-## 6. Riesgos
-
-- error de identidad;
-- pérdida de trazabilidad;
-- doble digitación;
-- estados inconsistentes;
-- demora en conciliación;
-- decisiones con información incompleta;
-- evidencia física no asociada al movimiento exacto.
+Este BPMN explica por qué PMP Suite prioriza identidad física, custodia por evidencia, eventos append-only, roles segregados y una única fuente operacional.

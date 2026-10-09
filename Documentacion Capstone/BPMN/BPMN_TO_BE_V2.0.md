@@ -4,124 +4,130 @@
 
 ## 1. Objetivo
 
-Representar el flujo integrado con PMP Suite, manteniendo separación de responsabilidades y custodia Physical First.
+Representar el proceso integrado objetivo soportado por PMP Suite, desde falla/retiro hasta reparación, QA, retorno a Bodega y nueva instalación, aplicando Physical First.
 
-## 2. Pools/Lanes
+## 2. Pool y lanes
 
-- Técnico Terreno
-- Logística/Bodega
-- Jefe Laboratorio
-- Técnico Laboratorio
-- QA
-- Sistema PMP Suite
-- Admin/Gerencia (supervisión)
+**Pool conceptual:** Proceso integrado PMP Suite.
 
-## 3. Flujo principal TO-BE
+1. Técnico Terreno.
+2. Logística / Bodega.
+3. Jefe Laboratorio.
+4. Técnico Laboratorio.
+5. QA.
+6. Sistema PMP Suite.
 
-```mermaid
-flowchart TB
- subgraph TT["Técnico Terreno"]
-  T1[Reportar falla]
-  T2[Validar identidad del retiro]
-  T3[Confirmar retiro físico]
-  T4[Instalar equipo]
- end
- subgraph BO["Logística / Bodega"]
-  B1[Confirmar recepción desde Terreno]
-  B2[Confirmar salida a Laboratorio]
-  B3[Recibir desde Laboratorio]
-  B4[Confirmar salida a QA]
-  B5[Recibir desde QA]
-  B6{¿Equipo elegible?}
-  B7[Validar despacho a Terreno]
-  B8[Confirmar despacho]
-  BP[Entregar repuesto]
- end
- subgraph JL["Jefe Laboratorio"]
-  L1[Confirmar recepción Lab]
-  L2[Asignar técnico]
-  L3[Supervisar SLA/carga]
-  L4[Confirmar salida Lab]
- end
- subgraph TL["Técnico Laboratorio"]
-  D1[Diagnóstico]
-  D2[Iniciar reparación]
-  D3{¿Requiere repuesto PoD?}
-  D4[Solicitar necesidad]
-  D5[Intervenciones]
-  D6[Manual / Test MK]
-  D7[Finalizar trabajo técnico]
- end
- subgraph QA["QA"]
-  Q1[Confirmar recepción]
-  Q2[Instalación Ambiente]
-  Q3[Pruebas]
-  Q4{Dictamen}
-  Q5[Confirmar salida]
- end
- subgraph SYS["PMP Suite"]
-  S1[Crear caso/OS]
-  S2[Registrar eventos append-only]
-  S3[Actualizar proyección de custodia]
-  S4[Crear IN al confirmar despacho]
-  S5[Trazabilidad / KPI / historial]
- end
+Admin y Gerencia son observadores/autorizados de consulta; no constituyen una lane operacional porque no ejecutan movimientos físicos.
 
- T1-->S1-->T2-->T3-->S2-->B1
- B1-->S3-->B2-->L1
- L1-->L2-->L3
- L2-->D1-->D2-->D3
- D3--Sí-->D4-->BP-->D5
- D3--No-->D5
- D5-->D6-->D7-->L4
- L4-->B3-->B4-->Q1-->Q2-->Q3-->Q4
- Q4--Rechazado-->Q5-->B5-->B2
- Q4--Operativo-->Q5-->B5-->B6
- B6--Sí-->B7-->B8-->S4-->T4
- B6--No-->S5
- S2-->S5
- S3-->S5
- S4-->S5
-```
+El archivo `BPMN_TO_BE_V2.0.bpmn` contiene las mismas seis lanes.
 
-## 4. Reglas BPMN TO-BE
+## 3. Flujo principal
 
-### R1 — Validar ≠ confirmar
+1. Técnico Terreno reporta falla.
+2. PMP crea caso/OS y conserva identidad del activo.
+3. Terreno valida y confirma retiro físico.
+4. PMP registra tránsito a Bodega.
+5. Logística valida y confirma recepción.
+6. PMP registra custodia Bodega.
+7. Logística valida y confirma salida a Laboratorio.
+8. PMP abre ciclo Lab.
+9. Jefe Lab confirma recepción; PMP inicia SLA.
+10. Jefe Lab asigna técnico.
+11. Técnico diagnostica.
+12. Si requiere repuesto PoD, solicita necesidad; Logística selecciona/entrega y PMP descuenta stock al confirmar entrega.
+13. Técnico repara/interviene.
+14. Ejecuta pruebas Manual/Test MK.
+15. Si la prueba falla vuelve a reparación; si aprueba finaliza trabajo.
+16. PMP marca el equipo listo para salida.
+17. Jefe Lab valida y confirma salida.
+18. Bodega recibe y luego despacha a QA.
+19. PMP abre ciclo QA.
+20. QA confirma recepción, registra Instalación Ambiente, pruebas y dictamen.
+21. Si rechaza: QA sale, Bodega recibe y genera nuevo ciclo Bodega→Lab.
+22. Si queda Operativo: QA sale, Bodega recibe y PMP evalúa elegibilidad.
+23. Logística valida y confirma despacho a Terreno.
+24. PMP crea la IN y SALIDA_BODEGA_TERRENO atómicamente.
+25. Terreno completa instalación.
+26. PMP registra activo en operación.
 
-El sistema puede validar identidad/contexto sin cambiar la custodia. La transición se registra únicamente con confirmación explícita.
+## 4. Gateways y reglas
 
-### R2 — Evidencia por movimiento
+| Gateway | Regla |
+|---|---|
+| ¿Requiere repuesto? | técnico describe necesidad; no administra inventario |
+| ¿Pruebas Lab aprobadas? | cierre solo con pruebas válidas |
+| ¿QA operativo? | rechazo inicia nuevo ciclo físico; operativo sigue a stock |
+| Elegibilidad | Bodega + origen de stock vigente + sin intervención incompatible |
 
-La evidencia de recepción no puede reutilizarse para despacho. Cada ciclo genera su propia evidencia.
+### Physical First
 
-### R3 — Laboratorio
+Validar identidad/contexto **no** mueve custodia. Cada entrada y salida requiere confirmación propia.
 
-- Jefe Laboratorio: recepción, asignación, supervisión y salida.
-- Técnico: trabajo técnico de su carga.
-- Técnico no administra stock.
+### Evidencia por movimiento
 
-### R4 — QA
+La evidencia de recepción no sirve para salida; la de un ciclo anterior no sirve para el siguiente.
 
-QA inicia/toma su propio trabajo. Dictamen y despacho son acciones separadas.
+### Roles
 
-### R5 — Instalación
+- Logística: Bodega, stock, repuestos y movimientos.
+- Jefe Lab: custodia/asignación/supervisión Lab.
+- Técnico Lab: trabajo técnico de su carga.
+- QA: operación autónoma QA.
+- Terreno: retiro/instalación propia.
+- Admin/Gerencia: consulta/supervisión según RBAC, sin ejecutar custodia.
 
-La OS IN nace al confirmar el despacho desde Bodega a Terreno, no al seleccionar técnico o serie.
+## 5. Eventos/efectos de sistema relevantes
 
-### R6 — Reingresos
+- REQUERIMIENTO_INGRESADO.
+- RETIRO_TERRENO_CONFIRMADO.
+- SALIDA_BODEGA_LABORATORIO.
+- RECEPCION_LABORATORIO_CONFIRMADA.
+- LAB_TRABAJO_INICIADO / avances / diagnóstico / finalización.
+- LOGISTICA_ENTREGA_REPUESTO.
+- SALIDA_LABORATORIO_BODEGA.
+- ciclo QA + dictamen + salida.
+- SALIDA_BODEGA_TERRENO.
+- INSTALACION_COMPLETADA.
 
-Un rechazo QA retorna al circuito Bodega → Laboratorio con un nuevo ciclo físico. No hereda evidencia anterior.
-
-## 5. Mejoras frente al AS-IS
+## 6. Mejoras respecto del AS-IS
 
 | AS-IS | TO-BE |
 |---|---|
-| planillas por área | PostgreSQL central |
-| conciliación de serie manual | identidad tipo + serie |
-| estado ambiguo | custodia derivada de eventos/evidencia |
-| correo como contexto principal | caso/OS/historial |
-| asignación informal | carga asignada y RBAC |
-| reparación y stock mezclables | responsabilidades separadas |
-| QA y despacho acoplados | etapas QA + salida física |
-| trazabilidad reconstruida | eventos append-only |
-| consulta manual | dashboards, historial, búsqueda |
+| planillas separadas | PostgreSQL + read models centralizados |
+| conciliación manual de identidad | tipo+serie y resolución de identificador |
+| tránsito/recepción ambiguos | validación + confirmación por movimiento |
+| asignación informal | Jefe Lab + carga por técnico |
+| inventario mezclado con reparación | Bodega administra stock |
+| QA y despacho acoplados | dictamen y salida separados |
+| reingreso sin ciclo explícito | nuevo ciclo físico con evidencia nueva |
+| consulta por correo | trazabilidad, búsqueda y dashboards |
+| historial reconstruido manualmente | eventos + historial por activo |
+| instalación anticipada | IN creada solo al confirmar despacho |
+
+## 7. Diagrama de lectura rápida
+
+```mermaid
+flowchart TB
+ T[Terreno: falla/retiro] --> S1[PMP: caso/OS + evento]
+ S1 --> B1[Bodega: recepción]
+ B1 --> B2[Bodega: salida Lab]
+ B2 --> L1[Jefe Lab: recepción + asignación]
+ L1 --> LT[Técnico Lab: diagnóstico/reparación/pruebas]
+ LT --> G{¿Repuesto?}
+ G -- Sí --> R[Bodega: entregar repuesto] --> LT
+ G -- No --> C[Cierre técnico]
+ C --> L2[Jefe Lab: salida]
+ L2 --> B3[Bodega: recepción + salida QA]
+ B3 --> Q[QA: recepción/Ambiente/pruebas/dictamen]
+ Q --> QG{¿Operativo?}
+ QG -- No --> BR[Bodega: recibir y reenviar Lab] --> L1
+ QG -- Sí --> B4[Bodega: recibir/elegibilidad]
+ B4 --> D[Bodega: despacho]
+ D --> IN[PMP: crear IN]
+ IN --> I[Terreno: instalar]
+ I --> OP[PMP: activo en operación]
+```
+
+## 8. Supervisión
+
+Admin y Gerencia consultan dashboards, OS, trazabilidad y reportes autorizados sin alterar el flujo.

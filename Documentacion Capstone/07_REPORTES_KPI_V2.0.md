@@ -269,3 +269,134 @@ No declarar como implementado un reporte si la ruta o consulta no existe. La doc
 - validado;
 - pendiente de validación;
 - proyectado.
+
+
+## 15. Fuente técnica de cada vista
+
+| Vista / reporte | Endpoint / servicio principal | Fuente de datos |
+|---|---|---|
+| Dashboard ejecutivo | `GET /api/dashboard/executive`, `executiveDashboard.js` | activos + OS + eventos/custodia |
+| Resumen global | `GET /api/dashboard/summary` | OS + proyecciones logísticas/Lab/QA |
+| Equipos en operación | `GET /api/dashboard/equipos-operativos` | `operatingAssetsSql` |
+| Dashboard Bodega | `GET /api/bodega/dashboard` | inventario + colas + estado logístico |
+| Inventario | `GET /api/bodega/inventario` | `logisticsInventory.js` |
+| Cola Bodega | `GET /api/bodega/queue` | `warehouseQueue.js` |
+| Repuestos | `GET /api/bodega/repuestos` | repuestos + solicitudes |
+| Dashboard Lab | `GET /api/lab/supervision` | `labSupervision.js` |
+| Recepción Lab | `GET /api/lab/reception` | `labReceptionRead.js` |
+| Colas Validadores/Consolas | `GET /api/lab/queue/:type` | OS + ciclo Lab |
+| Completados Lab | `GET /api/lab/completed` | reparación/cierre |
+| Dashboard QA | `GET /api/qa/dashboard` | `qaCustody.js` + `qaWork.js` |
+| Entradas QA | `GET /api/qa/incoming` | etapa RECEPCION |
+| Trazabilidad/Bridge | `/api/bridge/buscar`, historial por activo | OS + eventos + referencias + reparación |
+| Búsqueda global | `GET /api/dashboard/global-search` | proyección de búsqueda autorizada |
+| Inteligencia | `GET /api/ai/predictive-report` | Python + históricos OS |
+| Badges Sidebar | `GET /api/dashboard/badges` | mismas reglas de cola/proyección |
+
+## 16. Definiciones que deben mantenerse idénticas entre KPI y tabla
+
+Un dashboard no puede usar una definición y la tabla otra. Deben compartir el mismo criterio para:
+
+- **En camino Lab:** salida Bodega→Lab confirmada y recepción Lab aún no confirmada.
+- **Recibido Lab:** recepción física del ciclo actual confirmada.
+- **Carga técnica:** recibido + asignado; excluye tránsito.
+- **Disponible para instalación:** origen de stock válido + custodia Bodega + sin conflicto.
+- **En ruta Terreno:** salida Bodega→Terreno confirmada y sin instalación final.
+- **Pendiente retiro:** requerimiento/OS asignable cuyo retiro físico todavía no se confirmó.
+- **QA recibido:** recepción QA del ciclo actual confirmada.
+- **QA operativo/rechazado:** dictamen; no implica salida.
+- **Stock físico Bodega:** custodia Bodega, no simplemente estado histórico.
+
+## 17. Semántica de cero, vacío y error
+
+| Situación | Presentación |
+|---|---|
+| consulta exitosa con 0 | KPI 0 / estado vacío real |
+| lista sin coincidencias por filtro | “Sin resultados” |
+| endpoint 401/403 | sesión/acceso denegado |
+| endpoint 409/422 | conflicto/regla de negocio |
+| endpoint 500/red | error visible + opción de reintento |
+| métrica no implementada | “Sin medición” / null, nunca número inventado |
+
+Ejemplo vigente: `tiempoPromedio` del resumen global se devuelve como `null` cuando no existe agregación implementada.
+
+## 18. KPI Lab — definiciones de cálculo
+
+### En camino
+OS con salida Bodega→Laboratorio posterior a cualquier recepción Lab del ciclo.
+
+### Recibidos
+OS con recepción Lab válida del ciclo vigente.
+
+### Sin asignar
+Recibido y elegible para trabajo, pero sin `tecnico_laboratorio_id`.
+
+### Espera de repuesto
+Trabajo Lab con solicitud pendiente/despacho aún no resuelto según eventos/solicitudes.
+
+### Listos para salida
+Cierre técnico válido y custodia aún Laboratorio.
+
+### SLA
+```text
+ahora - fecha_recepcion_laboratorio_del_ciclo
+```
+No se usa fecha de salida Bodega como sustituto.
+
+## 19. KPI Bodega — definiciones de cálculo
+
+### Disponible
+```text
+(stock inicial habilitado OR reparación+QA aprobada)
+AND custodia Bodega
+AND origen no consumido
+AND sin intervención incompatible
+```
+
+### Asignado a técnico
+Técnico/destino de instalación seleccionados sin salida física confirmada.
+
+### En ruta
+`SALIDA_BODEGA_TERRENO` confirmada y `INSTALACION_COMPLETADA` aún ausente.
+
+### Repuesto crítico
+`stock <= stock_critico`, presentado como advertencia; no provoca ajuste automático.
+
+## 20. KPI QA — definiciones de cálculo
+
+Las etapas se derivan por ciclo QA:
+
+1. RECEPCION;
+2. AMBIENTE;
+3. PRUEBAS;
+4. DICTAMEN;
+5. DESPACHO.
+
+El contador “rechazados” es resultado de dictamen; para “pendientes de salida” se exige además que no exista salida QA confirmada del ciclo.
+
+## 21. Reportabilidad y auditoría
+
+Para una auditoría por serie deben poder relacionarse:
+
+```text
+Activo
+→ caso
+→ OS
+→ eventos físicos
+→ asignaciones
+→ diagnóstico/reparación
+→ repuesto
+→ QA
+→ stock
+→ instalación
+→ referencia externa
+```
+
+La tabla `flujo_eventos` no sustituye las tablas de dominio; funciona como hilo temporal para reconstruir la operación.
+
+## 22. Limitaciones documentadas
+
+- No existe una métrica agregada de tiempo promedio global implementada en todos los módulos.
+- La heurística IA no es un modelo probabilístico calibrado.
+- La validación de cámara/lector sigue requiriendo evidencia física de dispositivo.
+- Los reportes que no tengan endpoint/consulta vigente deben rotularse como proyectados, no implementados.

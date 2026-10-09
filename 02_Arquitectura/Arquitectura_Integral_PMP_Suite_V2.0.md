@@ -110,28 +110,37 @@ El rol efectivo es PostgreSQL. No se aceptan roles enviados por body/query/claim
 
 ### 5.3 Política por acción
 
-| Acción | Roles |
+La política efectiva se define en `src/security/authorization.js`. No existe un wildcard para Admin.
+
+| Acción | Roles efectivos |
 |---|---|
-| supervision.read | admin, gerente |
-| lab.read | admin, gerente, jefe_laboratorio, tecnico_laboratorio |
-| lab.supervise | admin, gerente, jefe_laboratorio |
-| lab.custody | jefe_laboratorio |
-| lab.assign | jefe_laboratorio |
-| lab.work | tecnico_laboratorio |
-| warehouse.read | admin, gerente, logistica |
-| warehouse.move | logistica |
-| warehouse.stock | logistica |
-| assets.read | admin, logistica |
-| assets.register | logistica |
-| requirements.read | admin, gerente, logistica, tecnico_laboratorio, qa |
-| requirements.create | logistica |
-| terrain.assign | logistica |
-| terrain.work | tecnico_terreno |
-| qa.read | admin, gerente, qa |
-| qa.work | qa |
-| bridge.read | admin, gerente, logistica, tecnico_laboratorio, qa |
-| bridge.link | logistica |
-| users.manage | admin |
+| `supervision.read` | admin, gerente |
+| `lab.read` | admin, gerente, jefe_laboratorio, tecnico_laboratorio |
+| `lab.supervise` | admin, gerente, jefe_laboratorio |
+| `lab.custody` | jefe_laboratorio |
+| `lab.assign` | jefe_laboratorio |
+| `lab.work` | tecnico_laboratorio |
+| `warehouse.read` | admin, gerente, logistica |
+| `warehouse.move` | logistica |
+| `warehouse.stock` | logistica |
+| `assets.read` | admin, logistica |
+| `assets.register` | logistica |
+| `requirements.read` | admin, gerente, logistica, tecnico_laboratorio, qa |
+| `requirements.catalog` | admin, logistica |
+| `requirements.create` | logistica |
+| `terrain.assign.read` | admin, logistica |
+| `terrain.assign` | logistica |
+| `terrain.work` | tecnico_terreno |
+| `orders.read` | admin, gerente, tecnico_laboratorio, tecnico_terreno |
+| `qa.read` | admin, gerente, qa |
+| `qa.work` | qa |
+| `scan.read` | admin, gerente, jefe_laboratorio, logistica, tecnico_laboratorio, qa |
+| `scan.validate` | jefe_laboratorio, logistica, qa |
+| `bridge.read` | admin, gerente, logistica, tecnico_laboratorio, qa |
+| `bridge.link` | logistica |
+| `users.manage` | admin |
+
+**Excepción de proyección técnica:** el router de Bridge permite a `tecnico_terreno` y `jefe_laboratorio` consultar búsqueda/historial mediante un guard de roles y entrega una proyección técnica restringida; esto no les concede `bridge.read` completo ni `bridge.link`.
 
 ### 5.4 Scope por recurso
 
@@ -379,3 +388,108 @@ Ubuntu/Nginx/PM2 es una proyección servidor; no se declara producción certific
 - BPMN TO-BE.
 
 Los BPMN vigentes están en `Documentacion Capstone/BPMN/`.
+
+
+## 21. Trust boundaries y superficies de confianza
+
+| Frontera | Confianza | Control |
+|---|---|---|
+| Navegador/Mobile → API | no confiable | token Firebase + validación de payload + RBAC |
+| Firebase → API | identidad autenticada | verifyIdToken; claims no son rol efectivo |
+| API → PostgreSQL | canal de servicio | queries parametrizadas + transacciones |
+| API → Python | proceso local de lectura | salida JSON y sin escrituras operacionales |
+| Operador físico → evidencia | requiere validación | estación, propósito, actor, ciclo y activo |
+| UI → permisos | solo presentación | Backend vuelve a autorizar toda acción sensible |
+
+La arquitectura asume que la UI puede ser manipulada; por eso las restricciones de negocio críticas están en Backend/BD.
+
+## 22. Límites transaccionales
+
+Las operaciones que combinan más de una escritura deben cerrarse atómicamente. Ejemplos:
+
+- creación de caso + OS + correlación;
+- confirmación de despacho + evento de salida;
+- creación IN + consumo del origen de stock;
+- entrega de repuesto + descuento de stock + actualización de solicitud;
+- cambios administrativos protegidos sobre usuarios;
+- confirmaciones de custodia con revalidación del ciclo vigente.
+
+Los servicios utilizan `BEGIN/COMMIT/ROLLBACK`, `FOR UPDATE`, advisory locks o restricciones únicas según el dominio.
+
+## 23. Idempotencia y concurrencia
+
+La aplicación distingue:
+
+1. **reintento idéntico:** puede responder como operación ya aplicada;
+2. **reintento incompatible:** responde conflicto;
+3. **evidencia stale:** no puede autorizar el ciclo actual;
+4. **doble consumo:** bloqueado por origen de stock/índices;
+5. **edición concurrente Lab/QA:** revisión/ciclo evita sobrescribir un avance posterior.
+
+El objetivo no es solo evitar duplicados: es impedir que una respuesta tardía o una pestaña antigua modifique el estado físico actual.
+
+## 24. Observabilidad, errores y degradación
+
+- `/api/health` valida disponibilidad básica del servicio.
+- Los errores de dominio usan 403/409/410/422 cuando corresponde.
+- Un fallo de consulta no se transforma en cero o lista vacía.
+- Los logs de autorización excluyen token, contraseña, correo y Firebase UID.
+- Dashboards deben tener estados diferenciados de carga, vacío, error y acceso denegado.
+- Las suites destructivas trabajan con PostgreSQL efímero para evitar contaminar la base habitual.
+
+## 25. Secuencias arquitectónicas de referencia
+
+### Retiro y recepción Bodega
+
+```text
+Mobile/Terreno
+→ API valida OS propia
+→ evidencia de retiro
+→ confirmar retiro
+→ evento/transito
+→ Logística valida recepción
+→ Logística confirma
+→ evento/custodia Bodega
+```
+
+### Laboratorio
+
+```text
+Bodega valida salida
+→ confirma salida
+→ ciclo Lab
+→ Jefe Lab valida recepción
+→ confirma recepción
+→ SLA
+→ asignación
+→ Técnico Lab trabajo/pruebas
+→ cierre técnico
+→ Jefe Lab valida/confirmar salida
+```
+
+### QA y reinstalación
+
+```text
+Bodega → QA
+→ recepción QA
+→ Ambiente
+→ pruebas
+→ dictamen
+→ salida QA
+→ recepción Bodega
+→ elegibilidad
+→ despacho Terreno + IN
+→ instalación
+```
+
+## 26. Fuente de verdad por tipo de decisión
+
+| Pregunta | Fuente primaria |
+|---|---|
+| ¿Quién puede hacer una acción? | `authorization.js` + guards de ruta |
+| ¿Qué activo es? | `shared/assetIdentity.js` + maestros |
+| ¿Dónde está físicamente? | eventos/evidencia/custodia proyectada |
+| ¿Qué OS/caso corresponde? | `ordenes_servicio` + `casos_operacionales` |
+| ¿Qué pasó técnicamente? | `registro_reparaciones` + eventos Lab/QA |
+| ¿Está disponible? | origen de stock + custodia + ausencia de conflicto |
+| ¿Qué ve cada rol? | API/proyección de dominio + RBAC Web/Mobile |

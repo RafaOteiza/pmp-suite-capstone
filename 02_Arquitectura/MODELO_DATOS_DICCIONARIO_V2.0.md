@@ -616,3 +616,217 @@ Las operaciones críticas usan:
 Este diccionario debe actualizarse cuando una migración agregue/elimine tabla, campo, índice, trigger o vista.
 
 La fuente de verdad física definitiva continúa siendo PostgreSQL + migraciones; ningún diagrama reemplaza la comprobación de esquema.
+
+
+# 18. Procedencia de la evolución del esquema
+
+La V2.0 no considera el esquema como un archivo estático: su estructura actual resulta de la base histórica más migraciones aditivas. La siguiente cronología permite explicar qué problema técnico introdujo cada cambio.
+
+| Migración | Objetivo principal | Estructuras relevantes |
+|---|---|---|
+| bridge/001 | flujo histórico Bridge y evidencia transversal inicial | bridges, bridge_mantenimiento, instalaciones_equipos, qa_inspecciones, flujo_eventos |
+| escaneo/001 | identificación física y ubicación confirmada | amid, escaneos_equipos, v_ubicacion_fisica_equipos |
+| bridge/002 | convertir Bridge vigente en correlación/historial | bridge_referencias, v_referencias_activo, os_historial_activo |
+| requerimientos/003 | casos operacionales y relaciones explícitas | casos_operacionales, caso_id, os_origen, stock_origen_os |
+| requerimientos/004 | IN independiente y atributos técnicos no inventados | generar_id_os actualizado, modelo nullable histórico |
+| requerimientos/005 | maestro de activos administrable | origen_registro, fecha_ingreso, observacion_registro, registrado_por |
+| requerimientos/006 | recepción inicial sin OS y origen de stock por evento | tipo_equipo/serie en flujo_eventos, stock_origen_evento, validación de activo |
+
+## 18.1 Migración Bridge 001
+
+Introdujo estructuras hoy conservadas principalmente por compatibilidad histórica:
+
+- `seq_bridge`;
+- `bridges`;
+- `bridge_mantenimiento`;
+- `instalaciones_equipos`;
+- campos QA legacy en OS;
+- `qa_inspecciones`;
+- `flujo_eventos`;
+- triggers append-only.
+
+**Estado V2.0:** Bridge operacional ya no gobierna movimientos. Las tablas históricas se preservan porque contienen trazabilidad previa.
+
+## 18.2 Migración de identificación física
+
+Agregó:
+
+- `validadores.amid`;
+- check de 12 dígitos;
+- índice único parcial de AMID;
+- `escaneos_equipos`;
+- índices por activo/OS/estación;
+- `v_ubicacion_fisica_equipos`;
+- append-only del registro de escaneo.
+
+Esto habilitó separar “registro de estado” de “evidencia de identificación física”.
+
+## 18.3 Migración Bridge correlación
+
+Agregó la línea vigente de correlación:
+
+- `bridge_referencias`;
+- validación trigger tipo+serie+OS;
+- unicidad de sistema/referencia;
+- vista `v_referencias_activo`;
+- `os_historial_activo`;
+- trigger de identidad OS inmutable.
+
+## 18.4 Casos operacionales
+
+`003_casos_operacionales.sql` agregó:
+
+- `seq_caso_interno`;
+- `casos_operacionales`;
+- `caso_id`;
+- `os_origen`;
+- `stock_origen_os`;
+- `instalacion_numero` legacy;
+- índices/unicidades de caso;
+- protección de identidad del caso;
+- validación de relaciones de una OS.
+
+La migración inicial también contenía una forma de IN asociada a caso. La migración siguiente la sustituyó hacia **IN independiente**, que es la regla vigente.
+
+## 18.5 OS independientes / IN
+
+`004_os_independientes_alta_activos.sql`:
+
+- permite `modelo NULL` para históricos sin inventar modelo;
+- sincroniza `seq_in` con códigos históricos;
+- actualiza `generar_id_os()`;
+- hace que nuevas IN utilicen correlativo PMP independiente;
+- conserva columnas legacy por compatibilidad.
+
+## 18.6 Gestión de activos
+
+`005_gestion_activos.sql` agrega metadata de registro a validadores/consolas:
+
+- origen;
+- fecha;
+- observación;
+- usuario que registró.
+
+Dar de alta el maestro **no** equivale a recibir stock.
+
+## 18.7 Recepción inicial sin OS
+
+`006_recepcion_inicial_sin_os.sql` consolida la regla vigente:
+
+- `flujo_eventos` puede referenciar directamente tipo+serie sin OS;
+- `HABILITADO_INSTALACION` es único para el origen inicial;
+- recepción inicial puede registrar evidencia de activo nuevo;
+- trigger verifica que el activo exista;
+- `stock_origen_evento` enlaza una IN al evento de stock inicial;
+- índice único impide consumir dos veces el mismo origen;
+- trigger hace inmutable el origen físico.
+
+# 19. Matriz tabla → responsabilidad → escritura
+
+| Tabla | Escritura principal | Lectores principales |
+|---|---|---|
+| usuarios | Admin/API administración | Auth, supervisión |
+| validadores/consolas | Logística alta; migraciones históricas | todos según proyección |
+| ordenes_servicio | servicios de negocio | múltiples módulos |
+| casos_operacionales | Logística/requerimientos | supervisión/operación |
+| flujo_eventos | servicios de dominio | trazabilidad/KPI |
+| escaneos_equipos | captura/validación autorizada | custodia/trazabilidad |
+| registro_reparaciones | Técnico Lab al cierre | Lab/QA/historial |
+| solicitudes_repuestos | Técnico Lab inicia; Logística resuelve | Lab/Bodega |
+| solicitud_items | Logística entrega | Bodega/auditoría |
+| repuestos | logística/migración/política autorizada | Bodega |
+| qa_inspecciones | compatibilidad histórica QA | trazabilidad |
+| bridge_referencias | Logística | búsqueda/trazabilidad |
+| os_historial_activo | trigger automático | historial |
+| guias/guia_detalle | logística histórica | auditoría/contexto |
+
+# 20. Claves de integridad que deben preservarse
+
+## Identidad
+
+- un Validador usa `validadores.serie`;
+- una Consola usa `consolas.serie`;
+- una OS referencia exactamente uno de ambos;
+- actualización no puede cambiar tipo/serie de la OS.
+
+## Caso
+
+- caso no se reescribe, excepto compatibilidad de contador legacy;
+- OS ligada al caso debe corresponder al tipo/activo esperado;
+- referencia externa no se duplica por origen.
+
+## Evidencia
+
+- validado: tipo+serie resueltos y contexto compatible;
+- rechazado: motivo obligatorio;
+- evidencia queda append-only;
+- ubicación/estación se enlaza al momento de captura.
+
+## Stock
+
+- origen evento y origen OS son alternativos;
+- el origen debe corresponder al mismo tipo+serie;
+- un origen no se consume dos veces.
+
+## Historial
+
+- eventos, escaneos, referencias, instalaciones históricas y snapshots no deben editarse para “corregir” retrospectivamente un flujo.
+
+# 21. Read models / proyecciones
+
+La base mantiene datos normalizados y evidencia; la interfaz necesita proyecciones.
+
+| Proyección | Objetivo |
+|---|---|
+| `v_referencias_activo` | unificar referencias actuales/históricas |
+| `v_ubicacion_fisica_equipos` | último escaneo validado |
+| `operatingAssetsSql` | activos actualmente operativos |
+| `installationReadySql` | activos elegibles para instalación |
+| `warehouseQueueSql` | cola Bodega coherente con badges |
+| `labTransitSql` | tránsito real hacia Lab |
+| `labAvailableSql` | carga disponible Lab |
+| `qaStageSql` | etapa del ciclo QA |
+| `qaReceivedSql` | recepción QA vigente |
+
+Estas proyecciones son importantes porque **estado_id por sí solo no expresa toda la realidad física**.
+
+# 22. Diagrama lógico ampliado
+
+```mermaid
+erDiagram
+ USUARIOS ||--o{ ORDENES_SERVICIO : "asignación"
+ USUARIOS ||--o{ FLUJO_EVENTOS : "actor"
+ USUARIOS ||--o{ ESCANEOS_EQUIPOS : "captura"
+ VALIDADORES ||--o{ ORDENES_SERVICIO : "serie"
+ CONSOLAS ||--o{ ORDENES_SERVICIO : "serie"
+ CASOS_OPERACIONALES ||--o{ ORDENES_SERVICIO : "caso"
+ ORDENES_SERVICIO ||--o{ ORDENES_SERVICIO : "os_origen/stock_origen_os"
+ ORDENES_SERVICIO ||--o{ FLUJO_EVENTOS : "eventos"
+ ORDENES_SERVICIO ||--o{ ESCANEOS_EQUIPOS : "evidencia"
+ ORDENES_SERVICIO ||--o{ OS_HISTORIAL_ACTIVO : "snapshot"
+ ORDENES_SERVICIO ||--o{ REGISTRO_REPARACIONES : "reparación"
+ ORDENES_SERVICIO ||--o{ QA_INSPECCIONES : "QA histórico"
+ ORDENES_SERVICIO ||--o{ BRIDGE_REFERENCIAS : "referencias"
+ ORDENES_SERVICIO ||--o{ SOLICITUDES_REPUESTOS : "necesidad"
+ SOLICITUDES_REPUESTOS ||--o{ SOLICITUD_ITEMS : "despacho"
+ REPUESTOS ||--o{ SOLICITUD_ITEMS : "repuesto"
+ TERMINALES ||--o{ TERMINAL_PST : "relación"
+ PST ||--o{ TERMINAL_PST : "relación"
+ BUSES ||--o{ ORDENES_SERVICIO : "bus"
+ UBICACIONES ||--o{ ORDENES_SERVICIO : "ubicación"
+ ESTADOS ||--o{ ORDENES_SERVICIO : "estado"
+ GUIAS ||--o{ GUIA_DETALLE : "detalle"
+```
+
+# 23. Regla de actualización del diccionario
+
+Al agregar una migración nueva se debe actualizar:
+
+1. inventario de tablas;
+2. campos afectados;
+3. PK/FK/check/index;
+4. secuencias/vistas/triggers;
+5. read models;
+6. ERD;
+7. ERS si cambia negocio;
+8. pruebas de integridad.

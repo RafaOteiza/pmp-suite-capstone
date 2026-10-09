@@ -48,6 +48,7 @@ Incluye:
 
 - [AS-IS](../Documentacion%20Capstone/BPMN/BPMN_AS_IS_V2.0.md)
 - [TO-BE](../Documentacion%20Capstone/BPMN/BPMN_TO_BE_V2.0.md)
+- [Matriz BPMN → Sistema](../Documentacion%20Capstone/BPMN/MATRIZ_BPMN_SISTEMA_V2.0.md)
 - archivos `.bpmn` para modelador.
 
 ## 4. Diagramas UML/PlantUML

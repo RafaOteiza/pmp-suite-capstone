@@ -329,3 +329,132 @@ El backend es la autoridad final.
 PMP Suite ya no corresponde a un prototipo aislado. Es una solución integrada con reglas de negocio explícitas, seguridad por rol, modelo relacional, trazabilidad y múltiples canales de uso.
 
 El foco restante es validación, evidencia y cierre documental, no ampliar el sistema con nuevos módulos.
+
+
+# 17. Detalle de requisitos desarrollados
+
+La línea V2.0 formaliza **20 reglas de negocio, 210 RF y 38 RNF**. Para el avance se consideran especialmente los siguientes grupos:
+
+| Grupo | Estado de implementación | Evidencia |
+|---|---|---|
+| RF-AUT / RF-USR | implementado | Backend Auth/Admin Users + RBAC |
+| RF-ACT | implementado | alta/recepción inicial |
+| RF-REQ / RF-OS | implementado | casos, OS y nomenclatura |
+| RF-TER | implementado | Mobile/OS retiro/instalación |
+| RF-BOD / RF-INV | implementado | Bodega/inventario/despacho |
+| RF-LAB / RF-LTW | implementado | recepción/carga/trabajo |
+| RF-REP | implementado | solicitud/entrega |
+| RF-QA | implementado | flujo por etapas |
+| RF-BRG / RF-TRZ | implementado | correlación/historial |
+| RF-DASH | implementado | dashboards |
+| RF-IA | implementado como heurística | endpoint Python |
+| RF-UX / RF-MOB | implementado; validación física parcial | Web/Mobile |
+
+La matriz detallada se mantiene en `08_Pruebas/MATRIZ_TRAZABILIDAD_V2.0.md`.
+
+# 18. Detalle de arquitectura lograda
+
+La arquitectura dejó de ser una descripción de tres capas y pasó a incorporar:
+
+- cadena Auth/RBAC;
+- policy por acción;
+- scope por recurso;
+- trust boundaries;
+- servicios de dominio;
+- eventos append-only;
+- read models de custodia;
+- transacciones/locks/idempotencia;
+- separación stock inicial/reparado;
+- ciclos Lab/QA;
+- proyección técnica por rol.
+
+El catálogo API documenta rutas activas, rutas bloqueadas por política y rutas retiradas 410.
+
+# 19. Detalle del modelo de datos
+
+El esquema `pmp` documenta 26 tablas, vistas, secuencias y triggers. Las migraciones explican la evolución desde Bridge histórico hacia:
+
+- correlación Bridge;
+- identificación física;
+- casos;
+- OS independientes;
+- gestión de activos;
+- recepción inicial sin OS.
+
+La documentación evita presentar como actual una estructura superada: las tablas históricas se explican como compatibilidad/trazabilidad cuando no gobiernan el flujo V2.0.
+
+# 20. Monitoreo detallado frente al plan Fase 1
+
+| Línea planificada | Resultado observado | Desviación/Ajuste |
+|---|---|---|
+| requerimientos | ERS expandida a contrato por dominio | aumentó precisión |
+| arquitectura | C4/capas/datos/API/seguridad | mayor profundidad |
+| backend | servicios y rutas integradas | separación por dominio |
+| frontend | Web por rol + UX transversal | rediseño compacto |
+| Mobile | Terreno + cuenta/apariencia | SDK 57/Expo Go |
+| pruebas | unitarias/E2E/browser/mocks | DB efímera para seguridad |
+| documentación | V2.0 única | se eliminan contradicciones |
+| despliegue | ejecución local reproducible | producción queda fuera del alcance |
+
+# 21. Evidencias disciplinarias
+
+## Pruebas de certificación
+
+Se diseñaron verificaciones positivas/negativas sobre permisos, estados, evidencia, stock y concurrencia.
+
+## Gestión de proyecto
+
+El equipo ajustó alcance/roles, priorizó flujo crítico y mantuvo pendientes explícitos.
+
+## Modelo de datos
+
+PostgreSQL implementa integridad mediante PK/FK/checks, triggers, índices, secuencias y transacciones.
+
+## Desarrollo de software
+
+Se integran Web, API, DB, Firebase, Mobile y Python.
+
+## Arquitectura
+
+Se documentan contexto, contenedores, componentes, decisiones y trust boundaries.
+
+# 22. Calidad del proyecto
+
+Los controles de calidad aplicados incluyen:
+
+- no inventar datos técnicos;
+- error ≠ cero;
+- mínimo privilegio;
+- pruebas destructivas aisladas;
+- evidencia Physical First;
+- historial append-only;
+- trazabilidad requisito→código→prueba;
+- documentación de pendientes.
+
+# 23. Riesgos de cierre
+
+| Riesgo | Tratamiento |
+|---|---|
+| pendiente físico Mobile | ejecutar dispositivo real |
+| fixture Web | corregir/repetir suite |
+| flujo manual incompleto | continuar QA→Bodega→IN |
+| documentación extensa | mantener índices y fuente maestra |
+| deriva código/docs | revisión cruzada antes de entrega |
+| presentación sobrecargada | seleccionar evidencia crítica |
+
+# 24. Siguiente etapa
+
+El avance permite que la siguiente etapa se concentre en:
+
+1. cerrar validaciones pendientes;
+2. capturar evidencias;
+3. revisar consistencia documental;
+4. preparar demostración;
+5. construir presentación de Fase 3;
+6. ensayar preguntas técnicas.
+
+# 25. Cierre del informe de avance
+
+El avance evidencia desarrollo real en arquitectura, datos, software y validación. Los ajustes realizados no cambian el objetivo del proyecto: lo vuelven más verificable y alineado con el proceso físico real.
+
+La principal decisión del cierre es **no agregar módulos grandes** y priorizar calidad, coherencia y evidencia.

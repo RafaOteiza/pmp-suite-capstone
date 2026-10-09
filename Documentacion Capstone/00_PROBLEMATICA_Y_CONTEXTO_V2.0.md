@@ -199,3 +199,120 @@ Incluye:
 - analítica de reincidencia.
 
 No se presenta como implementada una integración automática con Aranda ni un despliegue productivo certificado.
+
+
+## 9. Objetos de información del AS-IS
+
+| Objeto | Origen típico | Problema de fragmentación |
+|---|---|---|
+| Serie del equipo | equipo físico, tarjetón, correo, guía | puede existir diferencia entre fuentes |
+| Guía de despacho | Mersan/Bodega | puede llegar después del equipo en urgencia |
+| Tarjetón | equipo/lote | puede faltar o contener información incorrecta |
+| Falla reportada | Terreno/cliente/analista | no siempre coincide con diagnóstico |
+| Diagnóstico | Técnico Laboratorio | queda en registro técnico separado |
+| Reparación | Técnico Laboratorio | puede no quedar vinculada al historial transversal |
+| PoD | informe + planilla específica | seguimiento paralelo |
+| Repuesto | coordinación con Bodega | puede separarse del registro de reparación |
+| QA | registro de Calidad | aprobación/rechazo fuera del control Lab |
+| Estado solicitado por cliente | correo/reporte | requiere reconstrucción manual |
+| Referencia Aranda | sistema externo | puede no estar normalizada con la OS PMP |
+
+## 10. Frontera del proceso analizado
+
+### Inicio
+
+El proceso de mantenimiento se considera iniciado cuando existe una necesidad sobre un activo: falla reportada, requerimiento externo o necesidad de retiro.
+
+### Fin
+
+El ciclo termina cuando:
+
+- el activo reparado vuelve a quedar elegible/operativo; o
+- el equipo reemplazado queda instalado y la historia del retirado continúa por su propia OS.
+
+### Procesos relacionados pero no sustituidos
+
+- operación del sistema de transporte;
+- gestión contractual/comercial;
+- contabilidad/facturación;
+- procedimiento técnico interno específico de Instalación Ambiente QA;
+- Aranda como sistema externo.
+
+## 11. Árbol causa → problema → efecto
+
+```text
+PLANILLAS / CORREOS / GUÍAS / TARJETONES NO SINCRONIZADOS
+                  ↓
+      IDENTIDAD Y ESTADO NO UNIFICADOS
+                  ↓
+ NO HAY UNA FUENTE ÚNICA DE CUSTODIA E HISTORIAL
+                  ↓
+ conciliación manual · demoras · riesgo de error
+                  ↓
+ menor capacidad de supervisión y decisión
+```
+
+Causas técnicas y organizacionales se refuerzan mutuamente: incluso con una base de datos, si recepción y salida no se distinguen físicamente, el sistema puede registrar un estado que no representa la realidad.
+
+## 12. Matriz stakeholder / información / decisión
+
+| Stakeholder | Información que necesita | Decisión/acción |
+|---|---|---|
+| Terreno | OS propias, activo, bus, antecedentes técnicos | retirar/instalar/reportar |
+| Logística | custodia, elegibilidad, stock, destino, solicitudes | recibir/despachar/entregar |
+| Jefe Lab | camino, recepción, SLA, carga, listos | recibir/asignar/supervisar/salir |
+| Técnico Lab | falla, historial técnico, pruebas, necesidad de repuesto | diagnosticar/reparar/probar |
+| QA | origen, ciclo, antecedentes técnicos, pruebas | recibir/probar/dictaminar/salir |
+| Admin | usuarios, roles, supervisión | administrar cuentas |
+| Gerencia | parque, OS, SLA, trazabilidad, tendencias | supervisar/priorizar |
+| Analista/cliente | serie, OS/caso, estado, hitos | seguimiento operacional |
+
+## 13. Brecha AS-IS → capacidad requerida
+
+| Brecha AS-IS | Capacidad requerida | Respuesta PMP Suite |
+|---|---|---|
+| identidad en varias fuentes | identidad autoritativa | tipo + serie + reglas modelo/marca |
+| estado administrativo ≠ físico | custodia verificable | Physical First |
+| mismo dato digitado varias veces | relaciones derivadas | autocompletado y campos readonly |
+| caso/OS/referencia confundidos | entidades independientes | caso + OS + Bridge |
+| reparación y stock mezclados | segregación | Técnico describe; Bodega entrega |
+| QA acoplado a asignación Admin | autonomía | QA toma su trabajo |
+| historial disperso | trazabilidad transversal | eventos + historial por activo |
+| consulta manual | read models | dashboards/búsqueda |
+| reingreso ambiguo | ciclos explícitos | ciclo Lab/QA + evidencia nueva |
+
+## 14. Criterios de éxito del proyecto
+
+No se mide éxito solo por cantidad de pantallas. Se consideran criterios de éxito:
+
+1. un activo mantiene identidad estable durante todas sus intervenciones;
+2. ningún movimiento físico se da por realizado solo por una selección/consulta;
+3. cada área opera únicamente su responsabilidad;
+4. una consulta por serie permite reconstruir antecedentes relevantes;
+5. la instalación de un reemplazo no altera la historia del retirado;
+6. stock y repuestos tienen origen/consumo auditable;
+7. QA puede rechazar sin perder el contexto técnico;
+8. dashboards no duplican el parque;
+9. errores de datos/servicio son visibles y no se convierten en cero;
+10. la documentación permite explicar y reproducir la solución.
+
+## 15. Indicadores de mejora esperados
+
+La documentación no asigna porcentajes artificiales sin medición. Los indicadores que PMP Suite habilita para comparar AS-IS/TO-BE son:
+
+- tiempo de conciliación de estado;
+- porcentaje de equipos con ubicación/custodia verificable;
+- tiempo desde recepción Lab hasta cierre técnico;
+- OS sin asignación;
+- equipos en espera de repuesto;
+- reingresos/reincidencias por serie;
+- rechazos QA;
+- disponibilidad de stock;
+- solicitudes de repuesto pendientes;
+- diferencias entre evidencia física y contexto esperado.
+
+## 16. Relación con BPMN
+
+- `BPMN/BPMN_AS_IS_V2.0.md` modela la fragmentación y conciliación manual.
+- `BPMN/BPMN_TO_BE_V2.0.md` modela la operación integrada y los controles Physical First.
+- `06_CASOS_DE_USO_Y_ESCENARIOS_V2.0.md` baja el TO-BE a escenarios verificables.

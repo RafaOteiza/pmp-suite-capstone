@@ -437,3 +437,230 @@ El resultado demuestra que una plataforma operacional robusta requiere coherenci
 - documentación.
 
 El cierre del Capstone debe priorizar la validación final y la demostración de estos elementos, no aumentar el alcance.
+
+
+# 26. Desarrollo técnico detallado
+
+## 26.1 Requisitos
+
+La ERS final V2.0 consolida:
+
+- 20 reglas transversales;
+- 210 requisitos funcionales;
+- 38 requisitos no funcionales.
+
+Cada requisito se traza en `08_Pruebas/MATRIZ_TRAZABILIDAD_V2.0.md` hacia componente y evidencia.
+
+## 26.2 API
+
+La API contiene dominios de Auth, Users, Assets, Requirements, OS, Bodega, Lab, QA, Bridge, Equipment Scan, Dashboard, Master e IA.
+
+Se documentan explícitamente:
+
+- rutas vigentes;
+- rutas de consulta;
+- self-service;
+- operaciones bloqueadas 409;
+- flujos retirados 410.
+
+Esto evita confundir compatibilidad histórica con funcionalidad vigente.
+
+## 26.3 Persistencia
+
+El esquema `pmp` comprende 26 tablas clasificadas, con:
+
+- PK/FK;
+- checks;
+- índices;
+- secuencias;
+- triggers;
+- vistas;
+- historial append-only;
+- constraints de identidad/stock.
+
+El modelo físico y su evolución por migraciones están en el diccionario V2.0.
+
+# 27. Comparación AS-IS / TO-BE
+
+| Dimensión | AS-IS | TO-BE |
+|---|---|---|
+| identidad | varias fuentes | tipo+serie autoritativo |
+| custodia | inferida por planillas | evidencia por movimiento |
+| ingreso Lab | conciliación manual | bandeja + recepción confirmada |
+| asignación | seguimiento informal | Jefe Lab / carga |
+| reparación | registro separado | trabajo técnico estructurado |
+| repuesto | coordinación paralela | solicitud + entrega Bodega |
+| PoD | informe/planilla | caso/evento/contexto trazable |
+| QA | registro independiente | ciclo autónomo |
+| stock | reconstrucción | origen inicial/reparado |
+| instalación | contexto disperso | despacho crea IN |
+| historial | consolidación manual | serie + eventos + OS |
+| supervisión | consulta manual | dashboards/read models |
+
+# 28. BPMN
+
+Se entregan dos niveles:
+
+1. documento narrativo/diagramable;
+2. archivos BPMN 2.0 editables.
+
+### AS-IS
+
+Seis lanes: Bodega/Mersan, Jefatura Lab, Técnico Lab, QA, Analistas/Cliente y Gestión PoD.
+
+### TO-BE
+
+Seis lanes: Terreno, Logística/Bodega, Jefe Lab, Técnico Lab, QA y PMP Suite.
+
+El TO-BE representa gateways de repuesto, pruebas y dictamen QA, además de reingreso como nuevo ciclo.
+
+# 29. Seguridad y segregación
+
+La seguridad no se limita a login.
+
+| Control | Implementación |
+|---|---|
+| identidad | Firebase |
+| rol efectivo | PostgreSQL |
+| acción | authorization.js |
+| scope | services de dominio |
+| último Admin | userAdministration |
+| técnico carga propia | permits/resource |
+| custodia | rol + evidencia + ciclo |
+| logs | allowlist de datos |
+| secretos | .gitignore/env local |
+
+# 30. Integridad y concurrencia
+
+PMP Suite utiliza:
+
+- transacciones;
+- `FOR UPDATE`;
+- advisory locks;
+- índices únicos;
+- triggers;
+- revisión/ciclo;
+- fingerprints de operación;
+- append-only.
+
+El objetivo es evitar doble consumo, evidencia stale, sobrescritura concurrente y transición incompatible.
+
+# 31. Modelo de stock
+
+## Stock inicial
+
+Alta + recepción inicial + HABILITADO_INSTALACION. No crea una OS ficticia.
+
+## Stock reparado
+
+Reparación + QA Operativo + recepción Bodega.
+
+## Instalación
+
+La confirmación del despacho consume el origen y crea IN.
+
+# 32. Experiencia por rol
+
+### Admin
+Usuarios, seguridad y supervisión.
+
+### Gerente
+Indicadores y trazabilidad de solo lectura.
+
+### Jefe Laboratorio
+Recepción, asignación, SLA, equipos y salida Lab.
+
+### Logística
+Bodega, inventario, stock, repuestos, retiros/despachos.
+
+### QA
+Recepción, Ambiente, pruebas, dictamen y salida.
+
+### Técnico Lab
+Trabajo técnico de carga asignada.
+
+### Técnico Terreno
+Falla, retiro, instalación e historial técnico.
+
+# 33. Reportes e indicadores
+
+La documentación final define KPI de:
+
+- parque;
+- operación;
+- Bodega;
+- Lab;
+- QA;
+- repuestos;
+- trazabilidad;
+- IA.
+
+Cada KPI debe derivarse de una fuente técnica concreta y distinguir cero, vacío, error y sin medición.
+
+# 34. Estado de pruebas y lectura correcta
+
+Los resultados automatizados demuestran software/contratos. No demuestran automáticamente:
+
+- lector físico;
+- cámara real;
+- condiciones de red productiva;
+- operación productiva real.
+
+La documentación mantiene esta diferencia para no sobredeclarar calidad.
+
+# 35. Contribución a competencias
+
+## C1 — Pruebas
+Diseño/aplicación de pruebas y mejora por hallazgos.
+
+## C2 — Gestión
+Planificación, control de alcance, riesgos, responsabilidades y evidencia.
+
+## C3 — Datos
+Modelo relacional escalable, constraints, historial y transacciones.
+
+## C4 — Software
+Construcción/integración Web, API, Mobile, DB, Auth e IA.
+
+Adicionalmente, el proyecto evidencia arquitectura y seguridad sistémica.
+
+# 36. Resultados frente a objetivos
+
+| Objetivo | Resultado |
+|---|---|
+| documentar problemática | logrado |
+| arquitectura/datos | logrado |
+| construir módulos | logrado funcionalmente |
+| integrar componentes | logrado |
+| validar reglas críticas | logrado en suites/E2E |
+| validación física final | pendiente parcial |
+| documentación de cierre | desarrollada V2.0 |
+| producción | fuera de alcance |
+
+# 37. Lecciones aprendidas
+
+1. El estado de una OS no basta para representar custodia.
+2. Seguridad por rol sin scope de recurso es insuficiente.
+3. Una lectura física no debe tener efectos implícitos.
+4. La historia del activo debe sobrevivir a casos/reemplazos.
+5. QA y Lab necesitan responsabilidades independientes.
+6. La documentación debe evolucionar con el código.
+7. Los E2E destructivos deben aislarse de la base habitual.
+8. Un KPI sin definición compartida puede contradecir una tabla.
+
+# 38. Recomendaciones de continuidad
+
+- cerrar evidencia física;
+- corregir fixture Web;
+- automatizar más checks de documentación/links;
+- ampliar observabilidad si se despliega productivamente;
+- evaluar ML solo con dataset/target/métricas reproducibles;
+- integrar sistemas externos solo después de estabilizar contratos.
+
+# 39. Conclusión final ampliada
+
+PMP Suite aborda una problemática operacional concreta mediante una arquitectura que une proceso, datos, seguridad y evidencia física.
+
+El aporte principal no es la cantidad de pantallas, sino que la plataforma define reglas verificables para identidad, custodia, responsabilidad, stock, reparación, QA e historial. Esto permite pasar de conciliaciones manuales entre registros a un modelo operacional centralizado.
+
+La V2.0 documenta tanto lo implementado como sus límites. El proyecto queda preparado para una defensa donde cada afirmación relevante puede relacionarse con un requisito, componente, tabla, endpoint o prueba.

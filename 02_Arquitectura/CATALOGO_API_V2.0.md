@@ -1,206 +1,246 @@
-# Catálogo de API — PMP Suite V2.0
+# Catálogo API — PMP Suite V2.0
 
 **Versión:** V2.0  
-**Base URL habitual:** `http://localhost:4000/api`  
-**Actualización:** 09-10-2026
+**Actualización:** 09-10-2026  
+**Base habitual de desarrollo:** `http://localhost:4000/api`
 
-## 1. Convenciones
+## 1. Propósito
 
-- Autenticación: Bearer token Firebase.
-- Rol efectivo: PostgreSQL.
-- JSON como formato principal.
-- Errores de dominio: `401`, `403`, `404`, `409`, `422`.
-- `500` reservado para fallos no controlados.
-- Las rutas operacionales sensibles aplican `authorize(action)` y validaciones adicionales de recurso/ciclo/evidencia.
+Documentar las rutas HTTP realmente montadas por `src/app.js`, su dominio, autorización y estado contractual. Este catálogo no sustituye el código; sirve como inventario verificable para arquitectura, requisitos, pruebas y defensa Capstone.
 
-## 2. Autenticación
+## 2. Cadena de seguridad
 
-| Método | Ruta | Función |
-|---|---|---|
-| GET | `/auth/me` | identidad y rol efectivo |
-| POST | `/auth/reset-password-link` | recuperación administrativa/autorizada |
-| POST | `/auth/my/reset-password-link` | recuperación propia |
-| POST | `/auth/password` | cambio de contraseña propia |
+En rutas protegidas, la secuencia general es:
 
-## 3. Usuarios
+```text
+Bearer Firebase
+→ firebaseAuth
+→ ensureUser
+→ enforceReadOnlyRole
+→ authorize(action) / requireAnyRole / requireSelfOrAdmin
+→ handler
+→ service de dominio
+→ PostgreSQL
+```
 
-| Método | Ruta | Permiso | Función |
-|---|---|---|---|
-| GET | `/users` | users.manage | listar usuarios |
-| GET | `/users/:id` | self/admin | detalle autorizado |
-| PATCH | `/users/:id` | users.manage | actualización administrativa |
-| POST | `/users/:id/password` | users.manage | contraseña administrativa |
-| POST | `/admin/users` | users.manage | crear usuario |
-| PUT | `/admin/users/:id` | users.manage | editar usuario |
-| PATCH | `/admin/users/:id/activar` | users.manage | activar |
-| PATCH | `/admin/users/:id/desactivar` | users.manage | desactivar |
-| POST | `/admin/users/:id/reset-password-link` | users.manage | enlace reset |
-| POST | `/admin/users/:id/set-password` | users.manage | establecer contraseña |
+El rol efectivo se obtiene desde `pmp.usuarios`. Los claims o campos enviados por el cliente no otorgan permisos.
 
-Controles: último Admin, autoedición de privilegios, conflicto identidad.
+## 3. Convenciones
 
-## 4. Activos
-
-| Método | Ruta | Acción |
-|---|---|---|
-| GET | `/activos` | buscar activos registrados |
-| POST | `/activos` | alta de maestro |
-| POST | `/activos/recepcion/validar` | validar captura inicial |
-| POST | `/activos/recepcion` | confirmar recepción inicial |
-
-GET usa `assets.read`; escrituras usan `assets.register`.
-
-## 5. Requerimientos
-
-| Método | Ruta | Acción |
-|---|---|---|
-| GET | `/requerimientos` | listar casos |
-| GET | `/requerimientos/:id` | detalle |
-| POST | `/requerimientos` | crear caso + OS |
-| POST | `/requerimientos/:id/pod` | registrar intervención PoD |
-| GET | catálogos/búsquedas del módulo | activos/buses/maestros permitidos |
-
-Crear corresponde a Logística.
-
-## 6. Órdenes / Terreno
-
-| Método | Ruta | Acción |
-|---|---|---|
-| GET | `/os/activos-operativos` | activos en operación para Terreno |
-| GET | `/os/pendientes-retiro` | pendientes para asignación |
-| POST | `/os/asignar-retiro` | asignar técnico |
-| POST | `/os/validar-identidad-retiro` | validar equipo físico |
-| POST | `/os/discrepancia-retiro` | registrar discrepancia |
-| POST | `/os/confirmar-retiro` | confirmar retiro físico |
-| GET | `/os` | consulta global autorizada |
-| POST | `/os/crear` | reportar falla |
-| POST | `/os/completar-instalacion` | completar instalación |
-| GET | `/os/mis-ordenes` | órdenes propias |
-| GET | `/os/:id` | detalle autorizado |
-
-## 7. Bodega / Logística
-
-| Método | Ruta | Acción |
-|---|---|---|
-| GET | `/bodega/inventario` | proyección de inventario |
-| GET | `/bodega/despacho/destinos` | destinos/contexto de instalación |
-| POST | `/bodega/despacho/validar` | validar equipo para despacho |
-| POST | `/bodega/despacho/confirmar` | confirmar despacho + crear IN |
-| POST | `/bodega/recepcion-terreno/validar` | validar recepción Terreno |
-| GET | `/bodega/queue` | cola operacional |
-| PUT | `/bodega/receive` | confirmar recepción |
-| POST | `/bodega/dispatch-lab/validar` | validar salida Lab |
-| PUT | `/bodega/dispatch-lab` | confirmar salida Lab |
-| POST | `/bodega/dispatch-qa/validar` | validar salida QA |
-| PUT | `/bodega/dispatch-qa` | confirmar salida QA |
-| GET | `/bodega/stock` | stock elegible |
-| GET | `/bodega/repuestos` | repuestos |
-| PUT | `/bodega/solicitudes/:id/entregar` | entregar repuesto |
-| GET | `/bodega/tecnicos` | técnicos Terreno |
-| GET | `/bodega/dashboard` | KPI Bodega |
-
-Rutas legacy de asignación directa retornan conflicto/410 cuando corresponde.
-
-## 8. Laboratorio
-
-| Método | Ruta | Permiso | Acción |
-|---|---|---|---|
-| GET | `/lab/supervision` | lab.supervise | resumen/carga/SLA |
-| GET | `/lab/reception` | lab.supervise | bandeja recepción |
-| GET | `/lab/custody/:code` | lab.custody | contexto custodia |
-| POST | `/lab/custody/:code/RECEPCION/validar` | lab.custody | validar recepción |
-| POST | `/lab/custody/:code/RECEPCION/confirmar` | lab.custody | confirmar recepción |
-| POST | `/lab/custody/:code/SALIDA/validar` | lab.custody | validar salida |
-| POST | `/lab/custody/:code/SALIDA/confirmar` | lab.custody | confirmar salida |
-| GET | `/lab/technicians` | lab.read | técnicos |
-| PUT | `/lab/assign` | lab.assign | asignar/reasignar |
-| GET | `/lab/queue/:type` | lab.read | cola por tipo |
-| PUT | `/lab/move` | lab.work | iniciar cambio técnico |
-| GET | `/lab/work/:codigoOs` | lab.work | trabajo técnico |
-| PUT | `/lab/work/:codigoOs` | lab.work | guardar avance |
-| POST | `/lab/finish` | lab.work | cierre técnico |
-| POST | `/lab/request-part` | lab.work | solicitar necesidad |
-| GET | `/lab/parts` | warehouse.read | consulta logística |
-| GET | `/lab/completed` | lab.read | completados |
-
-`/lab/dispatch-qa` legacy retorna 410 y obliga a custodia explícita.
-
-## 9. QA
-
-| Método | Ruta | Acción |
-|---|---|---|
-| GET | `/qa/dashboard` | dashboard/etapas |
-| GET | `/qa/queue` | cola |
-| GET | `/qa/incoming` | entradas |
-| GET | `/qa/:code/work` | detalle |
-| POST | `/qa/:code/:purpose/validar` | validar evidencia física |
-| POST | `/qa/:code/actions/:action` | comando de etapa |
-
-Las rutas `/qa/assign`, `/qa/start` y `/qa/process` retornan 410 para impedir el flujo legacy.
-
-## 10. Escaneo físico
-
-| Método | Ruta | Acción |
-|---|---|---|
-| GET | `/equipment-scan/resolve` | resolver identificador |
-| POST | `/equipment-scan/confirm` | confirmar captura autorizada |
-
-Las estaciones válidas dependen del rol.
-
-## 11. Bridge / referencias
-
-| Método | Ruta | Acción |
-|---|---|---|
-| GET | `/bridge/buscar` | buscar referencia/activo/OS |
-| GET | `/bridge/activos/:tipo/:serie/historial` | historial |
-| GET | `/bridge` | listar correlaciones |
-| POST | `/bridge` | crear correlación |
-
-Bridge no ejecuta movimientos.
-
-## 12. Dashboards y búsqueda
-
-| Método | Ruta | Acción |
-|---|---|---|
-| GET | `/dashboard/executive` | dashboard ejecutivo |
-| GET | `/dashboard/summary` | resumen |
-| GET | `/dashboard/equipos-operativos` | activos operativos |
-| GET | `/dashboard/global-search` | búsqueda transversal |
-| GET | `/dashboard/badges` | badges operacionales |
-| GET | `/admin/stats` | estadísticas autorizadas |
-| GET | `/admin/dispatch-queue` | cola de consulta |
-
-## 13. Maestros
-
-| Método | Ruta |
+| Estado | Significado |
 |---|---|
-| GET | `/master/terminales` |
-| GET | `/master/psts` |
+| Activa | forma parte del contrato V2.0 |
+| Consulta | lectura/supervisión, sin mutación operacional |
+| Self-service | operación sobre la propia identidad |
+| Bloqueada | ruta existente que devuelve error controlado por política |
+| Retirada | compatibilidad explícita; devuelve 410 |
 
-## 14. IA
+## 4. Autenticación y seguridad personal
 
-| Método | Ruta | Permiso |
-|---|---|---|
-| GET | `/ai/predictive-report` | supervision.read |
+| Método | Ruta | Guard | Estado | Propósito |
+|---|---|---|---|---|
+| GET | `/auth/me` | usuario autenticado/activo | Self-service | identidad PostgreSQL + contexto Firebase |
+| POST | `/auth/reset-password-link` | usuario autenticado/activo | Self-service | generar enlace para propia cuenta |
+| POST | `/auth/my/reset-password-link` | usuario autenticado/activo | Self-service | variante explícita self-service |
+| POST | `/auth/password` | usuario autenticado/activo | Self-service | cambiar contraseña propia en Firebase |
 
-## 15. Health / documentación
+## 5. Administración de usuarios
 
-- `GET /api/health`
-- Swagger UI: `/docs`
+| Método | Ruta | Guard | Estado | Propósito |
+|---|---|---|---|---|
+| GET | `/users` | `users.manage` | Activa | listar/filtrar usuarios |
+| GET | `/users/:id` | self o Admin | Activa | consultar una cuenta autorizada |
+| PATCH | `/users/:id` | `users.manage` | Activa | editar cuenta con protección administrativa |
+| POST | `/users/:id/password` | `users.manage` | Activa | operación administrativa de contraseña |
+| POST | `/admin/users` | `users.manage` | Activa | crear Firebase + PostgreSQL |
+| PUT | `/admin/users/:id` | `users.manage` | Activa | editar usuario |
+| PATCH | `/admin/users/:id/activar` | `users.manage` | Activa | activar cuenta |
+| PATCH | `/admin/users/:id/desactivar` | `users.manage` | Activa | desactivar cuenta |
+| POST | `/admin/users/:id/reset-password-link` | `users.manage` | Activa | generar recuperación |
+| POST | `/admin/users/:id/set-password` | `users.manage` | Activa | establecer contraseña Firebase |
 
-## 16. Contrato de errores
+Protecciones: último Admin, autoedición de privilegios/estado y rol oficial.
 
-| HTTP | Uso |
+## 6. Activos y recepción inicial
+
+El router aplica `assets.read` a GET y `assets.register` a mutaciones.
+
+| Método | Ruta | Estado | Propósito |
+|---|---|---|---|
+| GET | `/activos` | Activa | buscar activos registrados y estado derivado |
+| POST | `/activos` | Activa | registrar maestro; no crea OS |
+| POST | `/activos/recepcion/validar` | Activa | validar identidad/presencia inicial |
+| POST | `/activos/recepcion` | Activa | confirmar recepción inicial sin OS |
+
+## 7. Requerimientos y casos
+
+| Método | Ruta | Acción | Propósito |
+|---|---|---|---|
+| GET | `/requerimientos` | `requirements.read` | listar casos |
+| GET | `/requerimientos/:id` | `requirements.read` | detalle de caso |
+| POST | `/requerimientos` | `requirements.create` | crear caso + OS |
+| POST | `/requerimientos/:id/pod` | `requirements.create` | registrar/actualizar clasificación PoD autorizada |
+
+El servicio valida activo registrado, operación en bus, terminal/PST, intervención activa y referencia externa.
+
+## 8. OS y Terreno
+
+| Método | Ruta | Acción | Propósito |
+|---|---|---|---|
+| GET | `/os/activos-operativos` | `terrain.work` | activos operativos autorizados |
+| GET | `/os/pendientes-retiro` | `terrain.assign.read` | retiros pendientes |
+| POST | `/os/asignar-retiro` | `terrain.assign` | asignar técnico Terreno |
+| POST | `/os/validar-identidad-retiro` | `terrain.work` | validar identidad física |
+| POST | `/os/discrepancia-retiro` | `terrain.work` | registrar discrepancia |
+| POST | `/os/confirmar-retiro` | `terrain.work` | confirmar retiro físico |
+| GET | `/os` | `supervision.read` | consulta global autorizada |
+| POST | `/os/crear` | `terrain.work` | reporte de falla desde Terreno |
+| POST | `/os/completar-instalacion` | `terrain.work` | completar instalación asignada |
+| GET | `/os/mis-ordenes` | `orders.read` + scope | órdenes del actor |
+| GET | `/os/:id` | `orders.read` + scope | detalle autorizado |
+
+## 9. Bodega / Logística
+
+| Método | Ruta | Acción | Estado | Propósito |
+|---|---|---|---|---|
+| GET | `/bodega/inventario` | `warehouse.read` | Activa | parque/stock/disponibilidad |
+| GET | `/bodega/despacho/destinos` | `warehouse.read` | Activa | contexto/destinos para instalación |
+| POST | `/bodega/despacho/validar` | `warehouse.move` | Activa | validar identidad/elegibilidad |
+| POST | `/bodega/despacho/confirmar` | `warehouse.move` | Activa | confirmar salida + crear IN |
+| POST | `/bodega/recepcion-terreno/validar` | `warehouse.move` | Activa | evidencia recepción desde Terreno |
+| GET | `/bodega/queue` | `warehouse.read` | Activa | cola de recepciones/despachos |
+| GET | `/bodega/qa-users` | `users.manage` | Consulta | helper administrativo de cuentas QA |
+| PUT | `/bodega/receive` | `warehouse.move` | Activa | confirmar recepción en Bodega |
+| POST | `/bodega/dispatch-lab/validar` | `warehouse.move` | Activa | validar salida a Lab |
+| PUT | `/bodega/dispatch-lab` | `warehouse.move` | Activa | confirmar salida a Lab |
+| POST | `/bodega/dispatch-qa/validar` | `warehouse.move` | Activa | validar salida QA |
+| PUT | `/bodega/dispatch-qa` | `warehouse.move` | Activa | confirmar salida QA |
+| GET | `/bodega/stock` | `warehouse.read` | Activa | stock elegible |
+| GET | `/bodega/repuestos` | `warehouse.read` | Activa | inventario de repuestos |
+| PUT | `/bodega/solicitudes/:id/entregar` | `warehouse.move` | Activa | entregar repuesto y descontar stock |
+| GET | `/bodega/tecnicos` | `warehouse.read` | Activa | técnicos Terreno disponibles |
+| GET | `/bodega/dashboard` | `warehouse.read` | Activa | KPI logísticos |
+| PUT | `/bodega/repuestos/:id/stock` | `warehouse.move` | Bloqueada 409 | sobrescritura directa de stock sin política |
+| PUT | `/bodega/asignar` | `warehouse.move` | Retirada 410 | reemplazada por despacho Physical First |
+
+## 10. Laboratorio
+
+| Método | Ruta | Acción | Estado | Propósito |
+|---|---|---|---|---|
+| GET | `/lab/supervision` | `lab.supervise` | Consulta | KPI/carga/SLA |
+| GET | `/lab/reception` | `lab.supervise` | Consulta | En camino/Recibidos/Incidencias/Historial |
+| GET | `/lab/custody/:code` | `lab.custody` | Activa | contexto de custodia |
+| POST | `/lab/custody/:code/RECEPCION/validar` | `lab.custody` | Activa | validar recepción |
+| POST | `/lab/custody/:code/RECEPCION/confirmar` | `lab.custody` | Activa | confirmar recepción |
+| POST | `/lab/custody/:code/SALIDA/validar` | `lab.custody` | Activa | validar salida |
+| POST | `/lab/custody/:code/SALIDA/confirmar` | `lab.custody` | Activa | confirmar salida |
+| GET | `/lab/technicians` | `lab.read` | Consulta | técnicos activos |
+| PUT | `/lab/assign` | `lab.assign` | Activa | asignar/reasignar |
+| GET | `/lab/queue/:type` | `lab.read` | Consulta | cola técnica por tipo |
+| PUT | `/lab/move` | `lab.work` | Activa | transición técnica autorizada |
+| GET | `/lab/work/:codigoOs` | `lab.work` + scope | Activa | cargar trabajo propio |
+| PUT | `/lab/work/:codigoOs` | `lab.work` + scope | Activa | guardar avance |
+| POST | `/lab/finish` | `lab.work` + scope | Activa | cierre técnico |
+| POST | `/lab/request-part` | `lab.work` + scope | Activa | solicitar necesidad de repuesto |
+| GET | `/lab/parts` | `warehouse.read` | Consulta | consulta logística; no habilita técnico Lab |
+| GET | `/lab/completed` | `lab.read` | Consulta | completados |
+| POST | `/lab/dispatch-qa` | `lab.custody` | Retirada 410 | salida directa a QA retirada; usar salida Lab→Bodega |
+
+## 11. QA
+
+| Método | Ruta | Acción | Estado | Propósito |
+|---|---|---|---|---|
+| GET | `/qa/dashboard` | `qa.read` | Activa | dashboard por etapas |
+| GET | `/qa/queue` | `qa.read` | Activa | cola QA |
+| GET | `/qa/incoming` | `qa.read` | Activa | entradas pendientes |
+| GET | `/qa/:code/work` | `qa.read` | Activa | detalle/revisión |
+| POST | `/qa/:code/:purpose/validar` | `qa.work` | Activa | validar evidencia física |
+| POST | `/qa/:code/actions/:action` | `qa.work` | Activa | comando de recepción/Ambiente/pruebas/dictamen/salida |
+| PUT | `/qa/assign` | `qa.work` | Retirada 410 | asignación administrativa retirada |
+| POST | `/qa/start` | `qa.work` | Retirada 410 | flujo genérico retirado |
+| POST | `/qa/process` | `qa.work` | Retirada 410 | flujo genérico retirado |
+
+## 12. Bridge / historial
+
+El router aplica autenticación + usuario PostgreSQL y permite lectura a roles autorizados. Para Técnico Terreno/Jefe Laboratorio, la consulta de historial usa una proyección técnica restringida.
+
+| Método | Ruta | Estado | Propósito |
+|---|---|---|---|
+| GET | `/bridge/buscar` | Activa | buscar serie/OS/referencia |
+| GET | `/bridge/activos/:tipo/:serie/historial` | Activa | historial completo o técnico según rol |
+| GET | `/bridge` | Activa | listar correlaciones; requiere `bridge.read` |
+| POST | `/bridge` | Activa | crear correlación; requiere `bridge.link` |
+
+Cualquier URL operacional antigua que continúe debajo de `/bridge/*` cae en el handler final y devuelve **410 BRIDGE_CORRELATION_ONLY**.
+
+## 13. Escaneo / resolución física
+
+| Método | Ruta | Acción | Propósito |
+|---|---|---|---|
+| GET | `/equipment-scan/resolve` | `scan.read` | resolver serie/AMID/identificador |
+| POST | `/equipment-scan/confirm` | `scan.validate` | confirmar captura autorizada según estación |
+
+La ruta genérica de escaneo no sustituye los validadores de propósito específicos de Bodega/Lab/QA.
+
+## 14. Dashboards, búsqueda y badges
+
+| Método | Ruta | Guard | Propósito |
+|---|---|---|---|
+| GET | `/dashboard/executive` | `supervision.read` | dashboard ejecutivo |
+| GET | `/dashboard/summary` | `supervision.read` | resumen operativo global |
+| GET | `/dashboard/equipos-operativos` | `warehouse.read` | equipos en operación |
+| GET | `/dashboard/global-search` | guard propio del router | búsqueda transversal |
+| GET | `/dashboard/badges` | cualquier rol oficial autenticado | contadores Sidebar; Jefe Lab recibe proyección limitada |
+| GET | `/admin/stats` | `supervision.read` | estadísticas de supervisión |
+| GET | `/admin/dispatch-queue` | `supervision.read` | cola de consulta |
+| POST | `/admin/dispatch` | `lab.custody` | **Retirada 410**; exige custodia explícita por equipo |
+
+## 15. Maestros
+
+| Método | Ruta | Guard | Propósito |
+|---|---|---|---|
+| GET | `/master/terminales` | cualquier rol oficial | terminales |
+| GET | `/master/psts` | cualquier rol oficial | operadores PST |
+
+## 16. Inteligencia operacional
+
+| Método | Ruta | Acción | Propósito |
+|---|---|---|---|
+| GET | `/ai/predictive-report` | `supervision.read` | ejecutar analizador Python y retornar JSON |
+
+El endpoint no modifica operación ni stock.
+
+## 17. Health y documentación
+
+- `GET /api/health` — health sin contrato de negocio.
+- `/docs` — Swagger UI.
+
+## 18. Códigos HTTP de dominio
+
+| Código | Uso V2.0 |
 |---:|---|
-| 400 | petición malformada puntual |
-| 401 | autenticación ausente/inválida |
+| 200/201 | operación/creación exitosa |
+| 400 | payload malformado o validación básica |
+| 401 | token/sesión inválida o ausente |
 | 403 | rol/scope no autorizado |
 | 404 | recurso inexistente |
-| 409 | estado/custodia/evidencia/conflicto |
-| 410 | flujo legacy retirado |
-| 422 | validación de negocio/campos |
-| 500 | error inesperado |
+| 409 | conflicto de estado, custodia, evidencia, stock o reintento |
+| 410 | flujo retirado intencionalmente |
+| 422 | regla de negocio/campo incompatible |
+| 500 | fallo inesperado; no debe usarse para ocultar errores de dominio conocidos |
 
-## 17. Principio de idempotencia
+## 19. Idempotencia y concurrencia
 
-Movimientos físicos y cierres relevantes almacenan evidencia/firma/contexto. Un reintento idéntico puede devolverse como duplicado; un reintento con contexto distinto se rechaza.
+Movimientos/entregas/cierres críticos revalidan contexto dentro de transacción. La implementación utiliza bloqueos, índices/firmas y evidencia del ciclo para distinguir:
+
+- repetición compatible;
+- duplicado ya aplicado;
+- reintento con contexto distinto;
+- evidencia antigua.
+
+## 20. Trazabilidad documental
+
+- requisitos: `01_Requerimientos/ERS_PMP_Suite_V2.0.md`;
+- arquitectura: `Arquitectura_Integral_PMP_Suite_V2.0.md`;
+- datos: `MODELO_DATOS_DICCIONARIO_V2.0.md`;
+- pruebas: `08_Pruebas/MATRIZ_TRAZABILIDAD_V2.0.md`.
