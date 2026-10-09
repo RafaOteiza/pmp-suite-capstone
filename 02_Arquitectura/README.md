@@ -1,29 +1,30 @@
 # PMP Suite — Arquitectura
 
-**Estado:** vigente — 09-10-2026
+**Versión documental:** V2.0  
+**Actualización:** 09-10-2026
 
-Esta carpeta describe la arquitectura real del sistema. Los diagramas y textos se subordinan al código vigente y a las evidencias de `08_Pruebas/`.
+Esta carpeta contiene la única línea arquitectónica vigente del proyecto.
 
-## Mapa documental
+## Documentos V2.0
 
-1. [Contexto](Arquitectura_01_Contexto.md)
-2. [Backend](Arquitectura_02_Backend.md)
-3. [Frontend Web](Arquitectura_03_Frontend_Web.md)
-4. [Frontend Mobile](Arquitectura_04_Frontend_Mobile.md)
-5. [Despliegue](Arquitectura_05_Despliegue.md)
-6. [Flujos de datos](Arquitectura_06_Flujos_Datos.md)
-7. [Base de datos / ERD](Arquitectura_07_Base_Datos_ERD.md)
-8. [Casos, requerimientos y despacho](CASOS_REQUERIMIENTOS_DESPACHO.md)
-9. [Proyección Ubuntu](DEPLOYMENT_UBUNTU.md)
+1. [Contexto](Arquitectura_01_Contexto_V2.0.md)
+2. [Backend](Arquitectura_02_Backend_V2.0.md)
+3. [Frontend Web](Arquitectura_03_Frontend_Web_V2.0.md)
+4. [Frontend Mobile](Arquitectura_04_Frontend_Mobile_V2.0.md)
+5. [Despliegue](Arquitectura_05_Despliegue_V2.0.md)
+6. [Flujos de datos](Arquitectura_06_Flujos_Datos_V2.0.md)
+7. [Base de datos / ERD](Arquitectura_07_Base_Datos_ERD_V2.0.md)
+8. [Casos, requerimientos y despacho](CASOS_REQUERIMIENTOS_DESPACHO_V2.0.md)
+9. [Proyección Ubuntu](DEPLOYMENT_UBUNTU_V2.0.md)
 
 ## Decisiones vigentes
 
-- Arquitectura Web + API Node/Express + PostgreSQL + Firebase + Python + Expo.
-- PostgreSQL es autoridad de rol/estado activo; Firebase autentica.
-- Autorización sensible centralizada, sin wildcard Admin.
-- Custodia Physical First y evidencia por movimiento/ciclo.
-- Bridge es correlador, no motor operacional.
-- Identidad de activo: tipo + serie.
+- Web React/Vite + API Node/Express + PostgreSQL + Firebase + Python + Expo.
+- PostgreSQL define rol/estado efectivo; Firebase autentica.
+- Autorización por acción, sin wildcard Admin.
+- Custodia Physical First por movimiento/ciclo.
+- Bridge solo correlaciona.
+- Activo = tipo + serie.
 - Regla modelo/marca compartida en `shared/assetIdentity.js`.
-- Estado derivado de hechos/eventos; no confiar solo en representación visual.
-- Escrituras críticas transaccionales e idempotencia controlada.
+- Escrituras críticas transaccionales e idempotentes.
+- Pruebas destructivas únicamente en PostgreSQL efímero/desechable.

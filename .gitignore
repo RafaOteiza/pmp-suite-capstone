@@ -8,6 +8,7 @@
 **/.venv/
 **/scratch/
 *.py[cod]
+*.tsbuildinfo
 
 # Configuración local y credenciales
 **/.env
@@ -23,30 +24,25 @@
 *.pfx
 *.key
 
-# Metadatos locales de herramientas
+# Metadatos y temporales locales
 .agents/
 .codex/
 .DS_Store
 Thumbs.db
 *.log
+/.local/
+/tmp/
+
+# Respaldos
+Respaldos/
+*.dump
+*.backup
+*.bak
+
+# Artefactos experimentales de IA no usados por V2.0
+06_ModelosIA/datasets/
+06_ModelosIA/modelos/
+06_ModelosIA/seed_ai_cases.sql
 
 # Repositorios anidados
 **/.git/
-
-# Respaldos privados y resultados locales de verificación (sin entorno demo)
-Respaldos/
-.local/pmp-verification/
-
-# Temporales, datos locales y respaldos adicionales
-/.local/
-/tmp/
-*.tsbuildinfo
-*.dump
-*.backup
-*.bak
-/.local/
-/tmp/
-*.tsbuildinfo
-*.dump
-*.backup
-*.bak

@@ -1,5 +1,7 @@
 # PMP Suite — Guía de marca y tokens
 
+**Versión documental:** V2.0
+
 ## Marca
 
 El isotipo combina equipo embarcado, nodos de estado y una ruta conectada. La marca debe conservar proporciones y legibilidad.

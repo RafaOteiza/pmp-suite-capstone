@@ -1,63 +1,29 @@
 # Frontend Web PMP Suite
 
+**Versión documental:** V2.0  
 **Stack:** React 18 + TypeScript + Vite  
-**Estado:** vigente — 09-10-2026
+**Actualización:** 09-10-2026
 
 ## Ejecución
-
 ```powershell
 cd 04_Frontend
 npm install
 npm run dev
 ```
-
 URL habitual: `http://localhost:5173`.
 
 ## Organización
-
-- `src/app/rbac.ts`: capacidades por rol.
-- `src/app/navigation.ts`: navegación derivada.
-- `src/api/`: cliente y contratos HTTP.
-- `src/pages/`: vistas.
-- `src/components/`: UI compartida.
-- `src/styles/`: tokens y estilos de dominio.
-- `test/`: regresiones funcionales/visuales.
-
-## Roles y experiencia
-
-La interfaz adapta navegación a cada rol, pero el backend sigue siendo la autoridad.
-
-- Admin: Supervisión global + Usuarios.
-- Gerente: Dashboard ejecutivo y consultas.
-- Jefe Laboratorio: Gestión de Laboratorio.
-- Logística: Bodega y operaciones logísticas.
-- QA: Mi trabajo QA.
-- Técnico Lab: Mi carga.
-- Técnico Terreno: Mi jornada/Mis OS.
+`src/app/rbac.ts` define capacidades; `src/app/navigation.ts` arma la navegación; `src/api/`, `src/pages/`, `src/components/` y `src/styles/` contienen la experiencia Web.
 
 ## Diseño
-
-PMP Suite conserva Navy, Azul y Turquesa del Brand Kit, con semántica verde/ámbar/rojo/azul/gris.
-
-Objetivos:
-
-- compacto sin `zoom`;
-- claro/oscuro;
-- responsive;
-- sin overflow horizontal;
-- foco visible;
-- vacíos/errores/carga diferenciados;
-- componentes compartidos.
+Identidad PMP Suite, claro/oscuro, responsive, densidad compacta sin `zoom`, foco visible y feedback inline.
 
 ## Pruebas
-
 ```powershell
 npm test
 npm run build
 ```
+Última línea V2.0: **176/177** y build aprobado. El fallo restante es un fixture de mock conocido.
 
-La consolidación RBAC del 09-10-2026 registró **176/177 pruebas Web** y build aprobado. El único fallo documentado es un fixture de mock pendiente; no debe ocultarse en la documentación.
-
-## Pendiente UX conocido
-
-En Usuarios y accesos, el editor se renderiza actualmente debajo de la tabla. Funciona, pero su visibilidad debe mejorarse con scroll/foco o patrón equivalente.
+## Pendiente UX
+En Usuarios y accesos, el editor aparece debajo de la tabla. Es funcional, pero debe mejorar su visibilidad automática.
