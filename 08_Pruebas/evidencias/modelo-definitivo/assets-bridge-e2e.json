@@ -1,0 +1,45 @@
+{
+  "ok": true,
+  "isolation": {
+    "method": "clúster PostgreSQL efímero con schema-only y fixtures propios",
+    "database": "postgres en servidor local efímero",
+    "firebaseUsersCreated": false,
+    "sourceDatabaseWritten": false,
+    "fixture": {
+      "prefix": "E2E_BRIDGE_TEST",
+      "busAlias": "E2EBT001",
+      "users": 9,
+      "usesOperationalRows": false
+    }
+  },
+  "steps": [],
+  "positive": [
+    "Snapshot operacional idéntico tras vínculos y errores",
+    "Duplicados concurrentes protegidos",
+    "Búsqueda global resuelve serie/OS/Aranda al activo",
+    "Asignación HTTP normal de OS vinculada funciona",
+    "13 OS por serie, referencias múltiples y heredadas",
+    "Consolas y validadores aislados por tipo",
+    "Equipo sin OS y sin ubicación visible",
+    "Eventos de asignación normal conservados"
+  ],
+  "negative": [
+    "Roles sin escritura: 403",
+    "Acciones operacionales Bridge: 410",
+    "Serie/OS/tipo inconsistentes: 422",
+    "Campos de operación: 422",
+    "Duplicados: 409",
+    "Identidad histórica inmutable"
+  ],
+  "cleanup": {
+    "users": 0,
+    "equipment": 0,
+    "buses": 0,
+    "terminals": 0,
+    "pst": 0,
+    "bridges": 0,
+    "service_orders": 0,
+    "temporary_databases": 0,
+    "temporaryFiles": 0
+  }
+}

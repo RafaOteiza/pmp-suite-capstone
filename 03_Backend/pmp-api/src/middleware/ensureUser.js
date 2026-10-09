@@ -1,4 +1,5 @@
 // src/middleware/ensureUser.js
+import {VALID_ROLES} from "../constants/roles.js";
 import { pool } from "../db.js";
 
 export function createEnsureUser(dbPool = pool) {
@@ -12,12 +13,11 @@ export function createEnsureUser(dbPool = pool) {
 
       const userRes = await dbPool.query(
         `
-        SELECT id, nombre, apellido, correo, rol, activo
+        SELECT id, nombre, apellido, correo, rol, activo, firebase_uid
         FROM pmp.usuarios
-        WHERE lower(correo) = lower($1)
-        LIMIT 1;
+        WHERE firebase_uid=$1 OR lower(correo)=lower($2);
         `,
-        [email]
+        [fb.uid,email]
       );
 
       if (userRes.rowCount === 0) {
@@ -27,16 +27,21 @@ export function createEnsureUser(dbPool = pool) {
         });
       }
 
+      if(userRes.rowCount!==1)return res.status(403).json({code:'IDENTITY_CONFLICT',message:'La identidad no tiene una vinculación única. Solicita revisión al administrador.'});
       const user = userRes.rows[0];
+      if((user.firebase_uid&&user.firebase_uid!==fb.uid)||String(user.correo).toLowerCase()!==email.toLowerCase())
+        return res.status(403).json({code:'IDENTITY_CONFLICT',message:'La identidad autenticada no coincide con su vinculación. Requiere revisión administrativa.'});
 
-      if (user.activo === false) {
+      if (user.activo !== true) {
         return res.status(403).json({
-          error: "Usuario inactivo",
+          code: "USER_INACTIVE", error: "Usuario inactivo",
           detail: "El usuario existe, pero esta deshabilitado en la base de datos."
         });
       }
 
       const rol = user.rol ? String(user.rol).trim() : null;
+
+      if(!VALID_ROLES.includes(rol)) return res.status(403).json({code:"INVALID_ROLE",message:"Rol no autorizado"});
 
       req.user = {
         id: user.id,

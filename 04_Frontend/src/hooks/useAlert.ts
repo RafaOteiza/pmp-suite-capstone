@@ -1,9 +1,9 @@
 import { useState, useCallback } from "react";
-import { ModalType } from "../components/CustomModal";
+import { FeedbackType } from "../components/InlineFeedback";
 
-export interface ModalState {
+export interface FeedbackState {
     isOpen: boolean;
-    type: ModalType;
+    type: FeedbackType;
     title: string;
     message: string;
     onConfirm: () => void;
@@ -11,7 +11,7 @@ export interface ModalState {
 }
 
 export function useAlert() {
-    const [modal, setModal] = useState<ModalState>({
+    const [feedback, setFeedback] = useState<FeedbackState>({
         isOpen: false,
         type: 'info',
         title: '',
@@ -19,8 +19,8 @@ export function useAlert() {
         onConfirm: () => {}
     });
 
-    const showAlert = useCallback((type: ModalType, title: string, message: string, onConfirm?: () => void, confirmText?: string) => {
-        setModal({
+    const showAlert = useCallback((type: FeedbackType, title: string, message: string, onConfirm?: () => void, confirmText?: string) => {
+        setFeedback({
             isOpen: true,
             type,
             title,
@@ -31,7 +31,7 @@ export function useAlert() {
     }, []);
 
     const showConfirm = useCallback((title: string, message: string, onConfirm: () => void, confirmText?: string) => {
-        setModal({
+        setFeedback({
             isOpen: true,
             type: 'confirm',
             title,
@@ -42,11 +42,11 @@ export function useAlert() {
     }, []);
 
     const closeAlert = useCallback(() => {
-        setModal(prev => ({ ...prev, isOpen: false }));
+        setFeedback(prev => ({ ...prev, isOpen: false }));
     }, []);
 
     return {
-        modal,
+        feedback,
         showAlert,
         showConfirm,
         closeAlert

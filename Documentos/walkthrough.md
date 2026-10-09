@@ -53,7 +53,7 @@ El sistema Frontend ha sido completamente fortificado para asegurar que las oper
 ### 1. Protección de Rutas ("URL Spoofing")
 Se implementó el componente `<ProtectedRoute>` bloqueando el acceso a URLs directas si el rol del usuario no coincide con los autorizados:
 - **Terreno / Ingreso**: Exclusivo para `tecnico_terreno` (y `admin`).
-- **Laboratorio**: Exclusivo para `tecnico_laboratorio` (diagnóstico/reparación), y `jefe_taller` (asignación/despacho).
+- **Laboratorio**: `admin` controla asignación, recepción y despacho; `tecnico_laboratorio` diagnostica y repara su carga asignada.
 - **QA**: Exclusivo para personal `qa` y jefaturas.
 - **Logística**: Exclusivo para `logistica` o `bodega`.
 

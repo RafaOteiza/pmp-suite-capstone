@@ -1,0 +1,113 @@
+{
+  "ok": true,
+  "applied": false,
+  "dryRun": true,
+  "idempotent": true,
+  "historicalRowsUnchanged": true,
+  "tables": {
+    "bridge_mantenimiento": {
+      "registros": 0,
+      "firma": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "bridge_referencias": {
+      "registros": 0,
+      "firma": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "bridges": {
+      "registros": 1,
+      "firma": "6e28b5896a35d781021328570d030056"
+    },
+    "buses": {
+      "registros": 347,
+      "firma": "ded24df1634ef624ab7983d0c810cea8"
+    },
+    "casos_operacionales": {
+      "registros": 0,
+      "firma": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "config_estado_ubicacion": {
+      "registros": 14,
+      "firma": "b4fd05b7269f32749406cf1add68c0b8"
+    },
+    "consolas": {
+      "registros": 50,
+      "firma": "334c4d54c68dee4683c7839369329395"
+    },
+    "escaneos_equipos": {
+      "registros": 2,
+      "firma": "83c5a80399228dcff6c2855d4fe753ce"
+    },
+    "estados": {
+      "registros": 13,
+      "firma": "462f5824f1d0753b41a2e672af2c405e"
+    },
+    "flujo_eventos": {
+      "registros": 4,
+      "firma": "7c6a727202ba535518c39a42453f3663"
+    },
+    "guia_detalle": {
+      "registros": 0,
+      "firma": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "guias": {
+      "registros": 0,
+      "firma": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "instalaciones_equipos": {
+      "registros": 0,
+      "firma": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "ordenes_servicio": {
+      "registros": 100,
+      "firma": "7e832e052394e0c41778d5a41e53c20c"
+    },
+    "os_historial_activo": {
+      "registros": 6,
+      "firma": "5586110e10bb743394376f43ff9256ff"
+    },
+    "pst": {
+      "registros": 15,
+      "firma": "024521c6fb55d9b0434f5e96f90d765a"
+    },
+    "qa_inspecciones": {
+      "registros": 0,
+      "firma": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "registro_reparaciones": {
+      "registros": 25,
+      "firma": "83bc47bd735b0d13222688ce5ff1105d"
+    },
+    "repuestos": {
+      "registros": 24,
+      "firma": "869f6373509014fe253e88b69b39310b"
+    },
+    "solicitud_items": {
+      "registros": 0,
+      "firma": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "solicitudes_repuestos": {
+      "registros": 0,
+      "firma": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "terminal_pst": {
+      "registros": 165,
+      "firma": "5688ffc10f952dd569a84c1a9132e038"
+    },
+    "terminales": {
+      "registros": 11,
+      "firma": "cbda7452ada32902344515473b93f417"
+    },
+    "ubicaciones": {
+      "registros": 3,
+      "firma": "96dc312a31c8ea2c66208f69bbb317db"
+    },
+    "usuarios": {
+      "registros": 6,
+      "firma": "41dde7b7f6e7f63ecc546a205e12f319"
+    },
+    "validadores": {
+      "registros": 50,
+      "firma": "71af2839fdddbbcbc0eba39cdb9b2453"
+    }
+  }
+}

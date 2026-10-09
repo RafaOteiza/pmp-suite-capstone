@@ -1,65 +1,101 @@
-# PMP Suite v5.0 — Manual Global de Funcionamiento
-## "Gold & Predictive AI Edition"
+# Manual global de funcionamiento PMP Suite
 
-### 1. Visión General del Sistema
-PMP Suite es un ecosistema integral para la gestión del ciclo de vida de activos tecnológicos (Validadores y Consolas) en el transporte público. El sistema orquesta la logística inversa, la reparación técnica, el control de calidad y la analítica predictiva mediante IA, asegurando que cada activo esté plenamente trazable desde su falla en terreno hasta su re-instalación.
+> **FLUJO RETIRADO / HISTÓRICO.** Se conserva esta versión como evidencia académica. El flujo que comienza preparando/asignando una intervención Bridge ya no está vigente. Bridge solo correlaciona referencias con OS existentes. El flujo actual y su guión se describen en la [adenda de casos, ingreso y despacho](../02_Arquitectura/CASOS_REQUERIMIENTOS_DESPACHO.md) y en [Bridge de correlación](../08_Pruebas/BRIDGE_CORRELACION_Y_HISTORIAL.md).
 
----
+## Objetivo
 
-### 2. Ecosistema de Roles (RBAC)
-El acceso al sistema está segmentado por roles para garantizar la integridad del flujo:
+PMP Suite controla el ciclo de validadores y consolas desde su retiro en terreno
+hasta la reparación, certificación y reinstalación. Este manual resume la línea
+base utilizada para la validación Capstone.
 
-*   **Técnico de Terreno:** Genera las Órdenes de Servicio (OS) iniciales y retira el hardware del bus.
-*   **Bodega (Logística):** El "Hub" central. Recibe equipos de la calle, los envía a laboratorio, recibe de QA y gestiona el stock de repuestos.
-*   **Técnico de Laboratorio:** Especialista que diagnostica y repara el hardware, consumiendo repuestos del inventario.
-*   **Control QA (Calidad):** Auditor que certifica que la reparación fue exitosa. Tiene el poder de aprobar (cerrar ciclo) o rechazar (volver a laboratario).
-*   **Administrador / Jefe de Taller:** Visibilidad total, gestión de usuarios, tableros estratégicos y acceso al Módulo de IA.
+## Roles
 
----
+- `admin`: administra usuarios, asigna carga y controla la recepción y despacho
+  físico del laboratorio.
+- `gerente`: consulta global en modo de solo lectura.
+- `logistica`: opera bodega, inventario, repuestos, recepciones y despachos.
+- `tecnico_laboratorio`: diagnostica y repara órdenes asignadas.
+- `qa`: prueba y certifica equipos asignados.
+- `tecnico_terreno`: ejecuta retiros, sustituciones e instalaciones.
 
-### 3. El Ciclo de Vida del Hardware (Paso a Paso)
+PostgreSQL determina el rol efectivo. Firebase se utiliza para autenticar la
+identidad.
 
-#### Paso 1: Generación y Retiro (Terreno)
-El técnico detecta una falla, vincula un Ticket de Aranda (ITSM Externo) y crea la OS. El equipo entra en estado **"EN_TRANSITO"**.
+## Flujo del equipo
 
-#### Paso 2: Recepción en Centro Logístico (Bodega)
-El equipo físico llega a Bodega. Se registra su entrada y cambia a **"EN_BODEGA"**. Aquí, el personal de logística decide cuándo enviarlo al laboratorio según la carga de trabajo.
+1. Se prepara y asigna una intervención Bridge.
+2. Terreno registra el equipo retirado y el reemplazo instalado.
+3. El equipo retirado genera una orden y viaja a bodega.
+4. Bodega escanea y confirma la recepción.
+5. El administrador asigna laboratorio y logística despacha el equipo.
+6. El administrador escanea y recibe el activo en laboratorio.
+7. El técnico asignado diagnostica, repara y prueba.
+8. El administrador despacha el equipo reparado a bodega.
+9. Bodega recibe, asigna QA y despacha a certificación.
+10. QA escanea, prueba y aprueba o rechaza.
+11. Si aprueba, bodega recibe el activo y lo deja disponible.
+12. Logística asigna una instalación y terreno confirma el retorno al bus.
 
-#### Paso 3: Intervención Técnica (Laboratorio)
-El equipo cambia a **"EN_DIAGNOSTICO"**. El técnico registra la falla real, las acciones tomadas y los repuestos usados. Al terminar, el equipo viaja a la zona de certificación.
+Si QA rechaza, registra una observación y el equipo vuelve al circuito de
+laboratorio mediante bodega.
 
-#### Paso 4: Aseguramiento de Calidad (QA)
-El auditor de QA prueba el equipo.
-*   **Si APRUEBA:** El sistema genera automáticamente una OS de Instalación (`IN-XXXX`). El equipo queda **"DISPONIBLE"** para volver al bus.
-*   **Si RECHAZA:** El equipo vuelve a Bodega para ser ingresado nuevamente al Laboratorio.
+## Identificación física
 
----
+Las estaciones aceptan pistola USB, lector 2D o ingreso manual. Los validadores
+se identifican por serie o AMID; las consolas, por serie. El sistema resuelve el
+identificador, comprueba la orden activa y registra estación, usuario, resultado
+y fecha.
 
-### 4. Integraciones Estrella (v5.0)
+## Laboratorio
 
-#### 4.1 Aranda Bridge Connector
-Permite la trazabilidad lógica-física. El sistema sugiere tickets de Aranda abiertos para evitar errores de digitación y asegura que la reparación en PMP esté vinculada a la incidencia reportada por el mandante.
+El administrador es la jefatura operacional del laboratorio. Recibe, asigna y
+despacha. El técnico de laboratorio trabaja únicamente las órdenes que tenga
+asignadas y registra el detalle técnico de la reparación.
 
-#### 4.2 Módulo de Inteligencia Artificial
-Ubicado en la sección de "Mantenimiento Predictivo", este motor analiza miles de registros históricos para:
-*   Identificar equipos **"Limón"** (que fallan recurrentemente).
-*   Calcular el **Riesgo de Falla** antes de que el equipo salga a ruta.
-*   Sugerir retiros preventivos basados en el **score de criticidad** (Semáforo Rojo/Ámbar/Verde).
+## Bodega
 
----
+Logística centraliza los movimientos físicos, el inventario y los repuestos. Un
+equipo no debe avanzar a otra estación si no se ha confirmado su recepción o si
+el estado no permite el despacho solicitado.
 
-### 5. Gestión de Stock e Inventario
-PMP Suite mantiene un inventario saneado de 201 equipos reales.
-*   **Stock de Repuestos:** Solo modificable por Logística. El sistema descuenta automáticamente unidades cuando Laboratorio finaliza una reparación.
-*   **Trazabilidad por Serie:** Cada validador y consola es único. El sistema impide que una serie aparezca en dos lugares al mismo tiempo.
+## QA
 
----
+QA trabaja sobre su carga asignada. La aprobación devuelve el equipo a bodega;
+la disponibilidad se confirma después de la recepción logística. El rechazo
+mantiene el historial y abre un nuevo ciclo de corrección.
 
-### 6. Validación y Auditoría (Pruebas)
-Para certificar que todo funciona, el sistema incluye dos suites de pruebas automáticas (en la carpeta del backend):
-1.  **`e2e_full_v2.js`:** Simula el ciclo de vida completo de 46 casos de prueba (desde terreno hasta instalado).
-2.  **`stress_test.js`:** Golpea el servidor con 14 escenarios de alta concurrencia para asegurar que no existan colisiones de datos.
+## Inteligencia operacional
 
----
+El backend ejecuta `06_ModelosIA/src/analyzer.py` con el entorno `.venv`. El
+analizador consulta PostgreSQL y entrega un reporte JSON a admin y gerente. No
+modifica estados, inventario ni usuarios.
 
-> Propiedad Intelectual de Tesis Universitaria — APT Abril 2026.
+## Ejecución
+
+```powershell
+# Backend
+cd C:\Users\raote\Documents\Duoc\Tesis\03_Backend\pmp-api
+npm run dev
+
+# Frontend
+cd C:\Users\raote\Documents\Duoc\Tesis\04_Frontend
+npm run dev
+
+# Aplicación móvil
+cd C:\Users\raote\Documents\Duoc\Tesis\07_Mobile
+npm start
+```
+
+La API utiliza el puerto 4000 y el frontend el 5173. Un dispositivo móvil debe
+usar la IP local del equipo que ejecuta la API. La dirección se configura en
+`07_Mobile/.env` mediante `EXPO_PUBLIC_API_URL`; puede copiarse como base el
+archivo `.env.example`.
+
+## Validación vigente
+
+El 12 de septiembre de 2026 se reprodujeron 52 pruebas del backend y 42 del
+frontend sin fallos. El build web finalizó correctamente y el entorno Python
+importó `psycopg2` 2.9.11.
+
+Los recorridos completos y las pruebas de carga deben documentar datos, entorno,
+resultado esperado, resultado obtenido y evidencia asociada.

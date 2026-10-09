@@ -1,37 +1,46 @@
-import { StyleSheet, Appearance, Dimensions } from 'react-native';
+import { StyleSheet, Appearance, Platform } from 'react-native';
+import {useAppearance} from '../context/AppearanceContext';
 
-const { width } = Dimensions.get('window');
+const brandFont = Platform.select({ ios: 'Arial', android: 'sans-serif', default: 'Arial' });
 
 export const colors = {
-    // PMP Suite Palette
-    primary: '#f0b90b', // Yellow
-    success: '#0ecb81', // Green
-    danger: '#f6465d',  // Red
-    info: '#3182ce',    // Blue
-    warning: '#ed8936', // Orange
+    // PMP Suite official BrandKit
+    navy: '#0D1B2A',
+    primary: '#1565C0',
+    primarySoft: '#DCEEFF',
+    technical: '#00B4B0',
+    gray: '#6B7280',
+    lightGray: '#E5E7EB',
+    white: '#FFFFFF',
+    success: '#078454',
+    danger: '#C9323E',
+    info: '#1565C0',
+    warning: '#B45309',
 
     // Theme Aware Colors
     light: {
-        bg: '#F8F9FD',
-        panel: '#ffffff',
-        card: '#ffffff',
-        text: '#1A202C',
-        border: '#EDF2F7',
-        muted: '#718096',
+        isDark: false,
+        bg: '#F5F7FA',
+        panel: '#FFFFFF',
+        card: '#FFFFFF',
+        text: '#0D1B2A',
+        border: '#E5E7EB',
+        muted: '#6B7280',
         inputBg: '#FFFFFF',
         navBg: '#FFFFFF',
-        surface: 'rgba(255, 255, 255, 0.8)',
+        surface: 'rgba(255, 255, 255, 0.92)',
     },
     dark: {
-        bg: '#0F172A',
-        panel: '#1E293B',
-        card: '#1E293B',
-        text: '#F8FAFC',
-        border: '#334155',
-        muted: '#94A3B8',
-        inputBg: '#0F172A',
-        navBg: '#1E293B',
-        surface: 'rgba(30, 41, 59, 0.8)',
+        isDark: true,
+        bg: '#07111C',
+        panel: '#0D1B2A',
+        card: '#102033',
+        text: '#F2F5F9',
+        border: '#25364B',
+        muted: '#A8B4C3',
+        inputBg: '#071421',
+        navBg: '#0D1B2A',
+        surface: 'rgba(13, 27, 42, 0.94)',
     }
 };
 
@@ -40,90 +49,37 @@ export const getTheme = () => {
     return scheme === 'dark' ? colors.dark : colors.light;
 };
 
-export const getGlobalStyles = (theme) => StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: theme.bg,
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: '800',
-        marginBottom: 24,
-        color: theme.text,
-        letterSpacing: -0.5,
-    },
-    label: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: theme.muted,
-        marginBottom: 8,
-        textTransform: 'uppercase',
-        letterSpacing: 1,
-    },
-    input: {
-        backgroundColor: theme.inputBg,
-        padding: 16,
-        borderRadius: 16,
-        marginBottom: 20,
-        borderWidth: 1.5,
-        borderColor: theme.border,
-        color: theme.text,
-        fontSize: 16,
-    },
-    button: {
-        backgroundColor: colors.primary,
-        paddingVertical: 18,
-        borderRadius: 18,
-        alignItems: 'center',
-        marginTop: 12,
-        shadowColor: colors.primary,
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.3,
-        shadowRadius: 12,
-        elevation: 8,
-    },
-    buttonText: {
-        color: '#000',
-        fontWeight: '700',
-        fontSize: 18,
-    },
-    card: {
-        backgroundColor: theme.card,
-        padding: 20,
-        borderRadius: 24,
-        marginBottom: 16,
-        borderWidth: 1,
-        borderColor: theme.border,
-        // Premium Shadow
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: theme.bg === '#F8F9FD' ? 0.05 : 0.2,
-        shadowRadius: 20,
-        elevation: 4,
-    },
-    glassCard: {
-        backgroundColor: theme.surface,
-        borderRadius: 24,
-        padding: 20,
-        borderWidth: 1,
-        borderColor: theme.border,
-        backdropFilter: 'blur(10px)', // Solo web, en RN se simula con opacidad y elevación
-    },
-    row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    badge: {
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: 12,
-        backgroundColor: theme.border,
-    },
-    badgeText: {
-        fontSize: 12,
-        fontWeight: 'Bold',
-        color: theme.text,
-    }
+export const usePmpTheme=()=>useAppearance().scheme==='dark'?colors.dark:colors.light;
+
+// Semantic foregrounds/backgrounds mirror PMP Web tokens.css. Brand actions remain blue.
+export const metrics = { space: { xs:4, sm:8, md:12, lg:16, xl:24 }, radius:12, touch:48, contentWidth:760 };
+const semantic = {
+ light: {success:['#05613f','#eef9f4'],warning:['#864006','#fff7e8'],danger:['#a52430','#fff1f2'],info:['#1565C0','#edf5ff'],neutral:['#4b5563','#f3f4f6']},
+ dark: {success:['#75ddb0','rgba(16,163,106,0.15)'],warning:['#f4bb6d','rgba(224,138,24,0.15)'],danger:['#f4878e','rgba(224,75,85,0.15)'],info:['#82b8ef','rgba(21,101,192,0.17)'],neutral:['#b7c2cf','rgba(142,157,176,0.12)']}
+};
+for(const name of ['light','dark']) {
+ colors[name].tones=Object.fromEntries(Object.entries(semantic[name]).map(([key,[text,bg]])=>[key,{text,bg}]));
+ colors[name].link=colors[name].tones.info.text;
+}
+export const getGlobalStyles = theme => StyleSheet.create({
+ bodyText:{fontSize:16,lineHeight:23,color:theme.text,fontFamily:brandFont},
+ secondaryText:{fontSize:14,lineHeight:20,color:theme.muted,fontFamily:brandFont},
+ identity:{gap:4,marginVertical:8},
+ feedback:{padding:12,borderWidth:1,borderLeftWidth:3,borderColor:theme.border,borderRadius:10,backgroundColor:theme.panel,marginVertical:8},
+ container:{flex:1,padding:16,backgroundColor:theme.bg},
+ screen:{flex:1,backgroundColor:theme.bg},
+ content:{padding:16,paddingBottom:32,width:'100%',maxWidth:metrics.contentWidth,alignSelf:'center'},
+ title:{fontSize:22,lineHeight:28,fontWeight:'700',marginBottom:12,color:theme.text,fontFamily:brandFont},
+ sectionTitle:{fontSize:17,lineHeight:23,fontWeight:'700',color:theme.text,marginBottom:8,fontFamily:brandFont},
+ label:{fontSize:14,lineHeight:20,fontWeight:'600',color:theme.text,marginBottom:6,fontFamily:brandFont},
+ input:{backgroundColor:theme.inputBg,minHeight:48,padding:12,borderRadius:10,marginBottom:12,borderWidth:1,borderColor:theme.border,color:theme.text,fontSize:16,fontFamily:brandFont},
+ button:{backgroundColor:colors.primary,paddingVertical:12,paddingHorizontal:16,minHeight:48,justifyContent:'center',borderRadius:10,alignItems:'center',marginTop:8},
+ buttonText:{color:colors.white,fontWeight:'700',fontSize:15,lineHeight:21,textAlign:'center',fontFamily:brandFont,flexShrink:1},
+ card:{backgroundColor:theme.card,padding:16,borderRadius:12,marginBottom:12,borderWidth:1,borderColor:theme.border,shadowColor:colors.navy,shadowOffset:{width:0,height:2},shadowOpacity:theme.isDark?0:.04,shadowRadius:4,elevation:1},
+ glassCard:{backgroundColor:theme.surface,borderRadius:12,padding:16,borderWidth:1,borderColor:theme.border},
+ row:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,flexWrap:'wrap'},
+ badge:{paddingHorizontal:8,paddingVertical:4,borderRadius:8,backgroundColor:theme.border,alignSelf:'flex-start',flexShrink:1},
+ badgeText:{fontSize:12,lineHeight:18,fontWeight:'700',color:theme.text,fontFamily:brandFont},
+ link:{minHeight:48,justifyContent:'center',paddingVertical:10},
+ linkText:{color:theme.link,fontSize:14,lineHeight:20,fontWeight:'600'},
 });

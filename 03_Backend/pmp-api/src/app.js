@@ -15,17 +15,25 @@ import adminRoutes from "./routes/admin.routes.js";
 import masterRoutes from "./routes/master.routes.js";
 import badgeRoutes from "./routes/badges.routes.js";
 import aiRoutes from "./routes/ai.routes.js";
+import bridgeRoutes from "./routes/bridge.routes.js";
+import equipmentScanRoutes from "./routes/equipmentScan.routes.js";
 
+import requirementsRoutes from './routes/requirements.routes.js';
+import assetsRoutes from './routes/assets.routes.js';
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+// Photo payloads are parsed only after authentication and role checks in their routes.
+const standardJson=express.json();
+app.use((req,res,next)=>(req.method==='POST'&&/^\/api\/(os\/confirmar-retiro|lab\/finish)\/?$/.test(req.path)||req.method==='PUT'&&/^\/api\/lab\/work\/[^/]+\/?$/.test(req.path))?next():standardJson(req,res,next));
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/ai", aiRoutes); // Movido arriba
 app.use("/api/os", osRoutes);
+app.use('/api/requerimientos', requirementsRoutes);
+app.use('/api/activos', assetsRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/admin/users", adminUsersRoutes);
 app.use("/api/dashboard", dashboardRoutes);
@@ -35,6 +43,8 @@ app.use("/api/bodega", bodegaRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/master", masterRoutes);
 app.use("/api/dashboard", badgeRoutes);
+app.use("/api/bridge", bridgeRoutes);
+app.use("/api/equipment-scan", equipmentScanRoutes);
 // app.use("/api/ai", aiRoutes); // Ya movido arriba
 
 app.get("/api/health", (req, res) => res.json({ status: "ok", service: "PMP AI Engine" }));

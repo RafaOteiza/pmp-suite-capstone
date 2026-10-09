@@ -36,6 +36,5 @@ export const ACCIONES_REPARACION = [
     "Reinstalación de Firmware",
     "Ajuste de Conectores",
     "Soldadura",
-    "Pruebas de Estrés",
     "Configuración Software"
 ];

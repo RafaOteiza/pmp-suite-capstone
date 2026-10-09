@@ -1,6 +1,6 @@
 import { api } from "./http";
 
-export const ALLOWED_ROLES = ["admin", "gerente", "logistica", "qa", "tecnico_laboratorio", "tecnico_terreno"] as const;
+export const ALLOWED_ROLES = ["admin", "gerente", "jefe_laboratorio", "logistica", "qa", "tecnico_laboratorio", "tecnico_terreno"] as const;
 export type AllowedRole = typeof ALLOWED_ROLES[number];
 
 export type AdminUser = {

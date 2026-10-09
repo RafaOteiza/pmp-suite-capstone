@@ -1,61 +1,81 @@
-# 5. Diagrama de Despliegue
+# Arquitectura de ejecución local
 
-Este documento describe cómo los componentes del Sistema PMP Suite se despliegan en diferentes entornos de ejecución (ej. desarrollo, producción). Se utiliza la notación C4 Model (Vista de Despliegue).
+## Propósito
 
-## Descripción
+Esta vista describe la forma comprobada de ejecutar PMP Suite para desarrollo y
+demostración Capstone. Todos los componentes se levantan desde el proyecto
+oficial y se comunican mediante la red local.
 
-El sistema PMP Suite se compone de un backend REST API, un frontend web y una aplicación móvil. Para la producción, se espera que el backend se despliegue en un servidor cloud (ej. VPS, AWS EC2, Google Cloud Run) y la base de datos PostgreSQL como un servicio gestionado (ej. AWS RDS, Google Cloud SQL). El frontend web puede ser servido estáticamente (ej. Nginx, S3/CloudFront) y la aplicación móvil distribuida a través de tiendas de aplicaciones (App Store, Google Play).
+## Nodos
 
-## Componentes de Despliegue
+- **Equipo servidor:** ejecuta PostgreSQL, la API Node.js y el entorno Python de
+  inteligencia operacional.
+- **Navegador:** ejecuta el frontend React servido por Vite.
+- **Dispositivo móvil:** ejecuta la aplicación Expo y accede a la API mediante la
+  dirección IP local del equipo servidor.
+- **Firebase:** autentica las cuentas de usuario. El backend verifica cada token
+  con Firebase Admin.
 
-*   **Servidor Backend (Cloud Instance):** Una instancia de servidor (virtual o contenedor) donde se ejecuta la aplicación Node.js/Express del backend. Interactúa con la base de datos y el módulo de IA.
-*   **Base de Datos PostgreSQL (Managed Service):** Una instancia de base de datos PostgreSQL gestionada, por su escalabilidad y fiabilidad.
-*   **Servidor de Archivos Estáticos (Web Hosting):** Un servicio para servir los archivos compilados del frontend web (HTML, CSS, JavaScript).
-*   **Módulo de IA (Python Environment):** Un entorno de ejecución para los scripts Python del modelo de IA. Podría ser el mismo servidor del backend, un proceso separado o un microservicio dedicado.
-*   **Dispositivos Móviles (Smartphones/Tablets):** Donde se ejecuta la aplicación React Native, descargada desde tiendas de aplicaciones.
-*   **Navegador Web (Desktop/Mobile):** Donde se ejecuta la aplicación React Web.
-*   **Firebase Authentication (External Service):** Servicio de autenticación externo.
-*   **Sistema de Correo Electrónico (External Service):** Servicio de envío de correos externo.
+## Puertos y comunicación
 
-## Diagrama de Despliegue (C4 Model - Nivel 3)
+| Componente | Dirección de referencia | Función |
+|---|---|---|
+| API REST | `http://localhost:4000` | Autenticación, reglas de negocio y acceso a datos |
+| Salud API | `http://localhost:4000/api/health` | Comprobación del proceso backend |
+| Frontend web | `http://localhost:5173` | Interfaz React durante desarrollo |
+| PostgreSQL | Configurado en `DATABASE_URL` | Persistencia del esquema `pmp` |
+| Mobile | `http://IP_LOCAL:4000/api` | Acceso desde un dispositivo conectado a la misma red |
 
-Aquí tienes un prompt para generar un Diagrama de Despliegue utilizando PlantUML. Este diagrama muestra los nodos de infraestructura y cómo los contenedores se despliegan en ellos.
+## Variables
+
+El backend requiere `PORT`, `DATABASE_URL` y
+`FIREBASE_SERVICE_ACCOUNT_PATH`. El frontend requiere la URL de la API y las
+variables públicas del cliente Firebase. Los valores sensibles permanecen en
+archivos `.env` ignorados por Git y la credencial administrativa se almacena
+fuera del repositorio.
+
+## Diagrama PlantUML
 
 ```plantuml
-@startuml PMP_Deployment_Diagram
+@startuml PMP_Ejecucion_Local
+title Ejecución local de PMP Suite
 
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Deployment.puml
-
-TITLE Sistema PMP Suite - Diagrama de Despliegue (Nivel 3)
-
-Deployment_Node("Usuario Final", "Dispositivo del Usuario", "Desktop/Laptop o Smartphone") {
-    Container("Navegador Web", "Google Chrome / Firefox / Safari", "Web Browser", "Ejecuta el Frontend Web PMP")
-    Container("App Móvil PMP", "React Native Application", "Smartphone / Tablet", "Aplicación instalada en el dispositivo")
+actor "Usuario web" as User
+node "Navegador" as Browser {
+  component "Frontend React" as Web
 }
-
-Deployment_Node("Servidor Cloud", "Instancia de Servidor (ej. VPS / Contenedor)", "Linux OS / Docker") {
-    Container("Backend REST API", "Node.js / Express.js", "Proceso de Servidor", "Expone la API del sistema")
-    Deployment_Node("Entorno Python IA", "Servidor/Contenedor Python", "Linux OS / Python Runtime") {
-        Container("Módulo de IA", "Scripts Python", "Proceso de Inferencia", "Realiza predicciones de falla")
-    }
+node "Dispositivo móvil" as Phone {
+  component "Aplicación Expo" as Mobile
 }
-
-Deployment_Node("Base de Datos Cloud", "Servicio de Base de Datos Gestionado", "PostgreSQL") {
-    Container("Base de Datos PMP", "Esquema PMP", "Almacena todos los datos transaccionales")
+node "Equipo servidor" as Host {
+  component "API Node.js y Express" as Api
+  database "PostgreSQL\nesquema pmp" as Db
+  component "Analizador Python\n.venv" as Ai
 }
+cloud "Firebase Authentication" as Firebase
 
-Rel("Navegador Web", "Backend REST API", "Accede a", "HTTPS/JSON")
-Rel("App Móvil PMP", "Backend REST API", "Accede a", "HTTPS/JSON")
-Rel("Backend REST API", "Base de Datos PMP", "Lee/Escribe", "SQL/TCP")
-Rel("Backend REST API", "Módulo de IA", "Solicita Predicciones", "IPC / HTTP")
-
-System_Ext(firebase_auth, "Firebase Authentication", "Servicio de Autenticación Externo")
-System_Ext(email_service, "Servicio de Correo Electrónico", "Servicio de Notificaciones Externo")
-
-Rel("Backend REST API", firebase_auth, "Autentica usuarios vía", "Firebase Admin SDK API")
-Rel("Backend REST API", email_service, "Envía correos vía", "SMTP / API")
-
+User --> Web
+Web --> Api : HTTP JSON
+Mobile --> Api : HTTP JSON por red local
+Api --> Firebase : verifica token
+Api --> Db : SQL parametrizado
+Api --> Ai : execFile y JSON
+Ai --> Db : consultas de lectura
 @enduml
 ```
 
----
+## Secuencia de inicio
+
+1. Iniciar PostgreSQL y comprobar la base configurada.
+2. Iniciar la API desde `03_Backend/pmp-api` con `npm run dev`.
+3. Consultar `GET /api/health`.
+4. Iniciar el frontend desde `04_Frontend` con `npm run dev`.
+5. Para mobile, configurar la IP local del backend e iniciar Expo desde
+   `07_Mobile` con `npm start`.
+
+## Criterio de validación
+
+La ejecución se considera aprobada cuando la API responde salud, el frontend
+carga, una cuenta válida obtiene su perfil desde `/api/auth/me`, PostgreSQL
+entrega el rol efectivo y el dispositivo móvil puede alcanzar la API desde la
+red local.

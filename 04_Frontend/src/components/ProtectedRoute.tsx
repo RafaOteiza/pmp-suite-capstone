@@ -1,3 +1,4 @@
+import FeedbackBanner from "./ui/FeedbackBanner";
 import type { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { can, isOfficialRole, type Permission } from "../app/rbac";
@@ -9,7 +10,7 @@ type ProtectedRouteProps = {
 };
 
 export default function ProtectedRoute({ children, permission }: ProtectedRouteProps) {
-  const { status, me, previewMe } = useSession();
+  const { status, me, previewMe,error,refreshSession } = useSession();
 
   if (status === "loading") {
     const identity = previewMe?.nombre ? ` de ${previewMe.nombre}` : "";
@@ -20,6 +21,7 @@ export default function ProtectedRoute({ children, permission }: ProtectedRouteP
     );
   }
 
+  if(status==='unavailable')return <div className="page"><FeedbackBanner tone="warning">{error}</FeedbackBanner><button className="btn secondary" onClick={()=>void refreshSession()}>Reintentar sesión</button></div>;
   if (status !== "authenticated" || !me) return <Navigate to="/login" replace />;
   if (!isOfficialRole(me.rol)) return <Navigate to="/403" replace />;
 
@@ -28,5 +30,5 @@ export default function ProtectedRoute({ children, permission }: ProtectedRouteP
     return <Navigate to="/403" replace />;
   }
 
-  return <>{children}</>;
+  return <>{error&&<FeedbackBanner tone="warning">{error} <button className="btn secondary sm" onClick={()=>void refreshSession()}>Reintentar sesión</button></FeedbackBanner>}{children}</>;
 }

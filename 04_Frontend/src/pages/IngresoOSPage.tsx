@@ -1,224 +1,33 @@
-import React, { useState } from "react";
-import { createOS } from "../api/os";
-import { 
-  ClipboardList, Bus, Hash, AlertTriangle, 
-  Camera, CheckCircle, Monitor, Cpu, Plus, X 
-} from "lucide-react";
+import {useRef,useState,type FormEvent} from 'react';
+import {ClipboardList,Search} from 'lucide-react';
+import {createOS,searchFieldAssets} from '../api/os';
+import type {RequirementAsset} from '../api/requerimientos';
+import {getApiErrorMessage} from '../api/errors';
+import PageHeader from '../components/ui/PageHeader';
+import FeedbackBanner from '../components/ui/FeedbackBanner';
+import StatusBadge from '../components/ui/StatusBadge';
 
-// --- ESTILOS VISUALES ---
-const labelWithIconStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '6px',
-  marginBottom: '6px',
-  fontWeight: 500,
-  fontSize: '0.9rem',
-  color: 'var(--text-muted, #9CA3AF)'
-};
-
-const inputStyle = {
-  width: '100%',
-  padding: '12px',
-  backgroundColor: 'var(--bg-input, #111827)', 
-  border: '1px solid var(--border-color, #374151)',
-  borderRadius: '8px',
-  color: 'var(--text-main, white)',
-  outline: 'none',
-  transition: 'border-color 0.2s',
-  fontSize: '0.95rem'
-};
-
-const cardSelectorStyle = (selected: boolean, color: string) => ({
-    padding: '20px', 
-    borderRadius: '12px', 
-    cursor: 'pointer',
-    border: selected ? `2px solid ${color}` : '1px solid var(--border-color, #374151)',
-    backgroundColor: selected ? `${color}15` : 'transparent', // 15% opacidad del color
-    textAlign: 'center' as 'center', 
-    transition: 'all 0.2s',
-    display: 'flex',
-    flexDirection: 'column' as 'column',
-    alignItems: 'center',
-    gap: '10px'
-});
-
-export default function IngresoOSPage() {
-  const [tipo, setTipo] = useState<"VALIDADOR" | "CONSOLA">("VALIDADOR");
-  const [esPod, setEsPod] = useState(false);
-  const [ppu, setPpu] = useState("");
-  const [serie, setSerie] = useState("");
-  const [falla, setFalla] = useState("");
-  const [foto, setFoto] = useState("");
-  
-  const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState<{ text: string, type: 'success'|'error' } | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setBusy(true);
-    setMsg(null);
-
-    try {
-      await createOS({
-        tipo,
-        es_pod: esPod,
-        bus_ppu: ppu.toUpperCase(),
-        serie_equipo: serie,
-        falla,
-        foto_dano_url: esPod ? foto : undefined,
-        // En un futuro estos campos podrían venir de un select de modelos reales
-        modelo: 'Generico', 
-        marca: 'Generico'
-      });
-
-      setMsg({ text: "Orden de Servicio creada exitosamente", type: 'success' });
-      // Limpiar formulario para el siguiente ingreso
-      setPpu(""); setSerie(""); setFalla(""); setFoto("");
-    } catch (ex: any) {
-      setMsg({ text: ex.response?.data?.error || "Error al crear OS", type: 'error' });
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <div className="panel animate-fade-in" style={{ maxWidth: '700px', margin: '0 auto' }}>
-      
-      {/* HEADER */}
-      <div style={{ textAlign: 'center', marginBottom: 30 }}>
-        <h2 className="title" style={{ fontSize: '2rem', marginBottom: '5px' }}>Ingreso de OS</h2>
-        <p className="muted">Reporte de fallas en terreno.</p>
-      </div>
-
-      {/* NOTIFICACIONES */}
-      {msg && (
-        <div style={{ 
-            padding: '15px', borderRadius: '8px', marginBottom: 20, 
-            backgroundColor: msg.type === 'success' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-            border: msg.type === 'success' ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)',
-            color: msg.type === 'success' ? '#10B981' : '#EF4444',
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontWeight: 500
-        }}>
-            <div style={{display: 'flex', alignItems: 'center', gap: 10}}>
-                {msg.type === 'success' ? <CheckCircle size={20} /> : <AlertTriangle size={20} />}
-                {msg.text}
-            </div>
-            <button onClick={() => setMsg(null)} style={{background: 'none', border: 'none', color: 'inherit', cursor: 'pointer'}}><X size={18}/></button>
-        </div>
-      )}
-
-      {/* FORMULARIO */}
-      {/* Usamos className="card" para adaptabilidad al tema */}
-      <form onSubmit={handleSubmit} className="card" style={{ padding: '30px' }}>
-        
-        {/* 1. SELECCIÓN DE TIPO */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15, marginBottom: 25 }}>
-            <div 
-                onClick={() => setTipo("VALIDADOR")}
-                style={cardSelectorStyle(tipo === "VALIDADOR", '#10B981')}
-            >
-                <Cpu size={32} color={tipo === "VALIDADOR" ? '#10B981' : 'gray'} />
-                <div style={{fontWeight: 600, color: tipo === "VALIDADOR" ? '#10B981' : 'gray'}}>Validador</div>
-            </div>
-
-            <div 
-                onClick={() => setTipo("CONSOLA")}
-                style={cardSelectorStyle(tipo === "CONSOLA", '#3B82F6')}
-            >
-                <Monitor size={32} color={tipo === "CONSOLA" ? '#3B82F6' : 'gray'} />
-                <div style={{fontWeight: 600, color: tipo === "CONSOLA" ? '#3B82F6' : 'gray'}}>Consola</div>
-            </div>
-        </div>
-
-        {/* 2. DATOS DEL EQUIPO Y BUS */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20, marginBottom: 20 }}>
-            <div>
-                <label style={labelWithIconStyle}><Bus size={16}/> Patente Bus (PPU)</label>
-                <input 
-                    style={inputStyle} 
-                    value={ppu} 
-                    onChange={e => setPpu(e.target.value.toUpperCase())} 
-                    placeholder="Ej: FLXR12" 
-                    required 
-                    maxLength={6} 
-                />
-            </div>
-            <div>
-                <label style={labelWithIconStyle}><Hash size={16}/> Serie del Equipo</label>
-                <input 
-                    style={inputStyle} 
-                    value={serie} 
-                    onChange={e => setSerie(e.target.value)} 
-                    placeholder="Ej: 74000123" 
-                    required 
-                />
-            </div>
-        </div>
-
-        {/* 3. DESCRIPCIÓN DE LA FALLA */}
-        <div style={{ marginBottom: 25 }}>
-            <label style={labelWithIconStyle}><ClipboardList size={16}/> Descripción de la Falla</label>
-            <textarea 
-                style={{...inputStyle, height: '100px', resize: 'none', fontFamily: 'inherit', lineHeight: '1.5'}} 
-                value={falla} 
-                onChange={e => setFalla(e.target.value)} 
-                placeholder="Describe el problema técnico detectado..." 
-                required 
-            />
-        </div>
-
-        {/* 4. ZONA POD (VANDALISMO) */}
-        <div style={{ 
-            padding: '15px', 
-            backgroundColor: 'rgba(128, 128, 128, 0.05)', 
-            border: '1px solid var(--border-color, #374151)',
-            borderRadius: '8px', 
-            marginBottom: 25 
-        }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', marginBottom: esPod ? '15px' : '0' }}>
-                <input 
-                    type="checkbox" 
-                    checked={esPod} 
-                    onChange={e => setEsPod(e.target.checked)} 
-                    style={{ width: 18, height: 18, cursor: 'pointer' }} 
-                />
-                <span style={{ fontWeight: 600, color: esPod ? '#F59E0B' : 'inherit' }}>
-                    Reportar como Vandalismo (POD)
-                </span>
-            </label>
-
-            {esPod && (
-                <div style={{ animation: 'fadeIn 0.3s' }}>
-                    <label style={labelWithIconStyle}><Camera size={16}/> URL Foto Daño (Obligatorio)</label>
-                    <input 
-                        style={inputStyle} 
-                        value={foto} 
-                        onChange={e => setFoto(e.target.value)} 
-                        placeholder="https://..." 
-                        required={esPod} 
-                    />
-                    <p style={{fontSize: '0.8rem', color: '#6B7280', marginTop: 5}}>
-                        * Debes adjuntar evidencia fotográfica para procesar el POD.
-                    </p>
-                </div>
-            )}
-        </div>
-
-        {/* 5. BOTÓN DE ACCIÓN */}
-        <button 
-            type="submit" 
-            disabled={busy}
-            className="btn"
-            style={{ 
-                width: '100%', padding: '14px', fontSize: '1.1rem', 
-                backgroundColor: '#F59E0B', border: 'none', color: 'white', fontWeight: 'bold',
-                display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10 
-            }}
-        >
-            {busy ? 'Procesando...' : <><Plus size={20} /> Crear Orden de Servicio</>}
-        </button>
-
-      </form>
-    </div>
-  );
+export default function IngresoOSPage(){
+ const [type,setType]=useState<'VALIDADOR'|'CONSOLA'>('VALIDADOR'),[ppu,setPpu]=useState(''),[series,setSeries]=useState('');
+ const [selected,setSelected]=useState<RequirementAsset|null>(null),[rows,setRows]=useState<RequirementAsset[]>([]),[more,setMore]=useState(false),[searched,setSearched]=useState(false);
+ const [fault,setFault]=useState(''),[pod,setPod]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState(''),[success,setSuccess]=useState('');const revision=useRef(0);
+ const clear=()=>{revision.current++;setSelected(null);setRows([]);setPpu('');setSeries('');setMore(false);setSearched(false);setError('');};
+ const search=async()=>{const version=++revision.current;setBusy(true);setError('');try{const data=await searchFieldAssets({tipo_equipo:type,q:series,bus_ppu:ppu});if(version===revision.current){setRows(data.items);setMore(data.has_more);setSearched(true);}}catch(e){setError(getApiErrorMessage(e));}finally{setBusy(false);}};
+ const select=(asset:RequirementAsset)=>{setSelected(asset);setPpu(asset.bus_ppu||'');setSeries(asset.serie);setRows([]);setError('');};
+ const submit=async(e:FormEvent)=>{e.preventDefault();if(!selected||!fault.trim()||busy)return;setBusy(true);setError('');try{const result=await createOS({tipo:type,serie_equipo:selected.serie,bus_ppu:selected.bus_ppu!,terminal_id:selected.terminal_id!,pst_codigo:selected.pst_codigo!,falla:fault.trim(),es_pod:pod});setSuccess(`OS ${result.os.codigo_os} creada. El activo permanece instalado hasta confirmar su retiro físico.`);clear();setFault('');setPod(false);}catch(e){setError(getApiErrorMessage(e));}finally{setBusy(false);}};
+ return <div className="page content-narrow"><PageHeader eyebrow="Operación en terreno" title="Reportar falla" description="Selecciona un activo existente. Su instalación vigente completa el contexto del requerimiento." icon={<ClipboardList size={21}/>}/>
+  {error&&<FeedbackBanner tone="danger">{error}</FeedbackBanner>}{success&&<FeedbackBanner tone="success">{success}</FeedbackBanner>}
+  <form className="panel operation-form" onSubmit={submit}><fieldset className="form-section" disabled={busy}><legend>Activo en operación</legend>
+   <div className="form-grid"><label className="field">Tipo<select value={type} onChange={e=>{clear();setType(e.target.value as typeof type);}}><option value="VALIDADOR">Validador</option><option value="CONSOLA">Consola</option></select></label>
+   <label className="field">Bus / PPU<input className="input" value={ppu} readOnly={!!selected} maxLength={6} onChange={e=>{setPpu(e.target.value.toUpperCase());setRows([]);setSearched(false);}}/></label>
+   <label className="field">Serie<input className="input" value={series} readOnly={!!selected} maxLength={50} onChange={e=>{setSeries(e.target.value);setRows([]);setSearched(false);}}/></label></div>
+   {selected?<><dl className="asset-detail-grid"><div><dt>Modelo</dt><dd>{selected.modelo}</dd></div><div><dt>Marca</dt><dd>{selected.marca}</dd></div><div><dt>Terminal</dt><dd>{selected.terminal||'Pendiente de revisión'}</dd></div><div><dt>Operador</dt><dd>{selected.operador||'Pendiente de revisión'}</dd></div></dl><p className="field-hint">Datos de la instalación vigente · Solo lectura.</p><button type="button" className="btn secondary" onClick={clear}>Cambiar activo o PPU</button></>:<>
+   <button type="button" className="btn secondary" onClick={()=>void search()}><Search size={17}/> Buscar activos en operación</button>
+   {searched&&!rows.length&&!error&&<p>No hay coincidencias.</p>}
+   {!!rows.length&&<div className="table-wrap"><table><thead><tr><th>Equipo</th><th>Instalación</th><th>Acción</th></tr></thead><tbody>{rows.map(a=><tr key={a.serie}><td><strong>{a.serie}</strong><div>{a.modelo} · {a.marca}</div><StatusBadge tone="flow">En operación</StatusBadge></td><td>{a.bus_ppu}<div className="small muted">{a.terminal} · {a.operador}</div></td><td><button type="button" className="btn secondary sm" onClick={()=>select(a)}>Seleccionar</button></td></tr>)}</tbody></table></div>}
+   {more&&<p className="field-hint">Completa parte de la serie o PPU para acotar las coincidencias.</p>}</>}
+  </fieldset><fieldset className="form-section" disabled={busy}><legend>Falla reportada</legend><label className="field">Descripción técnica<textarea className="input" rows={3} required value={fault} onChange={e=>setFault(e.target.value)}/></label>
+   <label className="check-row"><input type="checkbox" checked={pod} onChange={e=>setPod(e.target.checked)}/> Clasificar requerimiento como daño atribuible a tercero (PoD)</label><p className="field-hint">La identidad y evidencia física se confirman durante el retiro en Mobile.</p>
+  </fieldset><footer className="entry-actions"><button className="btn" disabled={busy||!selected?.terminal_id||!selected?.pst_codigo||!fault.trim()}>{busy?'Procesando…':'Crear requerimiento'}</button></footer></form>
+ </div>;
 }

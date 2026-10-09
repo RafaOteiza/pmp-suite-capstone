@@ -1,54 +1,34 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { auth } from '../services/firebase';
-import api, { setAuthToken } from '../services/api';
-
-const AuthContext = createContext({});
-
-export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-            if (firebaseUser) {
-                const token = await firebaseUser.getIdToken();
-                setAuthToken(token);
-
-                // Obtener rol del backend (opcional, o decodificar token)
-                // Por ahora simulamos que obtenemos el rol o datos extra
-                try {
-                    // Podríamos llamar a /api/auth/profile si existiera
-                    // const { data } = await api.get('/auth/me');
-                    setUser({ ...firebaseUser, ...firebaseUser.reloadUserInfo });
-                } catch (error) {
-                    console.log("Error fetching user data", error);
-                    setUser(firebaseUser);
-                }
-
-            } else {
-                setAuthToken(null);
-                setUser(null);
-            }
-            setLoading(false);
-        });
-
-        return unsubscribe;
-    }, []);
-
-    const login = async (email, password) => {
-        return signInWithEmailAndPassword(auth, email, password);
-    };
-
-    const logout = async () => {
-        return signOut(auth);
-    };
-
-    return (
-        <AuthContext.Provider value={{ user, loading, login, logout }}>
-            {children}
-        </AuthContext.Provider>
-    );
+import React,{createContext,useState,useEffect,useContext,useRef} from 'react';
+import {onIdTokenChanged,signInWithEmailAndPassword,signOut} from 'firebase/auth';
+import {auth} from '../services/firebase';
+import api,{onSessionIssue,apiErrorMessage} from '../services/api';
+import {sessionErrorKind} from '../../../shared/sessionToken.js';
+const AuthContext=createContext({});
+export const AuthProvider=({children})=>{
+ const [user,setUser]=useState(null),[loading,setLoading]=useState(true),[sessionError,setSessionError]=useState('');
+ const generation=useRef(0),confirmedUid=useRef(null);
+ const recover=async firebaseUser=>{
+  const version=++generation.current;
+  if(!firebaseUser){confirmedUid.current=null;setUser(null);setLoading(false);return;}
+  if(confirmedUid.current!==firebaseUser.uid){setUser(null);setLoading(true);confirmedUid.current=null;}
+  try{
+   const {data}=await api.get('/auth/me');
+   if(version!==generation.current||auth.currentUser!==firebaseUser)return;
+   confirmedUid.current=firebaseUser.uid;setUser({...data.user,uid:firebaseUser.uid,email:data.user?.correo||firebaseUser.email});setSessionError('');
+  }catch(error){
+   if(version!==generation.current)return;
+   setSessionError(apiErrorMessage(error));
+   if(['session','permission'].includes(sessionErrorKind(error)))setUser(null);
+   // A network/server failure retains the established session and screen draft.
+  }finally{if(version===generation.current)setLoading(false);}
+ };
+ useEffect(()=>{
+  const unsubscribe=onIdTokenChanged(auth,recover);
+  const unlisten=onSessionIssue(error=>{setSessionError(apiErrorMessage(error));if(sessionErrorKind(error)==='session'){++generation.current;setUser(null);}});
+  return()=>{++generation.current;unsubscribe();unlisten();};
+ },[]);
+ const login=(email,password)=>signInWithEmailAndPassword(auth,email,password);
+ const logout=async()=>{++generation.current;confirmedUid.current=null;await signOut(auth);setUser(null);setSessionError('');};
+ return <AuthContext.Provider value={{user,loading,login,logout,sessionError,retrySession:()=>recover(auth.currentUser)}}>{children}</AuthContext.Provider>;
 };
-
-export const useAuth = () => useContext(AuthContext);
+export const useAuth=()=>useContext(AuthContext);

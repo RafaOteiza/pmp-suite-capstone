@@ -1,3 +1,5 @@
+import {lockUserAdministration,protectUserChange} from '../security/userAdministration.js';
+import {authorize} from '../security/authorization.js';
 import { Router } from "express";
 import { firebaseAuth } from "../middleware/firebaseAuth.js";
 import { ensureUser } from "../middleware/ensureUser.js";
@@ -61,7 +63,7 @@ function parseBooleanQuery(value) {
  *       401: { description: No autenticado }
  *       403: { description: No autorizado }
  */
-router.get("/", requireRole(ROLES.ADMIN), async (req, res, next) => {
+router.get("/", authorize('users.manage'), async (req, res, next) => {
   try {
     const { q, activo, rol, limit = 50, offset = 0 } = req.query;
 
@@ -172,7 +174,7 @@ router.get("/:id", requireSelfOrAdmin(), async (req, res, next) => {
  *     responses:
  *       200: { description: OK }
  */
-router.patch("/:id", requireRole(ROLES.ADMIN), async (req, res, next) => {
+router.patch("/:id", authorize('users.manage'), async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -197,6 +199,8 @@ router.patch("/:id", requireRole(ROLES.ADMIN), async (req, res, next) => {
     try {
       client = await pool.connect();
       await client.query("BEGIN");
+      await lockUserAdministration(client,req.user);
+      await protectUserChange(client,req.user,id,{rol,activo});
 
       let existing;
       try {
@@ -375,7 +379,7 @@ router.patch("/:id", requireRole(ROLES.ADMIN), async (req, res, next) => {
  *       403: { description: No autorizado }
  *       404: { description: No encontrado }
  */
-router.post("/:id/password", requireRole(ROLES.ADMIN), async (req, res, next) => {
+router.post("/:id/password", authorize('users.manage'), async (req, res, next) => {
   try {
     const { id } = req.params;
     const password = typeof req.body?.password === "string" ? req.body.password.trim() : "";

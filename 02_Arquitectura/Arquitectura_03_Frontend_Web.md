@@ -6,7 +6,7 @@ Este documento describe la estructura interna de la aplicación Frontend Web del
 
 La aplicación web es un Single Page Application (SPA) desarrollada con React, TypeScript y Vite. Su propósito es proporcionar una interfaz de usuario rica y reactiva para los usuarios del sistema PMP Suite, incluyendo la autenticación, la gestión de usuarios, Órdenes de Servicio, laboratorio, QA y bodega. 
 
-**Novedad v5.0:** Se implementó una capa superior de **Diseño Sistémico Premium** con soporte para Glassmorphism y Dark/Light Mode adaptativo.
+La interfaz utiliza el sistema visual institucional de PMP Suite, soporta modo claro y oscuro y adapta la navegación al rol autenticado.
 
 ## Componentes Principales
 
@@ -16,8 +16,8 @@ La aplicación web es un Single Page Application (SPA) desarrollada con React, T
 *   **Contexto de Sesión/Usuario (React Context):** Gestiona el estado global de la autenticación y la información del usuario.
 *   **Componentes de Protección de Rutas (`ProtectedRoute`):** Componentes de orden superior que aplican la lógica de autorización basada en roles.
 *   **Subsistema de Analítica (Recharts):** Módulo encargado de la visualización dinámica de KPIs de bodega y laboratorios mediante gráficos de alto impacto visual.
-*   **Módulo de Trazabilidad Universal:** Interfaz de búsqueda global que centraliza consultas de hardware, buses y tickets externos (Aranda Bridge).
-*   **Módulo de Estilos Premium (CSS Moderno):** Implementa el sistema de diseño Indigo/Violet con variables dinámicas para el control de temas y efectos de transparencia.
+*   **Módulo de Trazabilidad:** Interfaz de búsqueda por orden, serie, bus y responsable.
+*   **Sistema visual PMP Suite:** Tokens de color, tipografía, espaciado, estados semánticos y temas claro y oscuro.
 
 ## Diagrama de Contenedores del Frontend Web (C4 Model - Nivel 2)
 

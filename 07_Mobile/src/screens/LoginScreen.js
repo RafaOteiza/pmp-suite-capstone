@@ -1,22 +1,24 @@
+import {PmpFeedback,AppInput,PmpButton,AppCard} from '../components/PmpUi';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, KeyboardAvoidingView, Platform, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, Image, ScrollView } from 'react-native';
 import { useAuth } from '../context/AuthContext';
-import { getGlobalStyles, getTheme, colors } from '../constants/styles';
-import { Ionicons } from '@expo/vector-icons';
-
-const { height } = Dimensions.get('window');
+import { getGlobalStyles, usePmpTheme } from '../constants/styles';
 
 export default function LoginScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { login } = useAuth();
     const [loading, setLoading] = useState(false);
-    const theme = getTheme();
+    const [notice,setNotice]=useState('');
+    const notify=(title,message)=>setNotice(title+': '+message);
+    const insets=useSafeAreaInsets();
+    const theme = usePmpTheme();
     const styles = getGlobalStyles(theme);
 
     const handleLogin = async () => {
         if (!email || !password) {
-            Alert.alert('Error', 'Por favor ingrese correo y contraseña');
+            notify('Error', 'Por favor ingrese correo y contraseña');
             return;
         }
 
@@ -24,7 +26,7 @@ export default function LoginScreen() {
         try {
             await login(email, password);
         } catch (error) {
-            Alert.alert('Error de Autenticación', error.message);
+            notify('Error de Autenticación', error.message);
         } finally {
             setLoading(false);
         }
@@ -35,22 +37,25 @@ export default function LoginScreen() {
             style={{ flex: 1 }} 
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-            <View style={[styles.container, { justifyContent: 'center' }]}>
+            <ScrollView style={styles.screen} contentContainerStyle={[styles.content, { flexGrow:1,justifyContent: 'center',paddingTop:insets.top+24 }]} keyboardShouldPersistTaps="handled">
                 
+                {!!notice&&<PmpFeedback tone="danger">{notice}</PmpFeedback>}
                 <View style={localStyles.logoContainer}>
-                    <View style={localStyles.logoIcon}>
-                        <Ionicons name="bus" size={40} color="#000" />
-                    </View>
-                    <Text style={styles.title}>PMP Suite</Text>
-                    <Text style={[styles.label, { textAlign: 'center', color: theme.muted }]}>Módulo de Terreno</Text>
+                    <Image
+                        source={theme.isDark ? require('../../assets/logo-stacked-white.png') : require('../../assets/logo-stacked-color.png')}
+                        style={localStyles.brandLogo}
+                        resizeMode="contain"
+                        accessibilityLabel="PMP Suite"
+                    />
+                    <Text style={[styles.label, { textAlign: 'center', color: theme.muted }]}>Operación en terreno</Text>
                 </View>
 
-                <View style={[styles.card, { padding: 30, borderRadius: 32 }]}>
-                    <Text style={[styles.label, { marginBottom: 20, fontSize: 16, textAlign: 'center' }]}>Acceso Técnicos</Text>
+                <AppCard>
+                    <Text accessibilityRole="header" style={[styles.sectionTitle, { marginBottom: 16 }]}>Bienvenido a PMP Suite</Text>
                     
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Correo Institucional"
+                    <AppInput
+                        label="Correo institucional"
+                        accessibilityLabel="Correo institucional" placeholder="Correo institucional" autoComplete="email"
                         placeholderTextColor={theme.muted}
                         value={email}
                         onChangeText={setEmail}
@@ -58,30 +63,22 @@ export default function LoginScreen() {
                         keyboardType="email-address"
                     />
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Contraseña"
+                    <AppInput
+                        label="Contraseña"
+                        accessibilityLabel="Contraseña" placeholder="Contraseña" autoComplete="current-password"
                         placeholderTextColor={theme.muted}
                         value={password}
                         onChangeText={setPassword}
                         secureTextEntry
                     />
 
-                    <TouchableOpacity
-                        style={[styles.button, loading && { opacity: 0.7 }]}
-                        onPress={handleLogin}
-                        disabled={loading}
-                    >
-                        <Text style={styles.buttonText}>
-                            {loading ? 'Validando...' : 'Entrar al Sistema'}
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+                    <PmpButton title={loading?'Validando…':'Iniciar sesión'} loading={loading} onPress={handleLogin}/>
+                </AppCard>
 
-                <Text style={{ textAlign: 'center', color: theme.muted, marginTop: 30, fontSize: 12 }}>
+                <Text style={{ textAlign: 'center', color: theme.muted, marginTop: 16, fontSize: 12 }}>
                     Versión 3.0.0 - © 2026 Duoc UC Taller de Tesis
                 </Text>
-            </View>
+            </ScrollView>
         </KeyboardAvoidingView>
     );
 }
@@ -89,20 +86,11 @@ export default function LoginScreen() {
 const localStyles = StyleSheet.create({
     logoContainer: {
         alignItems: 'center',
-        marginBottom: 40,
+        marginBottom: 24,
     },
-    logoIcon: {
-        width: 80,
-        height: 80,
-        borderRadius: 24,
-        backgroundColor: colors.primary,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 16,
-        shadowColor: colors.primary,
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.4,
-        shadowRadius: 15,
-        elevation: 10,
+    brandLogo: {
+        width: 180,
+        height: 110,
+        marginBottom: 12,
     }
 });

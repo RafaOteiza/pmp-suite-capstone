@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "operationalRowsUnchanged": true,
+  "tables": {
+    "ordenes_servicio": {
+      "registros": 100,
+      "firma": "8f17b95bb0aab5e34f852efd4e7ebb1c"
+    },
+    "bridges": {
+      "registros": 1,
+      "firma": "e46946c1698971c103c091de442205ee"
+    },
+    "bridge_mantenimiento": {
+      "registros": 0,
+      "firma": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "validadores": {
+      "registros": 50,
+      "firma": "1f3f262fbfb47e8d3ff4f2b1460e3645"
+    },
+    "consolas": {
+      "registros": 50,
+      "firma": "95e3b44a49821cd95beea8ef31443ab0"
+    },
+    "repuestos": {
+      "registros": 24,
+      "firma": "ae7526b38a2e5b4dee76710d4edf6749"
+    }
+  }
+}

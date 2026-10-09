@@ -2,6 +2,29 @@
 
 Este documento detalla los requisitos y especificaciones para el módulo de Autenticación y Gestión de Usuarios del sistema PMP Suite.
 
+## Contrato implementado de acceso — 08-10-2026
+
+Firebase verifica identidad y revocación; PostgreSQL verifica usuario activo y
+rol efectivo. UID/correo deben corresponder a una única vinculación, sin
+corrección automática por login. Los claims o datos del cliente no conceden
+un rol. Las operaciones de técnicos requieren además asignación sobre la OS;
+la consulta autorizada de trazabilidad permanece disponible.
+
+El alta no usa contraseñas compartidas ni un fallback fijo. Sin contraseña
+explícita, el acceso se habilita por el procedimiento de recuperación. La
+administración genera el enlace; generar no equivale a enviar un correo.
+Los requisitos self-service siguientes son objetivos y no acreditan el envío
+automático ni pruebas realizadas con cuentas reales.
+
+Web y Mobile consultan el token vigente al SDK, coordinan refresh y descartan
+respuestas de otra identidad. Solo lecturas pueden repetirse automáticamente
+después de renovar. Una pérdida de red conserva el borrador y permite reintentar;
+401 de sesión, 403 de permisos y error servidor tienen mensajes diferentes.
+Cambiar de identidad limpia el contexto autorizado anterior.
+
+Esta revisión no modifica contraseñas, cuentas, UID ni claims existentes. Los
+conflictos reales encontrados se documentan para conciliación autorizada.
+
 ## 1. Requisitos Funcionales (RF)
 
 *   **RF.AU.1:** El sistema debe permitir a los usuarios autenticarse utilizando sus credenciales de Firebase (correo electrónico y contraseña).

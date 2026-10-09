@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "test": "node --test test/rbac.frontend.test.mjs test/session.frontend.test.mjs test/routes.frontend.test.mjs",
+    "test": "node --test test/rbac.frontend.test.mjs test/session.frontend.test.mjs test/routes.frontend.test.mjs test/auth-invalidation.frontend.test.mjs test/bridge.frontend.test.mjs test/role-experience.frontend.test.mjs test/equipment-scan.frontend.test.mjs test/warehouse-dispatch.frontend.test.mjs test/requirements.frontend.test.mjs test/empty-reports.frontend.test.mjs test/consolidation.frontend.test.mjs test/navigation-kpi.frontend.test.mjs test/ui-system.frontend.test.mjs test/admin-lab.frontend.test.mjs",
     "build": "tsc -b && vite build",
     "preview": "vite preview"
   },
@@ -24,6 +24,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "react-test-renderer": "^18.3.1",
     "typescript": "^5.6.2",
     "vite": "^5.4.8"
   }

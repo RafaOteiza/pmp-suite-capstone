@@ -6,15 +6,15 @@ Este documento describe la estructura interna del Backend del Sistema PMP Suite,
 
 El backend es una API RESTful de alto desempeño desarrollada con Node.js y Express.js. Su función principal es servir datos a los frontends (web y móvil), gestionar la lógica de negocio central, asegurar la integridad relacional mediante bloqueos transaccionales y sincronizarse con Firebase Authentication.
 
-**Novedad v5.0:** Inclusión del **Aranda Bridge Connector** para sincronización con sistemas ITSM externos.
+La línea base de cierre incorpora Bridge como capa de correlación externa, la identificación física por serie o AMID y la separación de permisos por rol.
 
 ## Componentes Principales
 
 *   **Servidor API (Node.js/Express):** Componente principal que expone las API REST. Incluye el orquestador de rutas y el middleware de manejo de errores global.
-*   **Módulo de Autenticación (Firebase Admin SDK):** Encargado de verificar los tokens JWT de Firebase y gestionar los Custom Claims para RBAC.
+*   **Módulo de Autenticación (Firebase Admin SDK):** Verifica los tokens Firebase. PostgreSQL determina el rol efectivo y el estado activo del usuario.
 *   **Módulo de Autorización (Middlewares de Roles):** Colección de middlewares de grano fino (`ensureUser`, `requireAnyRole`) que protegen cada endpoint.
 *   **Módulo de Base de Datos (PostgreSQL Pool):** Gestiona la conexión persistente. Implementa integridad referencial y lógica defensiva mediante sub-selects y triggers automáticos.
-*   **Conector Aranda Bridge:** Subsistema que facilita la asociación de tickets externos con órdenes de servicio internas mediante lógica de búsqueda difusa y debouncing.
+*   **Bridge de correlación:** Vincula una serie de validador o consola, una OS PMP existente y una referencia externa. No asigna técnicos, crea OS ni modifica stock. La API conserva múltiples relaciones por activo y expone su historial completo. La migración aditiva `002_bridge_correlacion.sql` conserva los datos e identificadores históricos.
 *   **Módulo de Lógica de Negocio (Controladores):** Contiene las reglas del flujo logístico (Transito ➔ Bodega ➔ Lab ➔ QA).
 *   **Módulo de IA Predictiva (Hybrid Bridge):** Subsistema híbrido que orquesta la ejecución de modelos de Machine Learning (Python/Scikit-learn) para la detección de activos de alto riesgo ("Limones").
 *   **Módulo de Configuración Segura:** Gestiona la carga de secretos y variables de entorno (`dotenv`).

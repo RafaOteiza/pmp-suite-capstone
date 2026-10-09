@@ -1,113 +1,77 @@
+import FeedbackBanner from "./ui/FeedbackBanner";
+import { useEffect, useState, type CSSProperties } from "react";
+import { Activity, AlertCircle, Brain, ShieldCheck } from "lucide-react";
+import { getAIRiskReport, type AIRiskItem } from "../api/ai";
+import EmptyState from "./ui/EmptyState";
+import {uniqueAssetRisks} from '../utils/aiPresentation';
 
-import React, { useEffect, useState } from 'react';
-import { getAIRiskReport, AIRiskItem } from '../api/ai';
-import { Brain, AlertCircle, ShieldCheck, Activity, ChevronRight } from 'lucide-react';
+export default function AIRiskPanel() {
+  const [error,setError]=useState('');
+  const [risks, setRisks] = useState<AIRiskItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-const AIRiskPanel: React.FC = () => {
-    const [risks, setRisks] = useState<AIRiskItem[]>([]);
-    const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    getAIRiskReport()
+      .then(items=>setRisks(uniqueAssetRisks(items)))
+      .catch(() => setError("No fue posible consultar el análisis. No hay predicciones verificadas para mostrar."))
+      .finally(() => setLoading(false));
+  }, []);
 
-    useEffect(() => {
-        getAIRiskReport()
-            .then(data => setRisks(data))
-            .catch(err => console.error(err))
-            .finally(() => setLoading(false));
-    }, []);
+  const getScoreColor = (score: number) => {
+    if (score > 0.7) return "var(--red)";
+    if (score > 0.4) return "var(--yellow)";
+    return "var(--green)";
+  };
 
-    const getScoreColor = (score: number) => {
-        if (score > 0.7) return '#EF4444'; // Red
-        if (score > 0.4) return '#F59E0B'; // Amber
-        return '#10B981'; // Green
-    };
-
-    if (loading) return (
-        <div className="card animate-pulse" style={{ height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Activity className="animate-spin text-muted" size={24} />
-        </div>
-    );
-
+  if (loading) {
     return (
-        <div className="card" style={{ padding: '0', overflow: 'hidden', border: '1px solid var(--border)' }}>
-            <div style={{ padding: '24px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--panel)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ padding: '10px', background: 'var(--primary)', borderRadius: '12px', color: 'white' }}>
-                        <Brain size={20} />
-                    </div>
-                    <div>
-                        <h3 className="title" style={{ margin: 0, fontSize: '1.1rem' }}>Score de Confiabilidad IA</h3>
-                        <p className="small muted" style={{ margin: 0 }}>Basado en patrones de reincidencia MTBF</p>
-                    </div>
-                </div>
-                <div style={{ fontSize: '11px', fontWeight: '800', background: 'var(--primary-glow)', color: 'var(--primary)', padding: '4px 10px', borderRadius: '8px', textTransform: 'uppercase' }}>
-                    Live Analysis
-                </div>
-            </div>
-
-            <div style={{ maxHeight: '450px', overflowY: 'auto' }}>
-                {risks.length === 0 ? (
-                    <div style={{ padding: '40px', textAlign: 'center' }}>
-                        <ShieldCheck size={40} className="muted" style={{ marginBottom: '12px', opacity: 0.3 }} />
-                        <p className="muted" style={{ fontSize: '14px' }}>No se han detectado anomalías críticas en las últimas 24 horas.</p>
-                    </div>
-                ) : (
-                    risks.map((item, idx) => {
-                        const color = getScoreColor(item.riesgo_score);
-                        return (
-                            <div 
-                                key={item.serie_equipo} 
-                                style={{ 
-                                    padding: '16px 24px', 
-                                    borderBottom: idx === risks.length - 1 ? 'none' : '1px solid var(--border)',
-                                    display: 'flex', 
-                                    alignItems: 'center', 
-                                    justifyContent: 'space-between',
-                                    transition: 'all 0.2s ease',
-                                    cursor: 'pointer'
-                                }}
-                                className="sb-link-hover"
-                            >
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
-                                    <div style={{ 
-                                        width: '42px', height: '42px', borderRadius: '12px', 
-                                        background: `${color}15`, border: `1px solid ${color}30`,
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        color: color
-                                    }}>
-                                        <AlertCircle size={20} />
-                                    </div>
-                                    <div style={{ flex: 1 }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <span style={{ fontWeight: '700', color: 'var(--text-main)', fontSize: '15px' }}>{item.serie_equipo}</span>
-                                            <span style={{ fontSize: '10px', fontWeight: '800', opacity: 0.5, textTransform: 'uppercase' }}>{item.tipo_equipo}</span>
-                                        </div>
-                                        <div style={{ fontSize: '12px', color: 'var(--muted)', marginTop: '2px' }}>
-                                            Reincidencia: {item.fallas_previas} ingresos previos
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                                    <div style={{ textAlign: 'right' }}>
-                                        <div style={{ fontSize: '16px', fontWeight: '900', color: color }}>
-                                            {(item.riesgo_score * 100).toFixed(0)}%
-                                        </div>
-                                        <div style={{ fontSize: '9px', fontWeight: '800', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                                            Nivel de Riesgo
-                                        </div>
-                                    </div>
-                                    <ChevronRight size={18} className="muted" />
-                                </div>
-                            </div>
-                        );
-                    })
-                )}
-            </div>
-            
-            <div style={{ padding: '16px 24px', background: 'var(--panel-2)', borderTop: '1px solid var(--border)', fontSize: '11px' }}>
-                <span className="muted">Última inferencia generada hoy a las {new Date().getHours()}:00. Algoritmo certificado por el modelo de Tesis Gold v5.0.</span>
-            </div>
-        </div>
+      <section className="card ai-risk-panel" role="status" aria-live="polite" aria-busy="true">
+        <div className="ai-risk-header"><div className="skeleton" style={{ width: 280, height: 42 }} /></div>
+        <div style={{ padding: "var(--space-5)" }}><div className="skeleton" style={{ height: 180 }} /></div>
+        <span className="sr-only"><Activity /> Cargando análisis de riesgo</span>
+      </section>
     );
-};
+  }
 
-export default AIRiskPanel;
+  if(error)return <FeedbackBanner tone="danger">{error}</FeedbackBanner>;
+  return (
+    <section className="card ai-risk-panel" aria-labelledby="ai-risk-title">
+      <header className="ai-risk-header">
+        <div className="ai-risk-heading">
+          <div className="ai-risk-icon"><Brain size={20} aria-hidden="true" /></div>
+          <div>
+            <h2 className="chart-card-title" id="ai-risk-title">Riesgo de reincidencia IA</h2>
+            <p className="chart-card-description">Una fila por tipo y serie · mayor riesgo entre las OS devueltas por el análisis</p>
+          </div>
+        </div>
+        <span className="status-badge" data-tone="primary">Consulta ejecutada</span>
+      </header>
+
+      <div className="ai-risk-list">
+        {risks.length === 0 ? (
+          <EmptyState icon={<ShieldCheck size={24} />} title="Sin mediciones disponibles" description="El análisis no devolvió observaciones de riesgo. Esto no confirma ausencia de fallas." />
+        ) : risks.map((item) => {
+          const riskColor = getScoreColor(item.riesgo_score);
+          const riskStyle = { "--risk-color": riskColor } as CSSProperties;
+          return (
+            <div className="ai-risk-row" key={`${item.tipo_equipo}:${item.serie_equipo}`} style={riskStyle}>
+              <div className="ai-risk-device">
+                <div className="ai-risk-indicator"><AlertCircle size={19} aria-hidden="true" /></div>
+                <div>
+                  <div><strong>{item.serie_equipo}</strong> <span className="status-badge" data-tone="neutral">{item.tipo_equipo}</span></div>
+                  <div className="small muted">Reincidencia: {item.fallas_previas} ingresos previos</div>
+                </div>
+              </div>
+              <div>
+                <div className="ai-risk-score">{(item.riesgo_score * 100).toFixed(0)}%</div>
+                <div className="small muted">Nivel de riesgo</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <footer className="ai-risk-footer">Consulta ejecutada al abrir esta vista · Análisis de reincidencia</footer>
+    </section>
+  );
+}

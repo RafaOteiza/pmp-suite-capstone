@@ -61,13 +61,19 @@ def analyze_failures():
 
 if __name__ == "__main__":
     import sys
-    import json
+    if "--json" in sys.argv:
+        import contextlib
+        import io
 
-    results = analyze_failures()
-    if results is not None:
-        if "--json" in sys.argv:
-            # Solo devolver el top 10 de riesgo para el dashboard
+        # El contrato con Node requiere que stdout contenga exclusivamente JSON.
+        with contextlib.redirect_stdout(io.StringIO()):
+            results = analyze_failures()
+        if results is None:
+            print("[]")
+        else:
             top_risk = results.sort_values(by='riesgo_score', ascending=False).head(10)
             print(top_risk.to_json(orient='records'))
-        else:
+    else:
+        results = analyze_failures()
+        if results is not None:
             print("--- ANÁLISIS COMPLETADO ---")

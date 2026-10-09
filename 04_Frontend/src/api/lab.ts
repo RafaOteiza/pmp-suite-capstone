@@ -1,8 +1,30 @@
 import { api } from "./http";
 
+export interface LabReceptionItem {
+ codigo_os:string;tipo_equipo:'VALIDADOR'|'CONSOLA';serie:string;modelo:string|null;marca:string|null;falla:string;
+ bus_ppu:string|null;terminal:string|null;operador:string|null;codigo_caso:string|null;referencia_ar:string|null;
+ fecha_salida:string|null;fecha_recepcion:string|null;fecha_evento:string|null;evento_id:string|null;
+ en_camino:boolean;recibido:boolean;discrepancia:boolean|null;tecnico_laboratorio:string;
+}
+export interface LabReception {
+ updatedAt:string;counts:{camino:number;recibidos:number;hoy:number;pendientes:number;incidencias:number;historial:number};
+ items:LabReceptionItem[];total:number;limit:number;offset:number;
+}
+export const getLabReception=async(params:Record<string,string>={},signal?:AbortSignal):Promise<LabReception> =>
+ (await api.get('/api/lab/reception',{params,signal})).data;
+
 export interface LabTicket {
   codigo_os: string;
   fecha: string;
+  ingreso_legacy?: boolean;
+  en_transito_laboratorio?: boolean;
+  fecha_ingreso_laboratorio?: string | null;
+  fuente_ingreso_laboratorio?: string | null;
+  reingreso_laboratorio?: boolean;
+  modelo?: string;
+  marca?: string; terminal?: string; operador?: string;
+  referencia_ar?: string;
+  ubicacion?: string;
   falla: string;
   estado_id: number;
   estado_nombre: string;
@@ -12,6 +34,7 @@ export interface LabTicket {
   tecnico_laboratorio_id?: string; // ID del técnico asignado
   tipo_equipo?: string;
   tecnico_laboratorio?: string;
+  recepcion_laboratorio_confirmada?: boolean;
 }
 
 export interface LabTech {
@@ -48,11 +71,5 @@ export const moveTicket = async (codigo_os: string, nuevo_estado_id: number, com
 // Obtener equipos finalizados
 export const getCompletedLab = async () => {
   const { data } = await api.get<LabTicket[]>("/api/lab/completed");
-  return data;
-};
-
-// Despachar a QA masivo
-export const dispatchToQa = async (codigos: string[]) => {
-  const { data } = await api.post("/api/lab/dispatch-qa", { codigos });
   return data;
 };

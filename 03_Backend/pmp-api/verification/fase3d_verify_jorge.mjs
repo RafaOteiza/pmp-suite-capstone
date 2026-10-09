@@ -6,6 +6,12 @@ const JORGE = Object.freeze({
   email: "jorge.castillo@pmp-suite.cl",
 });
 
+const RAFAEL = Object.freeze({
+  id: "f2637d04-9fc7-49b1-9f34-2e4050e24390",
+  uid: "2jkaNUoEXjQMzB0uhTd86uQtuiE2",
+  email: "rafael.oteiza@pmp-suite.cl",
+});
+
 const roleArgument = process.argv.find((value) => value.startsWith("--expected-role="));
 const expectedRole = roleArgument?.split("=", 2)[1] ?? "gerente";
 const allowedRoles = new Set(["admin", "gerente"]);
@@ -21,21 +27,29 @@ if (!idToken) {
   process.exit(2);
 }
 
+const rafaelTokensValidAfterTimeExpected =
+  process.env.RAFAEL_TOKENS_VALID_AFTER_TIME_EXPECTED;
+if (!rafaelTokensValidAfterTimeExpected) {
+  console.error("Falta RAFAEL_TOKENS_VALID_AFTER_TIME_EXPECTED para comprobar que sus sesiones no cambiaron");
+  process.exit(2);
+}
+
 const apiBaseUrl = process.env.PMP_API_BASE_URL ?? "http://127.0.0.1:4000";
 const { default: admin } = await import("../src/firebase.js");
 const { pool } = await import("../src/db.js");
 
 try {
-  const [pgResult, firebaseUser, meResponse] = await Promise.all([
+  const [pgResult, firebaseUser, rafaelFirebaseUser, meResponse] = await Promise.all([
     pool.query(
       `
         SELECT id, correo, rol, activo, firebase_uid
         FROM pmp.usuarios
-        WHERE id = $1::uuid
+        WHERE id = ANY($1::uuid[])
       `,
-      [JORGE.id],
+      [[JORGE.id, RAFAEL.id]],
     ),
     admin.auth().getUser(JORGE.uid),
+    admin.auth().getUser(RAFAEL.uid),
     fetch(`${apiBaseUrl}/api/auth/me`, {
       headers: { authorization: `Bearer ${idToken}` },
     }),
@@ -43,11 +57,13 @@ try {
 
   const meBody = await meResponse.json();
   const me = meBody?.user ?? meBody;
-  const pg = pgResult.rows[0];
+  const pg = pgResult.rows.find((user) => user.id === JORGE.id);
+  const rafaelPg = pgResult.rows.find((user) => user.id === RAFAEL.id);
   const customClaims = firebaseUser.customClaims ?? {};
+  const rafaelCustomClaims = rafaelFirebaseUser.customClaims ?? {};
 
   const checks = {
-    postgresqlRow: pgResult.rowCount === 1,
+    postgresqlRows: pgResult.rowCount === 2,
     postgresqlIdentity:
       pg?.id === JORGE.id &&
       pg?.correo?.toLowerCase() === JORGE.email &&
@@ -65,6 +81,20 @@ try {
       (me?.correo ?? me?.email)?.toLowerCase() === JORGE.email,
     authMeRole: me?.rol === expectedRole,
     authMeActive: me?.activo === true,
+    rafaelPostgresqlIdentity:
+      rafaelPg?.id === RAFAEL.id &&
+      rafaelPg?.correo?.toLowerCase() === RAFAEL.email &&
+      rafaelPg?.firebase_uid === RAFAEL.uid,
+    rafaelPostgresqlAdmin: rafaelPg?.rol === "admin",
+    rafaelPostgresqlActive: rafaelPg?.activo === true,
+    rafaelFirebaseIdentity:
+      rafaelFirebaseUser.uid === RAFAEL.uid &&
+      rafaelFirebaseUser.email?.toLowerCase() === RAFAEL.email,
+    rafaelFirebaseEnabled: rafaelFirebaseUser.disabled === false,
+    rafaelClaimsUnchanged: Object.keys(rafaelCustomClaims).length === 0,
+    rafaelSessionsUnchanged:
+      rafaelFirebaseUser.tokensValidAfterTime ===
+      rafaelTokensValidAfterTimeExpected,
   };
 
   const consistent = Object.values(checks).every(Boolean);
@@ -88,6 +118,25 @@ try {
           email: me?.correo ?? me?.email ?? null,
           role: me?.rol ?? null,
           active: me?.activo ?? null,
+        },
+        rafael: {
+          postgresql: rafaelPg
+            ? {
+                id: rafaelPg.id,
+                email: rafaelPg.correo,
+                role: rafaelPg.rol,
+                active: rafaelPg.activo,
+                uid: rafaelPg.firebase_uid,
+              }
+            : null,
+          firebase: {
+            uid: rafaelFirebaseUser.uid,
+            email: rafaelFirebaseUser.email ?? null,
+            disabled: rafaelFirebaseUser.disabled,
+            customClaimNames: Object.keys(rafaelCustomClaims).sort(),
+            roleClaim: rafaelCustomClaims.rol ?? null,
+            tokensValidAfterTime: rafaelFirebaseUser.tokensValidAfterTime ?? null,
+          },
         },
         checks,
         consistent,

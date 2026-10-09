@@ -1,49 +1,57 @@
+import {authorize} from '../security/authorization.js';
+import {qaReceivedSql,qaStageSql} from '../services/qaCustody.js';
+import {readExecutiveDashboard} from '../services/executiveDashboard.js';
+import { labTransitSql,labAvailableSql } from '../services/labArrival.js';
+import { searchAssets } from '../services/assetHistory.js';
+import { sendFlowError } from '../services/bridgeFlow.js';
 import { Router } from "express";
 import { pool } from "../db.js";
 import { firebaseAuth } from "../middleware/firebaseAuth.js";
 import { ensureUser } from "../middleware/ensureUser.js";
 import { requireAnyRole } from "../middleware/requireAnyRole.js";
 import { enforceReadOnlyRole } from "../middleware/readOnlyRole.js";
-import { ROLES, VALID_ROLES } from "../constants/roles.js";
+import { ROLES } from "../constants/roles.js";
+import { terrainDispatchSql, installationReadySql, operatingAssetsSql, assignedWithoutDispatchSql, pendingTerrainSql } from '../services/logisticsPresentation.js';
+import { initialAssetStockSql } from '../services/initialAssetStock.js';
 
 const router = Router();
 router.use(firebaseAuth, ensureUser, enforceReadOnlyRole);
+router.get('/executive',authorize('supervision.read'),async(req,res,next)=>{
+ try{res.json(await readExecutiveDashboard(pool));}catch(e){next(e);}
+});
 
-router.get("/summary", requireAnyRole(...VALID_ROLES), async (req, res, next) => {
+router.get("/summary", authorize('supervision.read'), async (req, res, next) => {
   try {
     const client = await pool.connect();
     try {
-        // 1. OBTENER INVENTARIO TOTAL
-        const totalValidadoresRes = await client.query("SELECT COUNT(*) FROM pmp.validadores");
-        const totalConsolasRes = await client.query("SELECT COUNT(*) FROM pmp.consolas");
-        
-        const totalValidadores = parseInt(totalValidadoresRes.rows[0].count, 10);
-        const totalConsolas = parseInt(totalConsolasRes.rows[0].count, 10);
-        const totalFlota = totalValidadores + totalConsolas;
-
         // 2. OBTENER ORDENES DE SERVICIO ACTIVAS
         const osSql = `
-          SELECT 
-            o.tipo_equipo as tipo, 
+          WITH activos_en_proceso AS (
+            SELECT DISTINCT ON (tipo_equipo,COALESCE(validador_serie,consola_serie)) source.*,${labTransitSql('source')} AS transito_lab,${qaReceivedSql('source')} AS carga_qa,${qaStageSql('source')} AS etapa_qa,${labAvailableSql('source')} AS carga_lab,${pendingTerrainSql('source')} AS retiro_pendiente
+            FROM pmp.ordenes_servicio source WHERE estado_id NOT IN (8,12,13)
+            ORDER BY tipo_equipo,COALESCE(validador_serie,consola_serie),fecha DESC,codigo_os DESC
+          ) SELECT
+            o.tipo_equipo as tipo,
             o.estado_id,
-            e.nombre as estado_actual, 
-            o.es_pod, 
+            CASE WHEN o.retiro_pendiente THEN 'PENDIENTE_RETIRO' ELSE e.nombre END as estado_actual,
+            o.retiro_pendiente,o.transito_lab,o.carga_lab,o.carga_qa,o.etapa_qa,
+            o.es_pod,
             COUNT(*) as total
-          FROM pmp.ordenes_servicio o
+          FROM activos_en_proceso o
           JOIN pmp.estados e ON o.estado_id = e.id
           WHERE o.estado_id NOT IN (8, 12, 13)
-          GROUP BY o.tipo_equipo, o.estado_id, e.nombre, o.es_pod
+          GROUP BY o.tipo_equipo, o.estado_id, e.nombre, o.es_pod, o.retiro_pendiente,o.transito_lab,o.carga_lab,o.carga_qa,o.etapa_qa
         `;
 
         const { rows: osRows } = await client.query(osSql);
+        const ordenesActivas = Number((await client.query('SELECT count(*) FROM pmp.ordenes_servicio WHERE estado_id NOT IN (8,12,13)')).rows[0].count);
 
         // 3. PROCESAR METRICAS
-        let conteoEnTaller = 0;   
-        let conteoDisponibles = 0; 
-        let conteoFallaRuta = 0;   
-        let conteoEnBodega = 0;   
-        let conteoEnTransito = 0; 
-        
+        let conteoEnTaller = 0;
+        let conteoDisponibles = 0;
+        let conteoEnBodega = 0;
+        let conteoEnTransito = 0;
+
         // Contadores específicos para subtítulos de Taller
         let consolasEnTaller = 0;
         let validadoresEnTaller = 0;
@@ -52,66 +60,82 @@ router.get("/summary", requireAnyRole(...VALID_ROLES), async (req, res, next) =>
         let podsRecuperados = 0;
 
         osRows.forEach(r => {
-            const { tipo, estado_id, estado_actual, es_pod, total } = r;
+            const { tipo, estado_id, es_pod, total } = r;
             const nTotal = parseInt(total, 10);
             const sId = parseInt(estado_id, 10);
 
             // PODs
             if (es_pod) {
                 podsTotalesEnProceso += nTotal;
-                if (sId === 7) podsRecuperados += nTotal; // 7 = DISPONIBLE
+                if(r.transito_lab||(sId===6&&r.etapa_qa==='RECEPCION')){conteoEnTransito+=nTotal;return;}
+            if (sId === 7) podsRecuperados += nTotal; // 7 = DISPONIBLE
             }
 
             // Clasificación por Ubicación/Estado (Workflow oficial por ID)
+            if (r.retiro_pendiente) return;
+            if(r.transito_lab||(sId===6&&r.etapa_qa==='RECEPCION')){conteoEnTransito+=nTotal;return;}
             if (sId === 7) { // DISPONIBLE
                 conteoDisponibles += nTotal;
-            } else if (estado_actual === 'EN_RUTA') { 
-                conteoFallaRuta += nTotal;
             } else if (sId === 2 || sId === 11) { // 2=EN_TRANSITO, 11=EN_TRAYECTO_BODEGA
                 conteoEnTransito += nTotal;
             } else if (sId === 3) { // 3=RECIBIDO_BODEGA
                 conteoEnBodega += nTotal;
-            } else if ([4, 5, 9, 10].includes(sId)) { // 4=DIAG, 5=REPAR, 9=REPUESTO, 10=FINALIZADO
+            } else if (r.carga_lab && [4, 5, 9, 10].includes(sId)) { // 4=DIAG, 5=REPAR, 9=REPUESTO, 10=FINALIZADO
                 conteoEnTaller += nTotal;
                 if (tipo === 'CONSOLA') consolasEnTaller += nTotal;
                 if (tipo === 'VALIDADOR') validadoresEnTaller += nTotal;
             }
         });
 
-        // 4. CALCULAR OPERATIVOS REALES
-        const totalConIncidencia = conteoEnTaller + conteoDisponibles + conteoFallaRuta + conteoEnBodega + conteoEnTransito;
-        const totalOperativosReales = totalFlota - totalConIncidencia;
-        const operativosFinal = totalOperativosReales < 0 ? 0 : totalOperativosReales;
+        // Count assets using the same operating list definition, never subtract
+        // intervention counts from inventory (one asset may have several OS).
+        const operativosFinal = Number((await client.query(`SELECT COUNT(*) FROM (${operatingAssetsSql}) activos`)).rows[0].count);
+        const logisticCounts = (await client.query(`SELECT
+          COUNT(DISTINCT (o.tipo_equipo,COALESCE(o.validador_serie,o.consola_serie))) FILTER (WHERE ${installationReadySql()}) AS disponibles,
+          COUNT(DISTINCT (o.tipo_equipo,COALESCE(o.validador_serie,o.consola_serie))) FILTER (WHERE ${terrainDispatchSql()}) AS en_ruta,
+          COUNT(DISTINCT (o.tipo_equipo,COALESCE(o.validador_serie,o.consola_serie))) FILTER (WHERE ${assignedWithoutDispatchSql()}) AS asignados
+          FROM pmp.ordenes_servicio o`)).rows[0];
+        const nuevosDisponibles=Number((await client.query(`SELECT count(*) FROM (${initialAssetStockSql}) nuevos`)).rows[0].count);
+        conteoDisponibles = Number(logisticCounts.disponibles)+nuevosDisponibles;
+        conteoEnBodega += nuevosDisponibles;
 
         // 5. DATOS PARA GRÁFICOS
         const pieData = [
             { name: 'En Taller', value: conteoEnTaller },
+            { name: 'QA por verificar', value: osRows.filter(r=>r.etapa_qa==='POR_VERIFICAR').reduce((sum,r)=>sum+Number(r.total),0) },
+            { name: 'En QA', value: osRows.filter(r=>r.carga_qa).reduce((sum,r)=>sum+Number(r.total),0) },
             { name: 'En Bodega', value: conteoEnBodega },
             { name: 'En Tránsito', value: conteoEnTransito }
         ].filter(d => d.value > 0);
 
         const barData = [
-            { name: 'Operativos OK', cantidad: operativosFinal },
+            { name: 'En operación', cantidad: operativosFinal },
+            { name: 'Disponible para instalación', cantidad: conteoDisponibles },
             { name: 'En Logística', cantidad: conteoEnBodega + conteoEnTransito },
             { name: 'En Taller', cantidad: conteoEnTaller },
-            { name: 'Saldos Ruta', cantidad: conteoFallaRuta }
+            { name: 'Asignado a técnico', cantidad: Number(logisticCounts.asignados) },
+            { name: 'En ruta', cantidad: Number(logisticCounts.en_ruta) },
+            { name: 'En QA', cantidad: osRows.filter(r=>r.carga_qa).reduce((sum,r)=>sum+Number(r.total),0) }
         ];
 
         res.json({
             kpis: {
+                ordenesActivas,
                 totalEnProceso: conteoEnTaller, // Lo que realmente está en Lab
                 consolasEnLab: consolasEnTaller,
                 validadoresEnLab: validadoresEnTaller,
                 totalReparadosLab: osRows.filter(r => parseInt(r.estado_id, 10) === 10).reduce((a, b) => a + parseInt(b.total, 10), 0),
-                totalEnQa: osRows.filter(r => parseInt(r.estado_id, 10) === 6).reduce((a, b) => a + parseInt(b.total, 10), 0),
+                totalEnQa: osRows.filter(r => r.carga_qa).reduce((a, b) => a + parseInt(b.total, 10), 0),
 
                 totalReparados: conteoDisponibles,
                 totalOperativos: operativosFinal,
+                totalEnRuta: Number(logisticCounts.en_ruta),
+                totalAsignados: Number(logisticCounts.asignados),
                 totalEnBodega: conteoEnBodega,   // <--- NUEVO
                 totalEnTransito: conteoEnTransito, // <--- NUEVO
                 totalPods: podsTotalesEnProceso,
                 podsReparados: podsRecuperados,
-                tiempoPromedio: 18.5
+                tiempoPromedio: null // No existe una medición agregada implementada; no publicar un valor de ejemplo.
             },
             charts: {
                 pieData,
@@ -132,53 +156,20 @@ router.get("/summary", requireAnyRole(...VALID_ROLES), async (req, res, next) =>
  * GET /api/dashboard/equipos-operativos
  * Lista detallada de equipos que no tienen una OS activa (operativos en buses)
  */
-router.get("/equipos-operativos", requireAnyRole(ROLES.ADMIN, ROLES.GERENTE, ROLES.LOGISTICA), async (req, res, next) => {
+router.get("/equipos-operativos", authorize('warehouse.read'), async (req, res, next) => {
     const { q = '', limit = 20, offset = 0 } = req.query;
-    console.log(`[EquiposOperativos] BUSCANDO q="${q}" offset=${offset} USER=${req.user?.rol}`); // DEBUG
     try {
         const queryStr = `%${q}%`;
         const sql = `
-            WITH AllHardware AS (
-                SELECT 'VALIDADOR' as tipo, serie, modelo, marca FROM pmp.validadores
-                UNION ALL
-                SELECT 'CONSOLA' as tipo, serie, modelo, marca FROM pmp.consolas
-            ),
-            ActiveOS AS (
-                SELECT 
-                    COALESCE(validador_serie, consola_serie) as serie
-                FROM pmp.ordenes_servicio
-                WHERE estado_id NOT IN (8, 12, 13)
-            ),
-            LatestPPU AS (
-                SELECT DISTINCT ON (COALESCE(validador_serie, consola_serie))
-                    COALESCE(validador_serie, consola_serie) as serie,
-                    bus_ppu,
-                    fecha
-                FROM pmp.ordenes_servicio
-                WHERE bus_ppu != 'STOCK' AND bus_ppu IS NOT NULL
-                ORDER BY COALESCE(validador_serie, consola_serie), fecha DESC
-            )
-            SELECT 
-                h.*,
-                lp.bus_ppu,
-                lp.fecha as ultima_operacion,
-                COUNT(*) OVER() as total_count
-            FROM AllHardware h
-            LEFT JOIN ActiveOS a ON h.serie = a.serie
-            LEFT JOIN LatestPPU lp ON h.serie = lp.serie
-            WHERE a.serie IS NULL
-              AND (
-                h.serie ILIKE $1 OR 
-                COALESCE(lp.bus_ppu, '') ILIKE $1 OR 
-                h.modelo ILIKE $1 OR
-                h.tipo ILIKE $1
-              )
-            ORDER BY lp.fecha DESC NULLS LAST, h.serie ASC
+            SELECT h.*, COUNT(*) OVER() AS total_count
+            FROM (${operatingAssetsSql}) h
+            WHERE h.serie ILIKE $1 OR h.bus_ppu ILIKE $1 OR h.modelo ILIKE $1 OR h.tipo ILIKE $1
+            ORDER BY h.ultima_operacion DESC NULLS LAST,h.tipo,h.serie
             LIMIT $2 OFFSET $3
         `;
-        
+
         const { rows } = await pool.query(sql, [queryStr, limit, offset]);
-        
+
         const totalCount = rows.length > 0 ? parseInt(rows[0].total_count, 10) : 0;
         const data = rows.map(r => {
             const { total_count, ...rest } = r;
@@ -200,38 +191,11 @@ router.get("/equipos-operativos", requireAnyRole(ROLES.ADMIN, ROLES.GERENTE, ROL
 });
 /**
  * GET /api/dashboard/global-search
- * Búsqueda global (Trazabilidad) por código OS o ID de Aranda.
+ * Búsqueda global de trazabilidad por código OS, referencia reservada o serie.
  */
-router.get("/global-search", requireAnyRole(...VALID_ROLES), async (req, res, next) => {
-    const { q } = req.query;
-    if (!q) return res.json([]);
-    try {
-        const queryStr = `%${q}%`;
-        const sql = `
-            SELECT 
-                o.codigo_os,
-                o.ticket_aranda,
-                o.tipo_equipo,
-                COALESCE(o.validador_serie, o.consola_serie) as serie,
-                e.nombre as estado,
-                ub.nombre as ubicacion,
-                o.fecha,
-                o.bus_ppu,
-                u.nombre || ' ' || u.apellido as tecnico_creador
-            FROM pmp.ordenes_servicio o
-            JOIN pmp.estados e ON o.estado_id = e.id
-            JOIN pmp.ubicaciones ub ON o.ubicacion_id = ub.id
-            LEFT JOIN pmp.usuarios u ON o.tecnico_terreno_id = u.id
-            WHERE o.codigo_os ILIKE $1 OR o.ticket_aranda ILIKE $1 OR COALESCE(o.validador_serie, o.consola_serie) ILIKE $1
-            ORDER BY o.fecha DESC
-            LIMIT 10
-        `;
-        const { rows } = await pool.query(sql, [queryStr]);
-        res.json(rows);
-    } catch (err) {
-        console.error("Global Search Error:", err);
-        next(err);
-    }
+router.get("/global-search", requireAnyRole(...Object.values(ROLES)), async (req,res,next) => {
+  try { res.json(req.query.q ? await searchAssets(pool,req.query.q) : []); }
+  catch (error) { sendFlowError(res,error,next); }
 });
 
 export default router;

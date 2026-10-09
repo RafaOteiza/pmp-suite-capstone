@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "exitCode": 0,
+  "expo": "57.0.22",
+  "bundles": {
+    "android": {
+      "file": "_expo/static/js/android/index-da7ebd62be9cc4d3e4beb97de1a9c159.hbc",
+      "bytes": 2713160,
+      "sha256": "2e98f8280ed3200508694f5e579d203b42c3cf0682eddc17c02ea5a04470ef05"
+    },
+    "ios": {
+      "file": "_expo/static/js/ios/index-10deb1490fad23112f67078aa63606cd.hbc",
+      "bytes": 2713687,
+      "sha256": "90d58eec69c759c22c202b8a50a3a923fcdcad033f21a0d2b6eccad1db9ca9cc"
+    }
+  }
+}

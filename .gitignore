@@ -5,6 +5,7 @@
 **/.expo/
 **/coverage/
 **/__pycache__/
+**/.venv/
 **/scratch/
 *.py[cod]
 
@@ -31,3 +32,21 @@ Thumbs.db
 
 # Repositorios anidados
 **/.git/
+
+# Respaldos privados y resultados locales de verificación (sin entorno demo)
+Respaldos/
+.local/pmp-verification/
+
+# Temporales, datos locales y respaldos adicionales
+/.local/
+/tmp/
+*.tsbuildinfo
+*.dump
+*.backup
+*.bak
+/.local/
+/tmp/
+*.tsbuildinfo
+*.dump
+*.backup
+*.bak

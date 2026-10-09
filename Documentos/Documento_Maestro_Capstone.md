@@ -1,97 +1,183 @@
-# Informe Final Capstone: Sistema PMP Suite
+# Documento maestro Capstone PMP Suite
 
-![PMP Suite — Estado: Validación Final v5.0](https://img.shields.io/badge/Estado-100%25_Operativo_v5.0-10B981?style=for-the-badge)
-![DuocUC](https://img.shields.io/badge/DuocUC-Ingeniería_Informática-002D62?style=for-the-badge)
-![AI_Powered](https://img.shields.io/badge/AI_Powered-Random_Forest-8B5CF6?style=for-the-badge)
+## Estado del documento
 
-**Proyecto de Título (APT) — Abril 2026**
-**Versión Final: 5.0 (Edición Gold & Predictive AI)**
+Este archivo resume la línea base técnica de PMP Suite para preparar el informe
+y la defensa. Los resultados incluidos corresponden a verificaciones
+reproducibles; las actividades pendientes se identifican expresamente.
 
----
+Actualización documental: 23 de septiembre de 2026. La fuente normativa son los
+cinco artefactos Capstone v2.0 y su [índice de vigencia](../Documentacion%20Capstone/Artefactos%20Metodologia%20Cascada/README_VIGENCIA_v2.0.md),
+actualizados manualmente. Se preservan esos archivos y las versiones históricas.
+Esta revisión no ejecuta pruebas ni transforma resultados anteriores en evidencia nueva.
 
-## 1. Información General del Proyecto y Equipo
+## Equipo
 
-Para dar estricto cumplimiento a las normativas de la asignatura Capstone (Portafolio de Título), se certifica que el equipo está compuesto por un **máximo de 3 integrantes**. La distribución de roles refleja una estructura organizacional realista de alto rendimiento, garantizando el compromiso comprobable en las áreas de desarrollo, infraestructura de bases de datos y documentación técnica:
+- Rafael Oteiza: gestión, arquitectura, base de datos y backend.
+- Matías Garrido: documentación y levantamiento de requerimientos.
+- Luis Arenas: frontend web y aplicación móvil.
 
-*   **Rafael Oteiza:** Project Manager (PMO) y Arquitectura de Sistemas. Responsable de la gestión del proyecto, diseño arquitectónico y modelado de datos.
-*   **Matías Garrido:** Data Lead (DBA) y Desarrollo Backend. Responsable de la construcción de la API REST, seguridad, concurrencia y consultas complejas en PostgreSQL.
-*   **Luis Arenas:** Tech Lead y Desarrollo Frontend. Responsable de la interfaz web premium (React), aplicación móvil y experiencia de usuario.
+La evidencia individual y el historial del repositorio serán organizados por el
+equipo antes de la entrega.
 
-> **Evidencia de Desarrollo y Trabajo en Equipo:** Todo el ciclo de vida del proyecto está respaldado mediante un sistema de control de versiones centralizado (Git), donde se refleja la contribución técnica individual de cada integrante mediante *commits* en la evolución del código fuente (Backend, Frontend, Mobile, Modelos IA y Base de Datos), validando el trabajo colaborativo declarado en el Perfil de Egreso.
+## Problema y solución
 
----
+El mantenimiento de validadores y consolas requiere coordinar terreno, bodega,
+laboratorio y QA. Cuando cada área registra información por separado, resulta
+difícil comprobar qué equipo fue retirado, dónde está, quién debe intervenirlo y
+cuándo puede volver a servicio.
 
-## 2. Resumen Ejecutivo y Propuesta de Valor
+PMP Suite centraliza órdenes, activos, ubicaciones, responsables, reparaciones,
+repuestos, decisiones QA y eventos. El escaneo por serie o AMID agrega una
+comprobación física antes de los movimientos críticos.
 
-**PMP Suite** es una plataforma ecosistémica y logística de alto desempeño orientada a gestionar el ciclo de vida de mantenimiento, reparación y control de calidad de validadores y consolas de transporte público en terreno.
+## Objetivo general
 
-El sistema nace como solución arquitectónica a una problemática real del mandante principal (SONDA). Si bien la empresa utiliza *Aranda ITSM* para la gestión inicial de incidencias de TI, carecía de un sistema robusto para el control de la **logística inversa** una vez que los equipos defectuosos son retirados de los buses. PMP Suite actúa como el "eslabón perdido" (*The Missing Link*), asegurando una trazabilidad End-to-End (E2E), evitando la millonaria pérdida de activos y proporcionando visibilidad gerencial en tiempo real.
+Desarrollar y validar un sistema que controle el ciclo de mantenimiento de los
+equipos y mantenga una trazabilidad consultable desde el retiro hasta la
+reinstalación.
 
-En su versión 5.0 definitiva, el sistema no solo digitaliza el flujo de Taller y Bodega, sino que incorpora **Inteligencia Artificial Predictiva (Machine Learning)** para estimar fallas antes de que los equipos salgan a ruta, transformando un modelo de mantenimiento reactivo en uno predictivo. Adicionalmente, cuenta con una interfaz catalogada como *Gold Edition* con los más altos estándares visuales (Glassmorphism, Dark Mode Nativo).
+## Objetivos específicos
 
----
+1. Gestionar órdenes de validadores y consolas con datos maestros válidos.
+2. Controlar las transiciones entre terreno, bodega, laboratorio y QA.
+3. Aplicar permisos efectivos en backend y frontend según el rol PostgreSQL.
+4. Verificar físicamente el activo mediante serie, código de barras, QR o AMID.
+5. Registrar diagnósticos, reparaciones, repuestos y certificaciones.
+6. Entregar indicadores y trazabilidad a administración y gerencia.
+7. Evaluar información histórica mediante un analizador Python de riesgo.
 
-## 3. Demostración de Competencias de Especialidad
+## Arquitectura
 
-El desarrollo integral de PMP Suite certifica la adquisición de las competencias de la especialidad del perfil de egreso:
+| Componente | Tecnología | Responsabilidad |
+|---|---|---|
+| Aplicación web | React, TypeScript y Vite | Interfaz operacional y ejecutiva |
+| Aplicación móvil | Expo y React Native | Trabajo y órdenes de terreno |
+| API | Node.js y Express | Seguridad, validación y reglas de negocio |
+| Base de datos | PostgreSQL | Persistencia, relaciones y transacciones |
+| Autenticación | Firebase | Identidad de los usuarios |
+| Analizador | Python y scikit-learn | Reporte de riesgo operacional |
 
-### 3.1. Gestión de Infraestructura, Ambientes y Datos
-*   **Administrar la configuración de ambientes, servicios y BD:** Se implementó un entorno empresarial robusto. Uso de **PostgreSQL 16**, backend en **Node.js 20**, y un entorno web con **Vite**. El despliegue está diseñado bajo estándares de la industria, documentado mediante `DEPLOYMENT_UBUNTU.md`, asegurando la continuidad operativa del negocio.
-*   **Construir modelos de datos escalables:** El proyecto sustenta sus operaciones en un Modelo Entidad-Relación (ERD) avanzado. Incorpora tablas de parametrización (operadores, terminales), bitácoras transaccionales para cada evento (trazabilidad) y un esquema de autenticación que soporta *Role-Based Access Control* (RBAC).
-*   **Programar consultas o rutinas para manipular información:** Se construyó lógica nativa en BD mediante *Triggers* y *Stored Procedures* (ej. validación cruzada entre el estado físico de la OS y la ubicación permitida, autogeneración de códigos únicos `MC-XXXX` y `MV-XXXX`). Se gestiona el bloqueo por concurrencia mediante `SELECT ... FOR UPDATE`, previniendo colisiones de datos durante despachos simultáneos.
+PostgreSQL define el rol efectivo. Firebase Admin verifica la identidad, pero
+los atributos del token no reemplazan el rol ni el estado activo registrado en
+`pmp.usuarios`.
 
-### 3.2. Desarrollo de Software y Arquitectura Sistémica
-*   **Ofrecer propuestas de solución informática:** Tras analizar el hueco logístico dejado por Aranda, se propuso y modeló la "Matriz de Estados PMP" (Tránsito ➔ Bodega ➔ Diagnóstico ➔ QA ➔ Disponible), cubriendo el proceso operativo en su totalidad y de forma segura.
-*   **Desarrollar una solución sistematizando el proceso:** Se establecieron metodologías estructuradas (Fases de entrega documentadas). Se separaron limpiamente las responsabilidades mediante una Arquitectura Cliente-Servidor: Frontend Web, Frontend Móvil y Backend API RESTful.
-*   **Construir programas y rutinas complejas (Buenas Prácticas):** Uso extensivo de patrones de diseño. El backend se estructuró con inyección de dependencias, *middlewares* de seguridad multinivel y orquestadores de estado (`osStateMachine.js`). El frontend fue desarrollado usando *React 18* y *Recharts* para interfaces analíticas.
-*   **Construir el modelo arquitectónico sistémico:** Se elaboraron vistas C4, diagramas de flujo de datos y diagramas de secuencia, soportando una arquitectura capaz de escalar ante la demanda de una flota nacional.
+## Roles
 
-### 3.3. Calidad, Seguridad y Automatización de Procesos
-*   **Implementar soluciones integrales (Optimización):** Se automatizaron despachos masivos, permitiendo procesar lotes de equipos en un solo clic de forma transaccional (`BEGIN/COMMIT`). Adicionalmente, el consumo de stock de repuestos se gatilla dinámicamente según la bitácora técnica.
-*   **Realizar pruebas de calidad (Buenas prácticas de industria):** El sistema fue sometido a una estricta validación, logrando el hito de superar **46 Pruebas End-to-End (E2E)** cubriendo todo el flujo logístico, y superando con éxito **14 Pruebas de Estrés** simulando cargas competitivas destructivas.
-*   **Resolver vulnerabilidades para asegurar la información:** Integración nativa con **Firebase Authentication** inyectando *Custom Claims* en los JWT. Se protegen las rutas mediante *URL Spoofing Prevention* en React, y doble verificación en los endpoints de Express (`requireAnyRole()`), rechazando de raíz peticiones maliciosas (401/403).
-*   **Gestionar proyectos informáticos:** Liderazgo directo del ciclo de vida del desarrollo. Creación de presupuestos, cartas Gantt, matrices de requerimientos (ERS) y manuales globales del sistema, apoyando la toma de decisiones empresariales.
+| Rol | Alcance |
+|---|---|
+| `admin` | Administración global, usuarios, asignaciones y control del laboratorio |
+| `gerente` | Consulta global de solo lectura |
+| `logistica` | Bodega, stock, repuestos y movimientos físicos |
+| `qa` | Certificación de órdenes asignadas |
+| `tecnico_laboratorio` | Diagnóstico y reparación de carga asignada |
+| `tecnico_terreno` | Retiro, sustitución e instalación |
 
----
+## Flujo principal
 
-## 4. Demostración de Competencias Genéricas
+Gestión de activos registra el maestro por tipo + serie, origen, fecha,
+observación, autor y datos técnicos conocidos. El alta registra ALTA_ACTIVO y
+no crea OS ni stock. Ingreso de requerimientos selecciona únicamente activos
+existentes vinculados operacionalmente al bus, y crea caso y OS MV/MC/PDV/PDC
+según el proceso. Bridge solo correlaciona referencias externas con OS existentes.
 
-El éxito de la plataforma dependió de las habilidades transversales del equipo, liderado por la dirección general del proyecto:
+La reparación mantiene su OS y su activo durante retiro, Bodega, laboratorio,
+QA y retorno físico a Bodega. La recepción conforme desde QA puede habilitar
+stock reparado; no genera una IN anticipada.
 
-*   **Operatoria Matemática y Estadística Descriptiva (Innovación IA):** Esta competencia brilló especialmente en el desarrollo del motor de **Inteligencia Artificial Predictiva**. Se procesaron *datasets* históricos de fallas limpiando *outliers* y anomalías con estadística descriptiva. Se utilizaron algoritmos matemáticos avanzados (Bosques Aleatorios / *Random Forest* de Scikit-Learn) calculando probabilidades de falla (ej. umbral > 70%), MTBF (Mean Time Between Failures) y generando un Score de Riesgo. Esto resolvió una problemática de alta complejidad técnica y la integró gráficamente mediante *AIRiskPanels*.
-*   **Comunicación Oral y Escrita:** Todo el flujo técnico del equipo se documentó a través de entregables profesionales: Informes de avances, ERS, matrices de pruebas, *Walkthroughs* explicativos, y este Informe Final. La UI/UX de la plataforma se diseñó para comunicar visualmente los estados de los equipos a través de alertas, insignias y semáforos, sin necesidad de entrenamiento extensivo al operador logístico.
-*   **Capacidad de Innovación y Riesgo Calculado:** El equipo se arriesgó a salir del modelo de "CRUD universitario" convencional, integrando tecnologías emergentes (Machine Learning predictivo), diseños visuales *Premium* (Glassmorphism) y pruebas de penetración/estrés, asumiendo un nivel de exigencia propio de un entorno de mercado corporativo competitivo.
-*   **Emprendimiento y Valor Agregado:** PMP Suite es escalable como un SaaS (Software as a Service). El proyecto identifica una oportunidad clara en la industria logística del transporte público y agrega un inmenso valor al entorno productivo al reducir drásticamente las "pérdidas hormiga" de activos tecnológicos y maximizar la operatividad de los buses de la capital.
+Un activo nuevo se recibe por una acción separada: escaneo físico en BODEGA y
+confirmación de identidad, integridad y conformidad inicial. Registra
+ESCANEO_BODEGA, RECEPCION_INICIAL y HABILITADO_INSTALACION sin ninguna OS ni bus
+ficticio, y sin recorrer diagnóstico, reparación o QA de reparación.
 
----
+Stock inicial conforme y stock reparado aprobado por QA comparten **Listos para
+instalación**. En el despacho physical-first, logística define contexto, toma
+un equipo y lo escanea. Solo confirmar la salida crea `IN-xxxxxx` con correlativo
+PMP independiente, relaciona caso y origen de stock, asigna técnico y registra
+SALIDA_BODEGA_TERRENO. Seleccionar técnico o escanear no equivale a despachar.
 
-## 5. Diseño Arquitectónico y Flujos Operativos
+**Disponible para instalación** es stock elegible en Bodega; **Asignado** no
+demuestra salida; **En ruta** requiere despacho confirmado; **Equipos en
+operación** reúne activos instalados y operativos, sin ofrecerlos como stock.
+El historial por tipo + serie muestra eventos iniciales sin OS y todas las
+intervenciones posteriores, conservando sus identificadores.
 
-La solución técnica está respaldada por flujos defensivos de datos y una matriz de estados irrompible.
+Cada estación física valida la etiqueta del activo antes de recepcionar o
+despachar. Los validadores aceptan serie o AMID; las consolas utilizan su serie.
 
-### 5.1. Stack Tecnológico General
-| Módulo / Capa | Tecnologías Clave | Responsabilidad |
-| :--- | :--- | :--- |
-| **Mobile (Terreno)** | React Native (Expo SDK) | Toma de incidencias in-situ, validación de PPUs y captura fotográfica (PODs). |
-| **Web (Logística/Admin)** | React 18, Vite 5, Recharts | Panel Gerencial de control, dashboard de métricas e interfaz de Bodega/Taller. |
-| **Backend API** | Node.js 20, Express 4 | Core lógico (State Machine), validación RBAC y orquestación de base de datos. |
-| **Base de Datos** | PostgreSQL 16 | Almacenamiento seguro, Triggers de consistencia, Control de concurrencia. |
-| **Motor Predictivo (IA)** | Python 3.11, Scikit-Learn | Análisis de datos históricos, entrenamiento de modelo `RandomForestClassifier`. |
-| **Autenticación** | Firebase Auth | Gestión de identidades, Bearer Tokens (JWT). |
+## Seguridad
 
-### 5.2. Flujo Logístico Central y Control de Calidad (QA)
-1. **Terreno ➔ Tránsito:** El Técnico de Terreno extrae el equipo del bus mediante la App Móvil, generando el evento inicial ("EN_TRANSITO"). Obligatoriedad de fotografía (POD) en casos seleccionados.
-2. **Recepción Logística:** El área de Bodega, funcionando como el gran HUB de PMP Suite, recepciona los equipos digitalmente. Ningún equipo salta pasos; todo triangula a través de Bodega.
-3. **Diagnóstico y Reparación:** Los Técnicos de Laboratorio asumen las OS de la cola. Efectúan bitácoras de trabajo, declaran fallas y consumen automáticamente *stock* de repuestos.
-4. **Despacho QA Masivo:** La Jefatura de Taller posee facultades para despachar equipos ya reparados hacia el módulo de Certificación en lotes (Bulk Dispatch).
-5. **Auditoría QA (Loop Defensivo):** El personal de QA inspecciona la calidad.
-   - **Aprueba:** El equipo transita a estado "DISPONIBLE" para ser reinstalado.
-   - **Rechaza:** Se rompe el flujo ideal, el equipo es devuelto obligatoriamente al estado "EN_DIAGNOSTICO" (Laboratorio) exigiendo reparación profunda.
+Las rutas protegidas aplican autenticación Firebase, usuario PostgreSQL activo,
+restricción del gerente y autorización específica por rol. El gerente recibe
+HTTP 403 ante escrituras operacionales. Las consultas SQL utilizan parámetros y
+las transiciones sensibles se ejecutan dentro de transacciones.
 
----
+## Estado de validación
 
-## 6. Conclusiones Finales
+La línea base v2.0 remite a los resultados ya registrados en el
+[informe de recepción inicial](../08_Pruebas/RECEPCION_INICIAL_SIN_OS.md): 56/56
+backend, 62/62 frontend, build web, exportaciones Android/iOS con Expo SDK 57 y
+cuatro suites E2E aprobadas. Suites/builds se ejecutaron el 17 de septiembre y
+el E2E de recepción se repitió el 22; no se ejecutaron de nuevo en esta revisión.
+La validación humana con lector real y teléfono sigue pendiente.
 
-El proyecto **PMP Suite (Versión 5.0 Gold & Predictive AI)** consolida el proceso académico de los tres integrantes, demostrando dominio absoluto de las tecnologías requeridas, la gestión de la arquitectura, y las prácticas de vanguardia del mercado tecnológico actual.
+### Registro histórico del 12 de septiembre de 2026
 
-Liderado desde una perspectiva organizacional estratégica (PMO), apoyado por un enfoque de arquitectura escalable (Tech Lead) y sustentado por una base de datos segura y de alto rendimiento (Data Lead), PMP Suite no solo cumple con las competencias del perfil de egreso exigidas por la asignatura Capstone de Ingeniería Informática, sino que se proyecta como una solución empresarial real, viable, innovadora y de clase mundial.
+Los siguientes resultados se conservan exclusivamente como evidencia de esa fecha:
+
+| Verificación | Resultado |
+|---|---|
+| Backend | 52 de 52 pruebas aprobadas |
+| Frontend | 42 de 42 pruebas aprobadas |
+| Build web | Aprobado |
+| Firebase Admin | Identidad de Rafael y Jorge consistente |
+| Entorno IA | `psycopg2` 2.9.11 importado correctamente |
+
+En esa verificación, la base demostrativa contenía 50 validadores, 50 consolas y 100 órdenes,
+distribuidas en partes iguales entre terreno, bodega, laboratorio y QA.
+
+## Innovación
+
+### Problema que resuelve
+
+Reduce la pérdida de trazabilidad entre áreas y permite verificar que el activo
+físico corresponde a la orden procesada.
+
+### Diferencia de la solución
+
+Combina control del flujo, autorización por rol, identificación física,
+historial transaccional y una consulta analítica en un mismo sistema.
+
+### Valor aportado
+
+Entrega información sobre ubicación, responsabilidad y estado del equipo, y
+reduce decisiones basadas únicamente en registros manuales o supuestos.
+
+## Pendientes de cierre
+
+1. Ejecutar el recorrido completo sobre el dataset reiniciado.
+2. Capturar evidencia por rol y transición.
+3. Validar la aplicación móvil en un dispositivo físico.
+4. Ejecutar rendimiento y errores sobre una base aislada.
+5. Documentar evaluación, métricas y limitaciones del modelo de IA.
+6. Actualizar diagramas y artefactos con los resultados finales.
+7. Preparar presentación, guion y ensayo de defensa.
+
+## Persistencia y alcance de despliegue
+
+Las migraciones 003–006 incorporan casos, IN independientes, procedencia del
+maestro y recepción inicial sin OS. Se aplican después de sus prerrequisitos,
+con verificadores y preservación de datos históricos. El stock inicial se
+respalda en eventos; el reparado, en su intervención aprobada y recibida.
+
+La puesta en producción debe cargar previamente parque instalado y stock con
+relaciones verificadas, sin inventar MV/MC para representar activos existentes.
+El importador masivo sigue documentado como extensión futura. El Capstone usa
+ingreso externo asistido; la integración automática con Aranda es futura.
+Se mantiene Expo SDK 57 y Docker no forma parte del alcance.
+
+## Criterio de cierre
+
+PMP Suite estará listo para defensa cuando el recorrido completo pueda
+reproducirse, las evidencias correspondan a la versión presentada y los
+documentos describan únicamente funciones comprobadas.

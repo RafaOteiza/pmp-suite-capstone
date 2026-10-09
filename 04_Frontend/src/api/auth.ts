@@ -3,12 +3,11 @@ import { fbAuth } from "../app/firebase";
 import { api } from "./http";
 
 export type LoginRequest = { email: string; password: string };
-export type LoginResponse = { token: string };
+export type LoginResponse = { authenticated: true };
 
 export async function login(req: LoginRequest): Promise<LoginResponse> {
-  const cred = await signInWithEmailAndPassword(fbAuth, req.email, req.password);
-  const token = await cred.user.getIdToken(); // Firebase ID Token
-  return { token };
+  await signInWithEmailAndPassword(fbAuth, req.email, req.password);
+  return { authenticated: true };
 }
 
 export async function requestSelfResetPasswordLink(): Promise<{ link?: string }> {

@@ -2,6 +2,8 @@
 
 Este documento describe el esquema de la base de datos PostgreSQL del Sistema PMP Suite, mostrando las tablas principales, sus atributos y las relaciones entre ellas. Se utiliza la notación para Diagramas Entidad-Relación (ERD).
 
+Actualización documental: 23 de septiembre de 2026, conforme a la [línea base Capstone v2.0](../Documentacion%20Capstone/Artefactos%20Metodologia%20Cascada/README_VIGENCIA_v2.0.md). El diagrama es una selección de relaciones del modelo actual, no un script DDL ni una representación exhaustiva de restricciones.
+
 ## Descripción
 
 La base de datos PostgreSQL es el repositorio central de toda la información transaccional y de configuración del sistema PMP Suite. Su diseño es relacional, con un esquema `pmp` que organiza las tablas principales, las cuales están interconectadas a través de claves primarias y foráneas para garantizar la integridad referencial. Se hace un uso extensivo de tipos `ENUM` para campos con valores discretos y triggers para hacer cumplir la lógica de negocio a nivel de base de datos.
@@ -18,7 +20,10 @@ La base de datos PostgreSQL es el repositorio central de toda la información tr
 *   **pmp.validadores:** Catálogo de validadores de equipos (series, modelos, marcas).
 *   **pmp.consolas:** Catálogo de consolas de equipos (series, modelos, marcas).
 *   **pmp.ordenes_servicio:** Tabla principal de Órdenes de Servicio (OS), con detalles del equipo, falla, estado, técnicos asignados y ubicación.
-*   **pmp.os_eventos:** Historial de eventos y cambios para cada OS (cambios de estado, comentarios, alertas IA).
+*   **pmp.flujo_eventos:** Eventos con usuario, fecha y metadata; pueden referenciar una OS, una relación histórica Bridge o directamente tipo + serie. Los eventos iniciales no requieren OS.
+*   **pmp.escaneos_equipos:** Evidencia física por activo, estación, ubicación, usuario, resultado y contexto; admite escaneo inicial en BODEGA sin OS bajo las restricciones de 006.
+*   **pmp.casos_operacionales:** Necesidad interna o externa y relaciones explícitas de sus intervenciones. No determina el correlativo de las IN.
+*   **pmp.bridge_referencias:** Correlación de tipo + serie + OS PMP existente + sistema/referencia externa; no ejecuta operaciones ni sustituye identificadores.
 *   **pmp.os_transiciones:** Reglas que definen las transiciones de estado permitidas para las OS, por rol.
 *   **pmp.config_estado_ubicacion:** Configuración de validación entre estados de OS y tipos de ubicación.
 *   **pmp.registro_reparaciones:** Registros detallados de las reparaciones realizadas en una OS.
@@ -30,7 +35,7 @@ La base de datos PostgreSQL es el repositorio central de toda la información tr
 
 ## Diagrama Entidad-Relación (ERD) (Prompt PlantUML)
 
-Aquí tienes un prompt para generar un Diagrama Entidad-Relación utilizando PlantUML. Puedes copiar este código en una herramienta que soporte PlantUML para visualizar el diagrama. Debido a la complejidad y el número de tablas, este diagrama puede ser denso, pero representa todas las relaciones identificadas en `pmp_backup.sql`.
+La identidad del activo es tipo + serie, implementada en los maestros separados de validadores y consolas. Las relaciones de eventos/escaneos hacia esa identidad se validan mediante servicios y restricciones/triggers; no se dibujan como una FK única hacia ambos maestros. Las tablas antiguas `bridges` y `bridge_mantenimiento` conservan datos históricos y no definen nuevas operaciones Bridge.
 
 ```plantuml
 @startuml PMP_ERD
@@ -89,6 +94,10 @@ entity "pmp.validadores" as validadores {
   --
   modelo: VARCHAR(50)
   marca: VARCHAR(50)
+  origen_registro
+  fecha_ingreso
+  observacion_registro
+  registrado_por: UUID
 }
 
 entity "pmp.consolas" as consolas {
@@ -96,6 +105,10 @@ entity "pmp.consolas" as consolas {
   --
   modelo: VARCHAR(50)
   marca: VARCHAR(50)
+  origen_registro
+  fecha_ingreso
+  observacion_registro
+  registrado_por: UUID
 }
 
 entity "pmp.ordenes_servicio" as os {
@@ -115,20 +128,58 @@ entity "pmp.ordenes_servicio" as os {
   tecnico_terreno_id: UUID <<FK>>
   tecnico_laboratorio_id: UUID <<FK>>
   actualizado_en: TIMESTAMP
+  caso_id: BIGINT <<FK, nullable>>
+  os_origen: VARCHAR(50) <<FK, nullable>>
+  stock_origen_os: VARCHAR(50) <<FK, nullable>>
+  stock_origen_evento: BIGINT <<FK, nullable>>
 }
 
-entity "pmp.os_eventos" as os_eventos {
-  *id: SERIAL <<PK>>
+entity "pmp.flujo_eventos" as eventos {
+  *id: BIGINT <<PK>>
   --
-  os_id: VARCHAR(50) <<FK>>
-  evento_tipo: pmp.tipo_evento_os
-  desde_estado: INTEGER <<FK>>
-  hacia_estado: INTEGER <<FK>>
+  codigo_os: VARCHAR(50) <<nullable>>
+  bridge_codigo <<historico, nullable>>
+  tipo_equipo: VARCHAR(20) <<nullable>>
+  serie: VARCHAR(50) <<nullable>>
+  tipo
   usuario_id: UUID <<FK>>
   rol: VARCHAR(50)
   comentario: TEXT
-  meta: JSONB
+  metadata: JSONB
   fecha: TIMESTAMP
+}
+
+entity "pmp.casos_operacionales" as casos {
+  *id: BIGINT <<PK>>
+  codigo_caso <<Unique>>
+  origen
+  referencia_externa <<nullable>>
+  tipo_equipo
+  serie_origen
+  bus_ppu <<FK>>
+  creado_por <<FK>>
+}
+
+entity "pmp.bridge_referencias" as referencias {
+  *id <<PK>>
+  tipo_equipo
+  serie
+  codigo_os <<FK>>
+  sistema_externo
+  referencia_externa
+}
+
+entity "pmp.escaneos_equipos" as escaneos {
+  *id <<PK>>
+  tipo_equipo
+  serie
+  codigo_os <<nullable>>
+  estacion
+  ubicacion_id <<FK>>
+  usuario_id <<FK>>
+  resultado
+  metadata: JSONB
+  fecha
 }
 
 entity "pmp.os_transiciones" as os_transiciones {
@@ -214,7 +265,6 @@ usuarios "1" --o{ "*" solicitudes_repuestos : "solicita"
 usuarios "1" --o{ "*" guias : "crea"
 
 estados "1" --o{ "*" os : "tiene"
-estados "1" --o{ "*" os_eventos : "desde/hacia"
 estados "1" --o{ "*" os_transiciones : "desde/hacia"
 
 ubicaciones "1" --o{ "*" os : "ubicado en"
@@ -230,7 +280,20 @@ buses "1" --o{ "*" guia_detalle : "en"
 validadores "1" --o{ "*" os : "equipo"
 consolas "1" --o{ "*" os : "equipo"
 
-os "1" --o{ "*" os_eventos : "tiene"
+os "0..1" -- "0..*" eventos : "intervencion, si existe"
+os "0..1" -- "0..*" escaneos : "contexto, si existe"
+os "1" -- "0..*" referencias : "correlaciones"
+casos "0..1" -- "0..*" os : "caso_id"
+eventos "0..1" -- "0..1" os : "stock_origen_evento"
+usuarios "1" -- "0..*" eventos : "registra"
+usuarios "1" -- "0..*" escaneos : "identifica"
+ubicaciones "0..1" -- "0..*" escaneos : "estacion fisica"
+
+note right of eventos
+ALTA_ACTIVO, ESCANEO_BODEGA,
+RECEPCION_INICIAL y HABILITADO_INSTALACION
+pueden existir por tipo + serie sin OS.
+end note
 os "1" --o{ "*" registro_reparaciones : "pertenece a"
 os "1" --o{ "*" solicitudes_repuestos : "genera"
 os "1" --o{ "*" guia_detalle : "es parte de"
@@ -257,7 +320,17 @@ config_estado_ubicacion "1" --o{ "*" ubicaciones : "configura tipo de"
 El Módulo de Mantenimiento Predictivo (v5.0) actúa como un consumidor analítico de solo lectura de las tablas transaccionales. Su lógica de inferencia se basa principalmente en:
 
 1.  **pmp.ordenes_servicio:** Provee el historial base de fallas, permitiendo el cálculo de reincidencias por número de serie (`validador_serie` / `consola_serie`) y el tiempo medio entre fallas (MTBF).
-2.  **pmp.os_eventos:** El campo `meta` (JSONB) es utilizado para análisis post-mortem de reparaciones complejas y para el entrenamiento del modelo de detección de anomalías ("Equipos Limón").
+2.  **Eventos e intervenciones:** `pmp.flujo_eventos` conserva la auditoría operacional con `metadata` JSONB. Su existencia no implica que el analizador consuma todos sus campos; las fuentes analíticas efectivas dependen de sus consultas implementadas.
 3.  **Análisis de Criticidad:** El modelo pondera tipos de falla específicos (ej: fallas EMV o de comunicación) para ajustar el `score_riesgo` que se muestra en los dashboards estratégicos.
+
+## Evolución 003–006 y disponibilidad
+
+003 incorpora casos y relaciones; 004 establece `pmp.seq_in` independiente de Aranda/caso y modelos desconocidos nullable; 005 agrega metadata de alta; 006 admite eventos/escaneos iniciales sin OS y el origen `stock_origen_evento`. Se conservan códigos y filas históricos. Las columnas antiguas de numeración por caso no gobiernan nuevas IN.
+
+Gestión de activos crea maestro y ALTA_ACTIVO, sin stock automático. Requerimientos solo opera sobre activos existentes vinculados al bus. La recepción inicial exige escaneo BODEGA y conformidad, sin OS ni bus ficticio: HABILITADO_INSTALACION respalda el stock inicial. El stock reparado se respalda en su intervención aprobada por QA y recepción física. La disponibilidad es derivada; no se crea una tabla de inventario paralela.
+
+Solo confirmar despacho physical-first crea `IN-xxxxxx` independiente, asigna técnico, consume origen de stock y registra SALIDA_BODEGA_TERRENO. La IN usa `stock_origen_evento` para stock inicial o `stock_origen_os` para reparado. Disponible, Asignado, En ruta y En operación no se deducen únicamente de un ID de estado; el movimiento físico requiere evidencia. Bridge únicamente correlaciona.
+
+La carga inicial del parque y stock debe conservar evidencia real, sin inventar MV/MC. BODEGA es una ubicación. Expo SDK 57 se conserva y Docker está fuera del alcance de despliegue.
 
 ---

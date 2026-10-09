@@ -1,73 +1,26 @@
-import { Router } from "express";
-import { pool } from "../db.js";
-import { firebaseAuth } from "../middleware/firebaseAuth.js";
-import { requireAnyRole } from "../middleware/requireAnyRole.js";
-import { ensureUser } from "../middleware/ensureUser.js";
-import { enforceReadOnlyRole } from "../middleware/readOnlyRole.js";
-import { ROLES } from "../constants/roles.js";
-
-const router = Router();
-const qaReadRoles = [ROLES.ADMIN, ROLES.GERENTE, ROLES.QA];
-const qaWriteRoles = [ROLES.ADMIN, ROLES.QA];
-
+import {authorize} from '../security/authorization.js';
+import {Router} from 'express';
+import {pool} from '../db.js';
+import {firebaseAuth} from '../middleware/firebaseAuth.js';
+import {ensureUser} from '../middleware/ensureUser.js';
+import {requireAnyRole} from '../middleware/requireAnyRole.js';
+import {enforceReadOnlyRole} from '../middleware/readOnlyRole.js';
+import {ROLES} from '../constants/roles.js';
+import {sendFlowError} from '../services/bridgeFlow.js';
+import {qaDashboard,qaDetail,qaCommand,validateQaPhysical} from '../services/qaWork.js';
+const router=Router();
 router.use(firebaseAuth, ensureUser, enforceReadOnlyRole);
-
-// GET: Obtener cola de QA (Solo estado 6 = EN_QA)
-router.get("/queue", requireAnyRole(...qaReadRoles), async (req, res, next) => {
-  try {
-    const sql = `
-      SELECT 
-        o.codigo_os, 
-        o.tipo_equipo,
-        o.fecha, 
-        o.falla, 
-        o.bus_ppu, 
-        COALESCE(o.validador_serie, o.consola_serie) as serie,
-        u_tec.nombre || ' ' || u_tec.apellido as tecnico_reparador
-      FROM pmp.ordenes_servicio o
-      LEFT JOIN pmp.usuarios u_tec ON o.tecnico_laboratorio_id = u_tec.id
-      WHERE o.estado_id = 6 
-      ORDER BY o.actualizado_en ASC
-    `;
-    const result = await pool.query(sql);
-    res.json(result.rows);
-  } catch (err) {
-    next(err);
-  }
-});
-
-// POST: Procesar QA (Aprobar o Rechazar)
-router.post("/process", requireAnyRole(...qaWriteRoles), async (req, res, next) => {
-  const { codigo_os, accion, comentario } = req.body; // accion: 'APROBAR' | 'RECHAZAR'
-  
-  try {
-    const client = await pool.connect();
-    try {
-        let esAprobadoQa = accion === 'APROBAR';
-        let nuevoEstado = 11; // Siempre vuelve a Bodega (EN_TRAYECTO_BODEGA) antes de ser listo o volver a taller
-        let ubicacionId = 1;  // Bodega Central Mersan (ID 1)
-        let evento = esAprobadoQa ? 'QA_APPROVED' : 'QA_REJECTED';
-
-        // 1. Actualizar OS (Estado + Ubicación + es_aprobado_qa)
-        await client.query(
-            `UPDATE pmp.ordenes_servicio 
-             SET estado_id = $1, ubicacion_id = $2, es_aprobado_qa = $3, actualizado_en = NOW() 
-             WHERE codigo_os = $4`,
-            [nuevoEstado, ubicacionId, esAprobadoQa, codigo_os]
-        );
-
-        await client.query('COMMIT');
-        res.json({ success: true, message: `OS ${codigo_os} procesada (${accion})` });
-    } catch (e) {
-        await client.query('ROLLBACK');
-        console.error("Error en QA process:", e);
-        res.status(500).json({ error: e.message });
-    } finally {
-        client.release();
-    }
-  } catch (err) {
-    next(err);
-  }
-});
-
+const handle=fn=>async(req,res,next)=>{try{res.json(await fn(req));}catch(e){sendFlowError(res,e,next);}};
+router.get('/dashboard',authorize('qa.read'),handle(req=>qaDashboard(pool,req.query)));
+// Compatibility reads use the same custody predicates; no administrative assignment queue.
+router.get('/queue',authorize('qa.read'),handle(async()=>{
+ const stages=await Promise.all(['AMBIENTE','PRUEBAS','DESPACHO'].map(etapa=>qaDashboard(pool,{etapa})));
+ return stages.flatMap(s=>s.items);
+}));
+router.get('/incoming',authorize('qa.read'),handle(async()=> (await qaDashboard(pool,{etapa:'RECEPCION'})).items));
+router.put('/assign',authorize('qa.work'),(req,res)=>res.status(410).json({message:'La asignación administrativa fue retirada. QA toma su propio trabajo.'}));
+router.post(['/start','/process'],authorize('qa.work'),(req,res)=>res.status(410).json({message:'Utiliza las etapas de Mi operación QA; el dictamen no confirma despacho.'}));
+router.get('/:code/work',authorize('qa.read'),handle(req=>qaDetail(pool,req.params.code,req.query.ciclo)));
+router.post('/:code/:purpose/validar',authorize('qa.work'),handle(req=>validateQaPhysical(pool,req.params.code,req.params.purpose,req.body,req.user)));
+router.post('/:code/actions/:action',authorize('qa.work'),handle(req=>qaCommand(pool,req.params.code,req.params.action,req.body,req.user)));
 export default router;

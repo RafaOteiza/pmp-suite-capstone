@@ -7,13 +7,15 @@ export interface DashboardSummary {
     validadoresEnLab: number; // <--- NUEVO
     totalReparados: number;
     totalOperativos: number;
+    totalEnRuta: number;
+    totalAsignados: number;
     totalEnBodega: number;
     totalEnTransito: number;
     totalReparadosLab: number;
     totalEnQa: number;
     totalPods: number;
     podsReparados: number;
-    tiempoPromedio: number;
+    tiempoPromedio: number | null;
   };
   charts: {
     pieData: Array<{ name: string; value: number }>;
@@ -29,7 +31,7 @@ export async function getDashboardSummary(): Promise<DashboardSummary> {
 export interface EquipoOperativo {
   tipo: 'VALIDADOR' | 'CONSOLA';
   serie: string;
-  modelo: string;
+  modelo: string | null;
   marca: string;
   bus_ppu: string | null;
   ultima_operacion: string | null;
@@ -49,4 +51,4 @@ export async function getEquiposOperativos(q = '', offset = 0): Promise<EquiposO
     params: { q, offset, limit: 20 }
   });
   return data;
-}
+}

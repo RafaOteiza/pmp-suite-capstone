@@ -21,9 +21,10 @@ test("READ_ONLY_ROLE se interpreta con el mensaje empresarial", () => {
 
 test("el caché nunca se transforma en usuario autenticado inicial", async () => {
   const session = await source("src/app/session.ts");
-  assert.match(session, /status:\s*token\s*\?\s*"loading"\s*:\s*"unauthenticated"/);
+  assert.match(session, /status:\s*"loading"/);
   assert.match(session, /me:\s*null/);
-  assert.match(session, /previewMe:\s*token\s*\?\s*cachedMe\s*:\s*null/);
+  assert.match(session, /previewMe:\s*cachedMe/);
+  assert.doesNotMatch(session, /status:\s*"authenticated"/);
 });
 
 test("ProtectedRoute espera /api/auth/me y no consulta localStorage", async () => {
@@ -39,15 +40,30 @@ test("ProtectedRoute espera /api/auth/me y no consulta localStorage", async () =
   assert.ok(context.indexOf('setStatus("loading")') < context.indexOf("await loadMeOrNull()"));
 });
 
-test("cerrar sesión invalida token, caché e identidad en memoria", async () => {
+test("la sesión usa Firebase, limpia caché e identidad sin persistir ID tokens", async () => {
   const [context, http] = await Promise.all([
     source("src/app/SessionContext.tsx"), source("src/api/http.ts")
   ]);
-  assert.match(context, /clearToken\(\)/);
+  assert.match(context, /onIdTokenChanged/);
   assert.match(context, /clearCachedMe\(\)/);
   assert.match(context, /setMe\(null\)/);
   assert.match(context, /setStatus\("unauthenticated"\)/);
   assert.match(context, /SESSION_INVALIDATED_EVENT/);
-  assert.match(http, /status === 401/);
-  assert.match(http, /SESSION_INVALIDATED_EVENT/);
+  assert.match(http, /createSessionToken\(\(\)=>fbAuth.currentUser\)/);
+  assert.match(http, /createAuthInvalidationHandler/);
+  assert.doesNotMatch(http, /status === 401|localStorage\.getItem\([^)]*token|localStorage\.setItem\([^)]*token/i);
+});
+
+test("el almacenamiento manual legado se elimina y no vuelve a escribirse", async () => {
+  const [session, auth, login, reports] = await Promise.all([
+    source("src/app/session.ts"),
+    source("src/api/auth.ts"),
+    source("src/pages/LoginPage.tsx"),
+    source("src/pages/LabReportesPage.tsx")
+  ]);
+  assert.match(session, /removeLegacyManualToken/);
+  assert.match(session, /localStorage\.removeItem\(LEGACY_TOKEN_KEY\)/);
+  assert.doesNotMatch([session, auth, login, reports].join("\n"), /localStorage\.(getItem|setItem)\([^)]*token|setToken|getToken\(\)/i);
+  assert.doesNotMatch(auth, /getIdToken/);
+  assert.match(reports, /api\.get\('\/api\/lab\/reportes'\)/);
 });

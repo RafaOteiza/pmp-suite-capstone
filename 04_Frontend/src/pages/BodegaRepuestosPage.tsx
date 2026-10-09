@@ -1,292 +1,102 @@
-import React, { useEffect, useState } from "react";
-import { useSearchParams, useOutletContext } from "react-router-dom";
-import { Me } from "../api/me";
-import { useAlert } from "../hooks/useAlert";
-import CustomModal from "../components/CustomModal";
-import { getRepuestos, updateRepuestoStock, entregarRepuesto, Repuesto, SolicitudRepuesto } from "../api/bodega";
-import { Wrench, RefreshCw, AlertTriangle, CheckCircle, PackageSearch, Save, Edit2, Box, Cpu, Monitor } from "lucide-react";
+import FeedbackBanner from "../components/ui/FeedbackBanner";
+import { useEffect, useState } from "react";
+import { useOutletContext, useSearchParams } from "react-router-dom";
+import { AlertTriangle, CheckCircle, Cpu, Monitor, PackageSearch, RefreshCw, Wrench } from "lucide-react";
+import type { Me } from "../api/me";
+import { entregarRepuesto, getRepuestos, type Repuesto, type SolicitudRepuesto } from "../api/bodega";
 import { can, PERMISSIONS } from "../app/rbac";
-import ReadOnlyNotice from "../components/ReadOnlyNotice";
 import { getApiErrorMessage } from "../api/errors";
+import { useAlert } from "../hooks/useAlert";
+import InlineFeedback from "../components/InlineFeedback";
+import ReadOnlyNotice from "../components/ReadOnlyNotice";
+import EmptyState from "../components/ui/EmptyState";
+import PageHeader from "../components/ui/PageHeader";
+import StatusBadge from "../components/ui/StatusBadge";
+import { healthFromStock } from "../utils/health";
+import { formatDateTime, formatOperationalStatus } from "../utils/formatters";
 
 export default function BodegaRepuestosPage() {
   const me = useOutletContext<Me | null>();
   const canWrite = can(me, PERMISSIONS.BODEGA_WRITE);
-
   const [repuestos, setRepuestos] = useState<Repuesto[]>([]);
   const [solicitudes, setSolicitudes] = useState<SolicitudRepuesto[]>([]);
+  const [loadError,setLoadError]=useState('');
   const [loading, setLoading] = useState(true);
-  const [editingStock, setEditingStock] = useState<number | null>(null);
-  const [tempStock, setTempStock] = useState<number>(0);
+  const [delivery,setDelivery]=useState<number|null>(null),[partId,setPartId]=useState(''),[quantity,setQuantity]=useState('');
   const [processing, setProcessing] = useState<number | null>(null);
-  const { modal, showConfirm, showAlert, closeAlert } = useAlert();
-  
-  const [searchParams] = useSearchParams();
-  const activeTab = searchParams.get('tab') || 'solicitudes';
+  const { feedback, showConfirm, showAlert, closeAlert } = useAlert();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get("tab") || "solicitudes";
 
   const load = async () => {
-    setLoading(true);
-    try {
-      const data = await getRepuestos();
-      setRepuestos(data.repuestos);
-      setSolicitudes(data.solicitudes);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+    setLoading(true);setLoadError('');
+    try { const data = await getRepuestos(); setRepuestos(data.repuestos); setSolicitudes(data.solicitudes); }
+    catch (error) { setLoadError(getApiErrorMessage(error)); } finally { setLoading(false); }
   };
-
-  useEffect(() => { load(); }, []);
-
-  const handleSaveStock = async (id: number) => {
-    if (!canWrite) return;
-    try {
-      await updateRepuestoStock(id, tempStock);
-      setEditingStock(null);
-      await load();
-      showAlert('success', 'Stock Actualizado', 'El inventario se ha modificado correctamente.');
-    } catch (err) {
-      showAlert('error', 'Error', getApiErrorMessage(err, 'No se pudo actualizar el stock del repuesto.'));
-    }
-  };
+  useEffect(() => { void load(); }, []);
 
   const handleEntregar = async (id: number) => {
-    if (!canWrite) return;
-    showConfirm(
-        'Confirmar Entrega',
-        '¿Confirmar entrega física del repuesto al Laboratorio? Esto devolverá el ticket a Reparación.',
-        async () => {
-            closeAlert();
-            setProcessing(id);
-            try {
-                await entregarRepuesto(id);
-                load();
-                showAlert('success', 'Repuesto Entregado', 'La solicitud se ha procesado y el equipo ha vuelto a taller.');
-            } catch (err) {
-                showAlert('error', 'Error', getApiErrorMessage(err, 'Hubo un problema al procesar la entrega de repuestos.'));
-            } finally {
-                setProcessing(null);
-            }
-        }
-    );
+    if (!canWrite || !partId || !Number.isInteger(Number(quantity)) || Number(quantity)<1) return;
+    const entrega={repuesto_id:Number(partId),cantidad:Number(quantity)};
+    const part=repuestos.find(p=>p.id===entrega.repuesto_id);
+    showConfirm("Confirmar entrega", `¿Confirmar entrega física de ${part?.nombre} × ${entrega.cantidad}? Se descontará el stock desde Bodega.`, async () => {
+      closeAlert(); setProcessing(id);
+      try { await entregarRepuesto(id,entrega); setDelivery(null); await load(); showAlert("success", "Repuesto entregado", "La solicitud fue procesada y el equipo volvió a taller."); }
+      catch (error) { showAlert("error", "Error", getApiErrorMessage(error, "Hubo un problema al procesar la entrega de repuestos.")); }
+      finally { setProcessing(null); }
+    });
   };
+
+  const category = activeTab === "validador" ? "VALIDADOR" : "CONSOLA";
+  const categoryParts = repuestos.filter((part) => part.categoria === category);
+  const CategoryIcon = category === "VALIDADOR" ? Cpu : Monitor;
 
   return (
     <>
-      <CustomModal 
-          isOpen={canWrite && modal.isOpen}
-          type={modal.type}
-          title={modal.title}
-          message={modal.message}
-          onConfirm={modal.onConfirm}
-          onCancel={closeAlert}
-          confirmText={modal.confirmText}
-      />
-    <div className="animate-fade-in">
-      <ReadOnlyNotice me={me} />
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-        <div>
-          <h2 className="title" style={{ fontSize: '1.8rem', marginBottom: '5px' }}>Inventario de Repuestos</h2>
-          <p className="muted" style={{ margin: 0 }}>Gestión de piezas y solicitudes de laboratorio.</p>
-        </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <button onClick={load} className="btn ghost" disabled={loading} title="Actualizar">
-            <RefreshCw size={20} className={loading ? "animate-spin" : ""} />
-          </button>
-        </div>
-      </div>
+      <InlineFeedback isOpen={canWrite && feedback.isOpen} type={feedback.type} title={feedback.title} message={feedback.message} onConfirm={feedback.onConfirm} onCancel={closeAlert} confirmText={feedback.confirmText} />
+      <div className="page">
+        <ReadOnlyNotice me={me} />
+        <PageHeader eyebrow="Inventario técnico" title="Inventario de repuestos" description="Control de existencias y solicitudes originadas en laboratorio." icon={<Wrench size={21} />} actions={<button onClick={load} className="btn ghost" disabled={loading}><RefreshCw size={17} className={loading ? "animate-spin" : ""} /> Actualizar</button>} />
 
-      {/* --- RENDERIZADO CONDICIONAL POR PESTAÑA URL --- */}
-      <div>
-        
-        {/* TAB 1: SOLICITUDES */}
-        {activeTab === 'solicitudes' && (
-          <div className="panel animate-fade-in" style={{ maxWidth: '800px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
-              <AlertTriangle size={20} color="#F59E0B" />
-              <h3 className="title" style={{ margin: 0 }}>Solicitudes Pendientes ({solicitudes.length})</h3>
-            </div>
-            
-            {solicitudes.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '50px 20px', background: 'var(--bg-main)', borderRadius: '12px' }}>
-                <CheckCircle size={48} color="#10B981" style={{ opacity: 0.5, margin: '0 auto 15px' }} />
-                <p className="muted" style={{ fontSize: '1.1rem' }}>No hay solicitudes pendientes del Laboratorio.</p>
-              </div>
-            ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
-                {solicitudes.map(s => (
-                  <div key={s.id} className="card" style={{ padding: '20px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                      <span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>{s.codigo_os}</span>
-                      <span className="badge" style={{ background: '#F59E0B20', color: '#F59E0B' }}>URGENTE</span>
-                    </div>
-                    <div className="small muted" style={{ marginBottom: '20px' }}>
-                      Fecha: {new Date(s.fecha_solicitud).toLocaleString('es-CL')}
-                    </div>
-                    {canWrite ? (
-                      <button 
-                        className="btn primary" 
-                        style={{ width: '100%', fontSize: '0.9rem', padding: '10px' }}
-                        onClick={() => handleEntregar(s.id)}
-                        disabled={processing === s.id}
-                      >
-                        {processing === s.id ? <RefreshCw className="animate-spin" size={16}/> : 'Confirmar Entrega Física'}
-                      </button>
-                    ) : (
-                      <span style={{ display: 'block', width: '100%', textAlign: 'center', fontSize: '0.85rem', padding: '8px', borderRadius: 6, background: 'rgba(245,158,11,0.1)', color: '#F59E0B', fontWeight: 600 }}>
-                        👁 Solo lectura
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
+        {loadError&&<FeedbackBanner tone="danger">{loadError}</FeedbackBanner>}
+        {loading?<p role="status">Consultando inventario…</p>:loadError?null:<><div className="operation-tabs" role="tablist" aria-label="Secciones de repuestos">
+          <button role="tab" aria-selected={activeTab === "solicitudes"} data-active={activeTab === "solicitudes"} data-health={solicitudes.length > 0 ? "warning" : "success"} onClick={() => setSearchParams({ tab: "solicitudes" })}><AlertTriangle size={16} /><span>Solicitudes</span><span className="tab-count">{solicitudes.length}</span></button>
+          <button role="tab" aria-selected={activeTab === "validador"} data-active={activeTab === "validador"} onClick={() => setSearchParams({ tab: "validador" })}><Cpu size={16} /><span>Validadores</span><span className="tab-count">{repuestos.filter((part) => part.categoria === "VALIDADOR").length}</span></button>
+          <button role="tab" aria-selected={activeTab === "consola"} data-active={activeTab === "consola"} onClick={() => setSearchParams({ tab: "consola" })}><Monitor size={16} /><span>Consolas</span><span className="tab-count">{repuestos.filter((part) => part.categoria === "CONSOLA").length}</span></button>
+        </div>
+
+        {activeTab === "solicitudes" ? (
+          <section className="panel parts-requests">
+            <div className="section-heading"><div><h2 className="section-title">Solicitudes pendientes</h2><p className="small muted">Repuestos requeridos para reactivar reparaciones pausadas.</p></div><StatusBadge health={solicitudes.length > 0 ? "warning" : "success"}>{solicitudes.length > 0 ? `${solicitudes.length} pendientes` : "Sin pendientes"}</StatusBadge></div>
+            {solicitudes.length === 0 ? <EmptyState icon={<CheckCircle size={24} />} title="Solicitudes al día" description="No hay requerimientos pendientes del laboratorio." health="success" /> : (
+              <div className="request-grid">{solicitudes.map((request) => <article className="request-card" data-health="warning" key={request.id}><div><strong>{request.codigo_os}</strong><StatusBadge health="warning">{formatOperationalStatus(request.estado)}</StatusBadge></div><span>Solicitado {formatDateTime(request.fecha_solicitud)}</span>{request.repuesto_solicitado&&<strong>{request.repuesto_solicitado}</strong>}{request.comentario&&<p>{request.comentario}</p>}{request.tecnico&&<span>{request.tecnico}</span>}{canWrite ? <button className="btn full" onClick={() => {setDelivery(request.id);setPartId('');setQuantity('');closeAlert();}} disabled={processing === request.id}>{processing === request.id ? <><RefreshCw className="animate-spin" size={16} /> Procesando…</> : "Atender solicitud"}</button> : <StatusBadge tone="neutral">Solo lectura</StatusBadge>}</article>)}</div>
             )}
-          </div>
+            {canWrite&&delivery!==null&&<section className="operation-section" aria-label="Entrega de repuesto">
+             <h3>Resolver solicitud y confirmar entrega</h3>
+             <p>{solicitudes.find(r=>r.id===delivery)?.codigo_os} · {solicitudes.find(r=>r.id===delivery)?.tipo_equipo} {solicitudes.find(r=>r.id===delivery)?.serie}</p>
+             <p className="muted">{solicitudes.find(r=>r.id===delivery)?.repuesto_solicitado} · {solicitudes.find(r=>r.id===delivery)?.comentario}</p>
+             <div className="form-grid">
+              <div className="field"><label className="field-label" htmlFor="delivery-part">Repuesto de inventario</label><select id="delivery-part" value={partId} onChange={e=>setPartId(e.target.value)} disabled={processing!==null}><option value="">Selecciona pieza</option>{repuestos.filter(p=>p.categoria===solicitudes.find(r=>r.id===delivery)?.tipo_equipo).map(p=><option key={p.id} value={p.id}>{p.nombre} · ID {p.id} · Stock {p.stock}</option>)}</select></div>
+              <div className="field"><label className="field-label" htmlFor="delivery-quantity">Cantidad a entregar</label><input className="input" id="delivery-quantity" type="number" min={1} max={10000} value={quantity} onChange={e=>setQuantity(e.target.value)} disabled={processing!==null}/></div>
+             </div>
+             {partId&&Number(quantity)>Number(repuestos.find(p=>p.id===Number(partId))?.stock)&&<p role="alert">Stock insuficiente para la entrega.</p>}
+             <div className="toolbar"><button className="btn ghost" onClick={()=>{setDelivery(null);closeAlert();}} disabled={processing!==null}>Cancelar</button><button className="btn" disabled={processing!==null||!partId||!Number.isInteger(Number(quantity))||Number(quantity)<1||Number(quantity)>10000||Number(quantity)>Number(repuestos.find(p=>p.id===Number(partId))?.stock)} onClick={()=>handleEntregar(delivery)}>Confirmar entrega física</button></div>
+            </section>}
+          </section>
+        ) : (
+          <section className="panel parts-stock">
+            <div className="section-heading"><div><h2 className="section-title"><CategoryIcon size={19} /> Inventario · {category === "VALIDADOR" ? "Validador" : "Consola"}</h2><p className="small muted">Stock actual y umbrales críticos de componentes.</p></div><StatusBadge tone="neutral">{categoryParts.length} repuestos</StatusBadge></div>
+            {categoryParts.length === 0 && !loading ? <EmptyState icon={<PackageSearch size={24} />} title="Sin repuestos registrados" /> : (
+              <div className="table-wrap"><table><thead><tr><th>Repuesto</th><th>Stock actual</th><th>Estado</th></tr></thead><tbody>{categoryParts.map((part) => {
+                const health = healthFromStock(part.stock, part.stock_critico);
+                const status = health === "danger" ? "Sin stock" : health === "warning" ? `Bajo umbral (${part.stock_critico})` : "Stock correcto";
+                return <tr key={part.id} data-health={health}><td><strong>{part.nombre}</strong></td><td><span className="stock-value">{part.stock}</span></td><td><StatusBadge health={health}>{status}</StatusBadge></td></tr>;
+              })}</tbody></table></div>
+            )}
+          </section>
         )}
-
-        {/* TAB 2: VALIDADOR */}
-        {activeTab === 'validador' && (
-          <div className="panel animate-fade-in">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-              <Cpu size={24} color="#8B5CF6" />
-              <div>
-                <h3 className="title" style={{ margin: 0, fontSize: '1.25rem' }}>Inventario: Validador</h3>
-                <p className="muted small" style={{ margin: 0 }}>Stock de componentes de Validadores</p>
-              </div>
-            </div>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem' }}>
-                <thead>
-                  <tr style={{ borderBottom: '1px solid var(--border-color)', textAlign: 'left' }}>
-                    <th style={{ padding: '12px 14px' }} className="muted small">Repuesto</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'center' }} className="muted small">Stock Actual</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'center' }} className="muted small">Estado</th>
-                    {canWrite && <th style={{ padding: '12px 14px', textAlign: 'right' }} className="muted small">Ajustar Stock</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {repuestos.filter(r => r.categoria === 'VALIDADOR').map(r => {
-                    const critico = r.diferencia <= 0;
-                    return (
-                      <tr key={r.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                        <td style={{ padding: '14px', fontWeight: 'bold' }}>{r.nombre}</td>
-                        <td style={{ padding: '14px', textAlign: 'center', fontSize: '1.1rem', fontWeight: 600 }}>
-                          {editingStock === r.id ? (
-                            <input 
-                              type="number" 
-                              value={tempStock}
-                              onChange={(e) => setTempStock(parseInt(e.target.value) || 0)}
-                              style={{ width: '80px', textAlign: 'center', background: 'var(--bg-main)', border: '1px solid var(--border-color)', color: 'inherit', borderRadius: 6, padding: '6px' }}
-                              autoFocus
-                            />
-                          ) : r.stock}
-                        </td>
-                        <td style={{ padding: '14px', textAlign: 'center' }}>
-                          {critico ? (
-                            <span style={{ color: '#EF4444', fontSize: '0.85rem', fontWeight: 600, background: '#EF444415', padding: '4px 8px', borderRadius: '4px' }}>
-                              Crítico (&lt; {r.stock_critico})
-                            </span>
-                          ) : (
-                            <span style={{ color: '#10B981', fontSize: '0.85rem', background: '#10B98115', padding: '4px 8px', borderRadius: '4px' }}>
-                              Sano
-                            </span>
-                          )}
-                        </td>
-                        {canWrite && (
-                          <td style={{ padding: '14px', textAlign: 'right' }}>
-                            {editingStock === r.id ? (
-                              <button className="btn" style={{ padding: '6px 12px', background: '#10B981', color: 'white', border: 'none' }} onClick={() => handleSaveStock(r.id)}>
-                                <Save size={16} /> Guardar
-                              </button>
-                            ) : (
-                              <button className="btn ghost" style={{ padding: '6px 12px' }} onClick={() => { setEditingStock(r.id); setTempStock(r.stock); }}>
-                                <Edit2 size={16} /> Modificar
-                              </button>
-                            )}
-                          </td>
-                        )}
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 3: CONSOLA */}
-        {activeTab === 'consola' && (
-          <div className="panel animate-fade-in">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-              <Monitor size={24} color="#EC4899" />
-              <div>
-                <h3 className="title" style={{ margin: 0, fontSize: '1.25rem' }}>Inventario: Consola</h3>
-                <p className="muted small" style={{ margin: 0 }}>Stock de componentes de Consolas</p>
-              </div>
-            </div>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem' }}>
-                <thead>
-                  <tr style={{ borderBottom: '1px solid var(--border-color)', textAlign: 'left' }}>
-                    <th style={{ padding: '12px 14px' }} className="muted small">Repuesto</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'center' }} className="muted small">Stock Actual</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'center' }} className="muted small">Estado</th>
-                    {canWrite && <th style={{ padding: '12px 14px', textAlign: 'right' }} className="muted small">Ajustar Stock</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {repuestos.filter(r => r.categoria === 'CONSOLA').map(r => {
-                    const critico = r.diferencia <= 0;
-                    return (
-                      <tr key={r.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                        <td style={{ padding: '14px', fontWeight: 'bold' }}>{r.nombre}</td>
-                        <td style={{ padding: '14px', textAlign: 'center', fontSize: '1.1rem', fontWeight: 600 }}>
-                          {editingStock === r.id ? (
-                            <input 
-                              type="number" 
-                              value={tempStock}
-                              onChange={(e) => setTempStock(parseInt(e.target.value) || 0)}
-                              style={{ width: '80px', textAlign: 'center', background: 'var(--bg-main)', border: '1px solid var(--border-color)', color: 'inherit', borderRadius: 6, padding: '6px' }}
-                              autoFocus
-                            />
-                          ) : r.stock}
-                        </td>
-                        <td style={{ padding: '14px', textAlign: 'center' }}>
-                          {critico ? (
-                            <span style={{ color: '#EF4444', fontSize: '0.85rem', fontWeight: 600, background: '#EF444415', padding: '4px 8px', borderRadius: '4px' }}>
-                              Crítico (&lt; {r.stock_critico})
-                            </span>
-                          ) : (
-                            <span style={{ color: '#10B981', fontSize: '0.85rem', background: '#10B98115', padding: '4px 8px', borderRadius: '4px' }}>
-                              Sano
-                            </span>
-                          )}
-                        </td>
-                        {canWrite && (
-                          <td style={{ padding: '14px', textAlign: 'right' }}>
-                            {editingStock === r.id ? (
-                              <button className="btn" style={{ padding: '6px 12px', background: '#10B981', color: 'white', border: 'none' }} onClick={() => handleSaveStock(r.id)}>
-                                <Save size={16} /> Guardar
-                              </button>
-                            ) : (
-                              <button className="btn ghost" style={{ padding: '6px 12px' }} onClick={() => { setEditingStock(r.id); setTempStock(r.stock); }}>
-                                <Edit2 size={16} /> Modificar
-                              </button>
-                            )}
-                          </td>
-                        )}
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
+        </>}
       </div>
-    </div>
     </>
   );
 }

@@ -1,203 +1,325 @@
-# PMP Suite — Sistema ERP de Gestión de Mantenimiento Preventivo
+# PMP Suite
 
-![PMP Suite — Estado: En preparación](https://img.shields.io/badge/Estado-En_preparaci%C3%B3n-F59E0B?style=for-the-badge)
-![DuocUC](https://img.shields.io/badge/DuocUC-Ingeniería_Informática-002D62?style=for-the-badge)
+## Consolidación de seguridad, identidad y UX — 08-10-2026
 
-**Proyecto de Título (Capstone) — Duoc UC**<br>
-**Versión en desarrollo: 5.0 (Edición Gold & Predictive AI)**
+Regla modelo/marca compartida y autoritativa en backend, custodia física por movimiento/ciclo, sesión con token vigente del SDK y componentes PMP homologados. [Alcance, pruebas y pendientes de esta intervención](08_Pruebas/Consolidacion_Seguridad_Identidad_UX_2026-10-08.md). La base habitual se conserva; las escrituras de pruebas usan PostgreSQL efímero. No se recrea la demo ni se agregan migraciones o Docker.
 
-**Equipo de Proyecto (PMO / Desarrollo):**
-* **[Matías Garrido](https://github.com/matiasgarridopinto):** documentación y levantamiento de requerimientos.
-* **[Rafael Oteiza](https://github.com/RafaOteiza):** gestión, arquitectura, base de datos y backend.
-* **[Luis Arenas](https://github.com/luis26001):** frontend web y aplicación móvil.
 
-> La participación individual se respaldará mediante commits y pull requests realizados desde la cuenta de cada integrante. La asignación anterior representa la distribución acordada del trabajo y no reemplaza la evidencia individual exigida durante el Capstone.
+PMP Suite es un sistema de gestión operacional para controlar el retiro,
+recepción, diagnóstico, reparación, certificación y reinstalación de
+validadores y consolas utilizados en una flota de transporte. El proyecto se
+desarrolla como trabajo Capstone de Ingeniería Informática en Duoc UC.
 
-Consulta la [guía de contribución](./CONTRIBUTING.md) para el flujo de ramas, commits y pull requests del equipo.
+La solución se encuentra en etapa de validación y cierre documental. El núcleo
+funcional está implementado; el trabajo pendiente se concentra en ejecutar el
+flujo completo con evidencia, validar la aplicación móvil, completar pruebas
+complementarias y mantener los documentos alineados con el sistema real.
 
----
+## Equipo
 
-## 📖 Índice
+- Matías Garrido: documentación y levantamiento de requerimientos.
+- Rafael Oteiza: gestión, arquitectura, base de datos y backend.
+- Luis Arenas: frontend web y aplicación móvil.
 
-1. [Visión General (Resumen Ejecutivo)](#1-visión-general-resumen-ejecutivo)
-2. [Especificación de Requerimientos (ERS)](#2-especificación-de-requerimientos-ers)
-3. [Arquitectura y Tecnologías](#3-arquitectura-y-tecnologías)
-4. [Flujo Operativo (Estado y RBAC)](#4-flujo-operativo-estado-y-rbac)
-5. [Estado de implementación y validación](#5-estado-de-implementación-y-validación)
-6. [Diagrama de Gantt del Proyecto](#6-diagrama-de-gantt-del-proyecto)
-7. [Módulo de Predicción IA (Nuevo v5.0)](#7-módulo-de-predicción-ia-nuevo-v50)
-8. [Instrucciones de Ejecución (Paso a Paso)](#8-instrucciones-de-ejecución-paso-a-paso)
+La participación individual se respaldará con las evidencias y contribuciones
+que organice el equipo durante el Capstone.
 
----
+## Línea base documental vigente
 
-## 1. Visión General (Resumen Ejecutivo)
+Los cinco artefactos Capstone con sufijo `_v2.0.docx` y su
+[índice de vigencia v2.0](Documentacion%20Capstone/Artefactos%20Metodologia%20Cascada/README_VIGENCIA_v2.0.md)
+constituyen la fuente normativa. Fueron actualizados manualmente y se preservan;
+los documentos técnicos complementan esa línea base. Las versiones anteriores
+son históricas. Docker no forma parte del alcance.
 
-**PMP Suite** es una plataforma logística de alto desempeño orientada a gestionar el ciclo de vida de mantenimiento, reparación y control de calidad de computadores y validadores en terreno. Centraliza la información entre los técnicos de ruta, el personal de bodega (logística), los especialistas técnicos del laboratorio y los auditores de certificación (Control QA).
+## Problema abordado
 
-El sistema garantiza **trazabilidad total**, bloqueos transaccionales bajo un diseño *Role-Based Access Control* (RBAC) y control concurrente anti *race-conditions* certificado mediante pruebas de estrés.
+El proceso de mantenimiento involucra distintas áreas y movimientos físicos.
+Sin un registro central, la organización puede perder visibilidad sobre qué
+equipo fue retirado, dónde se encuentra, quién debe intervenirlo y si está listo
+para volver a terreno.
 
-### 1.1 El Dolor del Negocio y la solución Aranda Bridge
-Actualmente, el mandante principal operando la flota (SONDA) utiliza **Aranda ITSM** para la gestión inicial de incidencias. PMP Suite actúa como el puente operativo ("The Missing Link") que recolecta los activos físicos una vez que el ticket de Aranda se cierra en terreno, asegurando que ningún equipo se pierda en la logística inversa.
+PMP Suite centraliza las órdenes de servicio, la ubicación operacional de cada
+activo, las asignaciones, los diagnósticos, las reparaciones, la certificación
+QA, los repuestos y el historial de eventos. La identificación física mediante
+serie, código de barras, QR o AMID permite comprobar que el equipo presentado en
+cada estación corresponde al activo asociado a la orden.
 
-**Novedad v5.0:** Se implementó una **Interfaz Premium de Trazabilidad** y un **Motor de Inteligencia Artificial** que predice el riesgo de falla de los equipos antes de que salgan a ruta, permitiendo un mantenimiento proactivo basado en datos.
+## Alcance implementado
 
----
+- Gestión de activos separada de Ingreso de requerimientos, con identidad tipo + serie.
+- Requerimientos sobre activos existentes y vinculados operacionalmente al bus.
+- Recepción inicial en BODEGA por escaneo y conformidad explícita, sin crear OS.
+- Gestión de órdenes de servicio para validadores y consolas.
+- Bridge como capa de correlación entre serie, OS PMP y referencias externas (por ejemplo OS Aranda).
+- Recepción y despacho entre terreno, bodega, laboratorio y QA.
+- Identificación física por serie o AMID y registro de escaneos.
+- Asignación de técnicos de laboratorio y terreno; QA toma su propio trabajo después de recibir físicamente.
+- Diagnóstico, reparación, solicitud de repuestos y registro técnico.
+- Aprobación o rechazo de calidad.
+- Reincorporación del equipo disponible a terreno.
+- Trazabilidad por orden, serie, bus, responsable y estado.
+- Dashboards y navegación adaptados a cada rol.
+- Reporte de riesgo operacional mediante un analizador Python.
+- Aplicación móvil para las tareas de terreno.
 
-## 2. Especificación de Requerimientos (ERS)
+## Flujo operacional principal
 
-### 2.1 Requerimientos Funcionales (Principales)
-1. **Gestión de Roles (RBAC):** Autenticación mediante Firebase e implementación de Claims (Token), limitando vistas y endpoints (Solo Lectura vs. Escritura/Intervención).
-2. **Ciclo Logístico:** Recepción de equipos malos desde terreno ➔ Tránsito por Bodega ➔ Diagnóstico y Reparación en Lab ➔ Certificación QA ➔ Reincorporación en Bodega para instalar y cierre del ciclo.
-3. **Gestión de Stock:** Consumo automático de repuestos para validadores y consolas al finalizar reparaciones en el Laboratorio. Modificación solo permitida a personal logístico.
-4. **Dashboards Gerenciales:** Vista panorámica, gráfica y analítica de KPIS, métricas de laboratorios, eficiencias semanales y alertas en tiempo real. Exportación unificada de métricas a Excel / CSV.
-5. **Flujos Defensivos:** Si Control QA rechaza una operación, el equipo debe retornar al Laboratorio pasando por Bodega para registrar re-ingreso pero sin cerrar la Orden de Servicio.
+Bridge no asigna técnicos, crea órdenes ni mueve stock. Las siguientes acciones
+pertenecen exclusivamente al flujo normal de OS PMP. El historial se consulta
+por activo (tipo + serie), con múltiples OS y referencias externas. Consulta el
+[informe y guión de prueba de correlación](08_Pruebas/BRIDGE_CORRELACION_Y_HISTORIAL.md)
+y la [adenda vigente de casos, requerimientos y despacho](02_Arquitectura/CASOS_REQUERIMIENTOS_DESPACHO.md).
 
-### 2.2 Requerimientos No Funcionales
-1. **Rendimiento:** Tiempos de respuesta para el P95 menores a los `500 ms` de latencia.
-2. **Escalabilidad:** Estabilidad probada con +20 transacciones por segundo al intentar golpear endpoints competitivos simultáneos (Protegido por `SELECT ... FOR UPDATE` a nivel de motor DB).
-3. **Seguridad híbrida:** Validaciones robustas cruzadas entre vista de React y control por Endpoint de Express (`requireAnyRole()`).
+1. **Ingreso de requerimientos** registra el caso interno o externo y crea la
+   OS MV/MC/PDV/PDC del activo existente que presentó la necesidad. No da de alta
+   activos. Si existe una referencia Aranda, se
+   conserva como texto y se registra su correlación Bridge.
+2. La misma OS y serie siguen el retiro, recepción, laboratorio,
+   diagnóstico/reparación, QA y retorno físico a Bodega.
+3. El activo aprobado y elegible aparece en **Listos para instalación**.
+   Recibir desde QA no crea por sí solo una orden de instalación.
 
-*(Ver el [Documento ERS_PMP_Suite_v5_0.md](./01_Requerimientos/ERS_PMP_Suite_v5_0.md) completo en `01_Requerimientos`)*
+   En **Mi trabajo QA**, iniciar combina toma e inicio; registrar dictamen puede guardar la evaluación nueva en la misma transacción. Los borradores y avisos de salida son inline.
+   En QA, emitir Operativo/Rechazado mantiene la custodia QA. La salida a Bodega requiere otra validación física y confirmación; Admin no asigna OS QA. Véase [flujo QA autónomo](01_Requerimientos/QA_Requerimientos.md).
+4. Para una necesidad de instalación, logística define caso, bus, tipo y
+   técnico; toma un activo físico del stock y lo escanea, sin preseleccionar
+   una fila específica.
+5. Solo la confirmación del despacho crea una nueva `IN-xxxxxx` para el activo leído,
+   con correlativo PMP independiente del caso y de Aranda,
+   registra `SALIDA_BODEGA_TERRENO` y deja el equipo En ruta. Elegir técnico
+   o escanear por sí solos no crean la IN ni el despacho.
+6. Terreno recibe la IN en **Mis Órdenes** e instala la serie asignada. Al
+   completar la instalación el activo queda **En operación**. La OS de
+   reparación del otro activo conserva su identidad e historial.
 
----
+Para un activo nuevo, **Gestión de activos** registra únicamente el maestro y
+`ALTA_ACTIVO`. La recepción inicial exige escaneo en la ubicación BODEGA y
+conformidad de identidad e integridad: registra `ESCANEO_BODEGA`,
+`RECEPCION_INICIAL` y `HABILITADO_INSTALACION`, sin OS, bus ficticio ni circuito
+de reparación/QA. Ese stock inicial comparte **Listos para instalación** con
+el stock reparado elegible y aprobado por QA. El historial por tipo + serie
+incluye tanto los eventos sin OS como las intervenciones posteriores.
 
-## 3. Arquitectura y Tecnologías
+**Disponible para instalación** significa elegible en Bodega; **Asignado a
+técnico** no prueba salida; **En ruta** requiere despacho físico confirmado;
+**Equipos en operación** muestra activos instalados y operativos, no stock.
 
-El proyecto se despliega localmente abarcando capas claras de backend, frontend y bases de datos.
+El esquema vigente requiere las migraciones aditivas 003–006, después de sus
+prerrequisitos. La 004 establece el correlativo IN independiente, la 005 registra
+la procedencia del maestro y la 006 habilita recepción y eventos iniciales sin OS.
+Los identificadores y evidencias históricas se conservan.
 
-- **Frontend (Cliente Web):** React 18, Vite 5, Recharts (gráficos), Lucide React (Íconos), React Router.
-- **Backend (API REST):** Node.js 20, Express 4. Seguridad mediante validaciones nativas. Auth Middleware nativo para Firebase.
-- **Base de Datos:** PostgreSQL 16 local (`pmp_suite`).
-- **Autenticación (IAM):** Firebase Authentication.
-- **Inteligencia Artificial:** Python 3.11, Scikit-learn (Random Forest), Pandas.
-- **Infraestructura e Integración:** Scripts End-To-End autoejecutables para simular y validar las transacciones de las fases con tests de *Stress*.
+Las acciones que implican un movimiento físico requieren un escaneo válido en
+la estación correspondiente. La estación de escaneo muestra el contexto de la
+orden y permite continuar la siguiente acción sin cambiar de pantalla.
 
----
+PMP Suite opera de forma autónoma. En el Capstone, el ingreso Aranda es asistido;
+una integración automática mediante API, Web Service, webhook o ETL se mantiene
+como proyección productiva/comercial. Caso, OS, activo y referencia externa son
+conceptos distintos relacionados explícitamente en datos.
 
-## 4. Flujo Operativo (Estado y RBAC)
+## Identificación de equipos
 
-### Nivel de Actores
+Los validadores poseen una serie de siete dígitos y pueden incluir un AMID de
+doce dígitos con checksum UPC-A. PMP Suite resuelve ambos identificadores hacia
+el mismo activo. Por ejemplo:
 
-* **`tecnico_terreno`:** Saca el equipo fallido, crea el ticket inicial (OS), que entra viaje ("EN_TRANSITO").
-* **`bodega / logistica`:** Actúa de *Hub*. Ningún equipo pasa a otros módulos directamente, todo triangula en Bodega ("EN_BODEGA"). Opera el stock y envía a Lab o QA.
-* **`tecnico_laboratorio`:** Recibe del Hub, consume stock si lo necesita, realiza el diagnóstico ("EN_DIAGNOSTICO") y despacha todo.
-* **`qa`:** Toma equipos que pasaron por Lab para chequear calidad ("EN_QA"). Si aprueban, desencadenan la OS `IN-` final y cierran el ciclo principal. Si rechazan, fuerzan el reintento de reparación.
-* **`admin` / `jefe_taller`:** Tienen visibilidad de toda la plataforma en "Modo de Solo-Lectura", interviniendo únicamente perfiles/despachos finales o tableros gerenciales.
+| Serie | AMID |
+|---|---|
+| `7405020` | `280000050209` |
+| `7400010` | `280000000105` |
 
----
+En las consolas, el código QR y el código de barras representan directamente la
+serie. El lector puede ser una pistola USB configurada para enviar Enter, un
+lector 2D o un ingreso manual controlado.
 
-## 5. Estado de implementación y validación
+## Roles y permisos
 
-El repositorio contiene una implementación avanzada de la API, la interfaz web, la aplicación móvil, la base de datos, los scripts de prueba y el módulo de análisis predictivo. También incluye dashboards con Recharts, control de acceso por roles y una interfaz con modos claro y oscuro.
+PostgreSQL es la fuente efectiva del rol y del estado activo del usuario.
+Firebase autentica la identidad; sus atributos adicionales no reemplazan la
+autorización registrada en `pmp.usuarios`.
 
-Antes de presentar resultados como evidencia final del Capstone se deben completar y registrar las siguientes validaciones reproducibles:
+| Rol | Responsabilidad principal |
+|---|---|
+| `admin` | Administración global, usuarios, asignaciones y control físico de recepción y despacho en laboratorio |
+| `gerente` | Consulta ejecutiva global sin escritura operacional |
+| `logistica` | Bodega, inventario, repuestos, recepciones y despachos |
+| `qa` | Operación autónoma: recepción, Instalación Ambiente, pruebas/dictamen y despacho a Bodega |
+| `tecnico_laboratorio` | Diagnóstico y reparación de su carga asignada |
+| `tecnico_terreno` | Intervenciones, retiros, instalaciones y órdenes propias |
 
-* Ejecutar las pruebas End-to-End sobre una base de datos aislada y conservar el reporte de resultados.
-* Ejecutar las pruebas de estrés en un entorno controlado y documentar latencia, concurrencia y datos de prueba.
-* Mantener evidencia de la compilación de producción del frontend —verificada el 21/07/2026— y corregir la exportación de la aplicación móvil.
-* Volver a entrenar y evaluar el modelo de IA, adjuntando dataset, metodología, matriz de confusión y métricas obtenidas.
+Las rutas autenticadas aplican la cadena:
 
-Las cifras históricas incluidas en scripts o documentos de trabajo no se consideran resultados confirmados hasta que puedan reproducirse y anexarse como evidencia.
-
----
-
-## 6. Diagrama de Gantt del Proyecto
-
-A continuación, un esquema del desarrollo de ciclo de vida del *Sistema PMP Suite*:
-
-```mermaid
-gantt
-    title Roadmap de Desarrollo PMP Suite
-    dateFormat  YYYY-MM-DD
-    section Fase 1: Levantamiento 
-    Entendimiento ERS y Roles       :done,    des1, 2026-03-01, 2026-03-07
-    Diagramado de Base de Datos     :done,    des2, 2026-03-05, 2026-03-10
-    Levantamiento de Mockups UI     :done,    des3, 2026-03-08, 2026-03-14
-
-    section Fase 2: Backend Core
-    Configuración Express + Postgres:done,    be1,  2026-03-12, 2026-03-18
-    Firebase Auth & Custom Claims   :done,    be2,  2026-03-15, 2026-03-22
-    CRUD Básico y Subrutas Roles    :done,    be3,  2026-03-18, 2026-03-25
-
-    section Fase 3: Frontend y Vistas
-    Dashboard Config. Visual        :done,    fe1,  2026-03-20, 2026-03-28
-    Páginas Logísticas (Tab Switch) :done,    fe2,  2026-03-25, 2026-04-02
-    Implementación Gráficos Recharts:done,    fe3,  2026-03-29, 2026-04-06
-
-    section Fase 4: Integración Compleja
-    Concurrencia (Backend Race Fix) :done,    in1,  2026-04-04, 2026-04-09
-    Implementación de RBAC Frontend :done,    in2,  2026-04-06, 2026-04-11
-    Correción de UX: Light/Dark Mode:done,    in3,  2026-04-10, 2026-04-13
-
-    section Fase 5: Pruebas y Cierre
-    Suite E2E Scripting             :done,    test1, 2026-04-11, 2026-04-13
-    Pruebas Stress Scripting        :done,    test2, 2026-04-12, 2026-04-14
-    Cierre Informe Documental (APT) :active,  test3, 2026-04-14, 2026-04-18
+```text
+firebaseAuth -> ensureUser -> enforceReadOnlyRole -> autorización por rol -> handler
 ```
 
----
+El rol `gerente` puede ejecutar lecturas globales. Las escrituras operacionales
+devuelven HTTP 403 con el código `READ_ONLY_ROLE`, salvo las acciones personales
+de contraseña expresamente permitidas.
 
-## 7. Módulo de Predicción IA (Nuevo v5.0)
+## Arquitectura
 
-La PMP Suite incorpora un motor de **Machine Learning** alojado en la carpeta `06_ModelosIA`. Este componente analiza el historial de fallas y tiempos de reparación para generar alertas tempranas.
-
-*   **Algoritmo:** Random Forest Classifier.
-*   **KPIs IA:** MTBF Flota, Score de Riesgo individual, Probabilidad de Reincidencia.
-*   **Visualización:** AIRiskPanel integrado en Dashboards y Sección Dedicada de Predicciones.
-
-*(Ver la [Documentación Técnica de IA](./06_ModelosIA/DOCUMENTACION_IA.md) para más detalles)*
-
----
-
-## 8. Instrucciones de Ejecución (Paso a Paso)
-
-### 8.1. Requisitos Previos
-- Contar con **PostgreSQL 16 o superior** y una base de datos local para PMP Suite. Las credenciales deben configurarse mediante variables de entorno; no se almacenan en el repositorio.
-- **Node JS `20.x`** alojado local o de entorno nvm para levantamiento.
-
-### 8.2. Levantar API (Backend)
-```bash
-# 1. Acceder a la carpeta del backend
-cd 03_Backend/pmp-api/
-
-# 2. Crear la configuración local y completar sus valores
-cp .env.example .env
-
-# 3. Instalar dependencias si no se ha hecho
-npm install
-
-# 4. Encender el backend con entorno de variables
-node server.js
+```text
+Aplicación web React ─┐
+                     ├─> API REST Node.js y Express ─> PostgreSQL
+Aplicación Expo ──────┘                 │
+                                       ├─> Firebase Admin
+                                       └─> Analizador Python
 ```
-*(El backend debe indicar por consola la conexión exitosa a PosgreSQL levantando en `http://localhost:4000`)*
 
-### 8.3. Levantar Interfaz Gráfica (Frontend)
-Abrir una segunda terminal independiente en la raíz `Tesis`.
-```bash
-# 1. Mover a la ruta de Frontend 
-cd 04_Frontend/
+- Frontend web: React 18, TypeScript, Vite y React Router.
+- Backend: Node.js, Express y controlador PostgreSQL `pg`.
+- Datos: PostgreSQL con esquema `pmp`.
+- Autenticación: Firebase Authentication y Firebase Admin SDK.
+- IA: Python, pandas, scikit-learn, joblib y psycopg2.
+- Mobile: Expo SDK 57 y React Native.
 
-# 2. Actualizar / Instalar base librerías
+El backend ejecuta el analizador con el intérprete aislado de
+`06_ModelosIA/.venv`. El endpoint de IA es de consulta y está autorizado para
+`admin` y `gerente`.
+
+## Estructura del proyecto
+
+```text
+01_Requerimientos/       Requisitos funcionales y no funcionales
+02_Arquitectura/         Arquitectura, datos y diagramas
+03_Backend/pmp-api/      API REST y pruebas del backend
+04_Frontend/             Aplicación web
+05_BaseDatos/            Scripts, migraciones y dataset demostrativo
+06_ModelosIA/            Analizador y documentación de IA
+07_Mobile/               Aplicación móvil Expo
+08_Pruebas/              Informes de pruebas y experiencia por rol
+09_BrandKit/             Identidad visual PMP Suite
+Documentacion Capstone/  Entregables académicos y evidencias
+```
+
+## Configuración local
+
+### Backend
+
+Crear `03_Backend/pmp-api/.env` a partir de `.env.example` y configurar:
+
+```dotenv
+PORT=4000
+DATABASE_URL=postgresql://usuario:contrasena@localhost:5432/pmp_suite
+FIREBASE_SERVICE_ACCOUNT_PATH=C:\ruta\segura\firebase-admin.json
+```
+
+La credencial Firebase debe permanecer fuera del repositorio.
+
+```powershell
+cd C:\Users\raote\Documents\Duoc\Tesis\03_Backend\pmp-api
 npm install
-
-# 3. Desplegar compilador Vite (Hot-Reload)
 npm run dev
 ```
-*(El frontend quedará enganchado en `http://localhost:5173` listo para login)*
 
-### 8.4. Comprobar Pruebas de Sistema
-Los scripts de prueba modifican datos. Deben ejecutarse únicamente sobre una base aislada preparada para validación.
-```bash
-# Dentro de 03_Backend/pmp-api/
+Comprobación de salud: `GET http://localhost:4000/api/health`.
 
-# Correr flujo de vida de un logístico completo 
-node e2e_full_v2.js 
+### Frontend web
 
-# Correr escenarios masivos y carga destructiva
-node stress_test.js 
+Crear `04_Frontend/.env` a partir de `.env.example` y completar la URL del
+backend y la configuración pública del cliente Firebase.
+
+```powershell
+cd C:\Users\raote\Documents\Duoc\Tesis\04_Frontend
+npm install
+npm run dev
 ```
-Los resultados deben guardarse en `Evidencias` junto con la fecha, versión probada, configuración utilizada y observaciones.
 
----
+La aplicación queda disponible en `http://localhost:5173`.
 
-> Documento de orientación del proyecto Capstone — Actualización: 21/07/2026
+### Aplicación móvil
+
+El dispositivo físico debe utilizar la dirección IP local del equipo que
+ejecuta el backend. Copia `07_Mobile/.env.example` como `07_Mobile/.env` y
+configura `EXPO_PUBLIC_API_URL`; el archivo local está excluido del repositorio.
+
+```powershell
+cd C:\Users\raote\Documents\Duoc\Tesis\07_Mobile
+npm install
+npm start
+```
+
+Ejemplo para un dispositivo conectado a la misma red:
+
+```dotenv
+EXPO_PUBLIC_API_URL=http://192.168.1.100:4000/api
+```
+
+### Módulo de IA
+
+```powershell
+cd C:\Users\raote\Documents\Duoc\Tesis\06_ModelosIA
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -c "import psycopg2; print(psycopg2.__version__)"
+```
+
+## Pruebas verificadas
+
+Resultados reproducidos el 12 de septiembre de 2026:
+
+Esta tabla conserva la línea base histórica; no corresponde a resultados de la
+evolución de casos y despacho. Las verificaciones exigidas para esa evolución
+se detallan en la [adenda](02_Arquitectura/CASOS_REQUERIMIENTOS_DESPACHO.md#11-verificaciones-y-evidencia-a-registrar).
+Los resultados actuales y sus evidencias están en el
+[informe de recepción inicial sin OS](08_Pruebas/RECEPCION_INICIAL_SIN_OS.md).
+El alta mantiene el maestro separado; la recepción física y su conformidad
+habilitan stock sin mantenimiento ni bus ficticio. La primera IN se crea al
+confirmar el despacho.
+
+| Componente | Comando | Resultado |
+|---|---|---:|
+| Backend | `npm test` | 52 de 52 aprobadas |
+| Frontend | `npm test` | 42 de 42 aprobadas |
+| Frontend | `npm run build` | Aprobado |
+| Firebase Admin | `node verification/firebase_admin_health.mjs` | Consistente |
+| Python | Importación de `psycopg2` en `.venv` | Aprobada, versión 2.9.11 |
+
+Las pruebas masivas y los recorridos que modifiquen muchos datos deben
+ejecutarse sobre una base aislada. Sus resultados solo se consideran evidencia
+final cuando incluyen fecha, versión, configuración y archivos de salida.
+
+## Dataset demostrativo
+
+La base preparada contiene 50 validadores, 50 consolas y 100 órdenes de
+servicio. La distribución inicial es de 25 equipos en terreno, 25 en bodega, 25
+en laboratorio y 25 en QA. El procedimiento y el respaldo se documentan en
+`05_BaseDatos/reinicio_demo_100_equipos_README.md`.
+
+## Documentación Capstone
+
+La carpeta `Documentacion Capstone/Artefactos Metodologia Cascada` contiene:
+
+- documento de inicio del proyecto;
+- SRS simplificado;
+- documento de diseño;
+- plan de pruebas y evidencias;
+- manual técnico y de ejecución;
+- fuentes de los diagramas técnicos.
+
+La estrategia de cierre es validar primero, guardar las evidencias obtenidas y
+actualizar los documentos con resultados reproducibles. No se deben presentar
+funciones planificadas como si estuvieran implementadas.
+
+El [índice de vigencia v2.0 de los artefactos Cascada](Documentacion%20Capstone/Artefactos%20Metodologia%20Cascada/README_VIGENCIA_v2.0.md)
+identifica la fuente normativa actual. Los DOCX anteriores y los diagramas
+rotulados como históricos conservan el Bridge operacional retirado; no deben
+reutilizarse como representación del modelo vigente.
+
+## Estado de cierre
+
+Pendientes principales:
+
+1. Ejecutar el flujo operacional completo sobre el dataset reiniciado.
+2. Capturar evidencias por rol, estación y transición.
+3. Validar la aplicación móvil en un dispositivo físico.
+4. Ejecutar rendimiento y escenarios de error sobre una base aislada.
+5. Completar la evaluación académica del modelo de IA.
+6. Revisar diagramas y documentos contra la versión demostrada.
+7. Preparar la presentación y el guion de defensa.
+
+El proyecto no requiere nuevos módulos grandes para su defensa. El cierre se
+concentra en validación, evidencia, documentación y consistencia.

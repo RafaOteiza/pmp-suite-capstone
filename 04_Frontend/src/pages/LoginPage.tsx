@@ -1,200 +1,126 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { AlertCircle, Boxes, Lock, LogIn, Mail, ShieldCheck, Wrench } from "lucide-react";
 import { login } from "../api/auth";
-import { setToken } from "../app/token";
+import { getAuthInvalidationMessage, getSafeReturnPath, SAFE_RETURN_PATH_KEY } from "../api/errors";
 import { useSession } from "../app/SessionContext";
-import { Mail, Lock, LogIn, AlertCircle, Cpu } from "lucide-react"; // Importamos iconos
 
 export default function LoginPage() {
-  const nav = useNavigate();
-  // Verificar sesión existente
-  const { status, refreshSession } = useSession();
-    // Redirección asíncrona para evitar warnings de React durante el render
-  // La redirección ocurre sólo después de confirmar /api/auth/me.
-
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { status, refreshSession, error: sessionError } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const authMessage = getAuthInvalidationMessage(new URLSearchParams(location.search).get("auth"));
+
+  const consumeSafeReturnPath = () => {
+    let stored: string | null = null;
+    try {
+      stored = sessionStorage.getItem(SAFE_RETURN_PATH_KEY);
+      sessionStorage.removeItem(SAFE_RETURN_PATH_KEY);
+    } catch {
+      return "/";
+    }
+    if (!stored) return "/";
+    const parsed = new URL(stored, window.location.origin);
+    return getSafeReturnPath(parsed.pathname, parsed.search) || "/";
+  };
 
   useEffect(() => {
-    if (status === "authenticated") nav("/", { replace: true });
-  }, [status, nav]);
+    if (status === "authenticated") navigate(consumeSafeReturnPath(), { replace: true });
+  }, [status, navigate]);
 
   if (status === "loading") {
-    return <main role="status" aria-live="polite" aria-busy="true" style={{ padding: 40 }}>Verificando sesión…</main>;
+    return (
+      <main className="login-form-panel" role="status" aria-live="polite" aria-busy="true">
+        <div className="login-loading">
+          <div className="login-loading-brand">
+            <img className="login-logo-on-light" src="/brand/logo-horizontal-color.svg" alt="PMP Suite" />
+            <img className="login-logo-on-dark" src="/brand/logo-horizontal-white.svg" alt="PMP Suite" />
+          </div>
+          <div className="skeleton" style={{ height: 380 }} />
+          <span className="sr-only">Verificando sesión</span>
+        </div>
+      </main>
+    );
   }
 
   if (status === "authenticated") return null;
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErr(null);
+  const onSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError(null);
     setBusy(true);
     try {
-      const res = await login({ email, password });
-      setToken(res.token);
+      await login({ email, password });
       const confirmed = await refreshSession();
-      if (!confirmed) throw new Error("La cuenta no está habilitada en PMP Suite");
-      nav("/");
-    } catch (ex: any) {
-      setErr(ex?.response?.data?.detail ?? ex?.message ?? "Credenciales incorrectas");
+      if (!confirmed) throw new Error("No fue posible confirmar el acceso a PMP Suite.");
+      navigate(consumeSafeReturnPath(), { replace: true });
+    } catch (submitError: any) {
+      setError(submitError?.response?.data?.detail ?? submitError?.message ?? "Credenciales incorrectas");
     } finally {
       setBusy(false);
     }
   };
 
-  // Estilos Inline para garantizar el look sin depender de tu CSS global actual
-  const styles = {
-    container: {
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#0f172a', // Fondo muy oscuro (Slate 900)
-        backgroundImage: 'radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%)' // Sutil gradiente superior
-    },
-    card: {
-        width: '100%',
-        maxWidth: '420px',
-        padding: '40px',
-        backgroundColor: '#1f2937', // Gris oscuro (igual que tus cards del dashboard)
-        borderRadius: '16px',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-        border: '1px solid rgba(255,255,255,0.05)'
-    },
-    inputGroup: {
-        position: 'relative' as 'relative',
-        marginBottom: '20px'
-    },
-    inputIcon: {
-        position: 'absolute' as 'absolute',
-        left: '12px',
-        top: '50%',
-        transform: 'translateY(-50%)',
-        color: '#9ca3af',
-        pointerEvents: 'none' as 'none'
-    },
-    input: {
-        width: '100%',
-        padding: '12px 12px 12px 45px', // Padding izquierdo extra para el icono
-        backgroundColor: '#111827',
-        border: '1px solid #374151',
-        borderRadius: '8px',
-        color: 'white',
-        fontSize: '0.95rem',
-        outline: 'none',
-        transition: 'border-color 0.2s'
-    },
-    button: {
-        width: '100%',
-        padding: '12px',
-        backgroundColor: '#F59E0B', // Amarillo corporativo PMP (o usa #3B82F6 para Azul)
-        color: '#fff',
-        border: 'none',
-        borderRadius: '8px',
-        fontWeight: 'bold',
-        fontSize: '1rem',
-        cursor: busy ? 'not-allowed' : 'pointer',
-        opacity: busy ? 0.7 : 1,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: '8px',
-        marginTop: '10px'
-    }
-  };
-
   return (
-    <div style={styles.container}>
-      <div style={styles.card} className="animate-fade-in">
-        
-        {/* Header con Logo Simulado */}
-        <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-            <div style={{ 
-                display: 'inline-flex', 
-                padding: '12px', 
-                borderRadius: '12px', 
-                backgroundColor: 'rgba(245, 158, 11, 0.1)', 
-                marginBottom: '15px' 
-            }}>
-                <Cpu size={40} color="#F59E0B" />
-            </div>
-            <h1 className="title" style={{ fontSize: '1.8rem', color: 'white', margin: '0 0 5px 0' }}>
-                PMP Suite
-            </h1>
-            <p className="muted" style={{ margin: 0, fontSize: '0.9rem' }}>
-                Gestión Inteligente de Flota
-            </p>
-        </div>
-
-        <form onSubmit={onSubmit}>
-          
-          {/* Input Email */}
-          <div style={styles.inputGroup}>
-            <Mail size={18} style={styles.inputIcon} />
-            <input 
-                style={styles.input} 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                placeholder="correo@pmp-suite.cl"
-                type="email"
-                required
-            />
+    <main className="login-shell">
+      <section className="login-brand-panel" aria-label="PMP Suite">
+        <div className="login-brand"><img className="login-brand-logo" src="/brand/logo-horizontal-dark.svg" alt="PMP Suite" draggable="false" /></div>
+        <div className="login-story">
+          <div className="login-kicker">Control. Maintain. Move Forward.</div>
+          <h1>Control operacional, mantenimiento y trazabilidad.</h1>
+          <p>Gestión de órdenes, laboratorio, bodega, calidad y trazabilidad para una operación de mantenimiento precisa y auditable.</p>
+          <div className="login-capabilities" aria-label="Capacidades principales">
+            <span className="login-capability"><Wrench size={14} /> Mantenimiento</span>
+            <span className="login-capability"><Boxes size={14} /> Logística</span>
+            <span className="login-capability"><ShieldCheck size={14} /> Calidad QA</span>
           </div>
-
-          {/* Input Password */}
-          <div style={styles.inputGroup}>
-            <Lock size={18} style={styles.inputIcon} />
-            <input
-              style={styles.input}
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
-          </div>
-
-          {/* Mensaje de Error */}
-          {err && (
-            <div style={{ 
-                backgroundColor: 'rgba(239, 68, 68, 0.1)', 
-                color: '#EF4444', 
-                padding: '10px', 
-                borderRadius: '6px', 
-                fontSize: '0.85rem',
-                marginBottom: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-            }}>
-                <AlertCircle size={16} />
-                {err}
-            </div>
-          )}
-
-          <button 
-            type="submit" 
-            style={styles.button}
-            disabled={busy}
-            onMouseOver={(e) => e.currentTarget.style.filter = 'brightness(110%)'}
-            onMouseOut={(e) => e.currentTarget.style.filter = 'brightness(100%)'}
-          >
-            {busy ? (
-                <>Ingresando...</>
-            ) : (
-                <>Ingresar <LogIn size={18} /></>
-            )}
-          </button>
-        </form>
-
-        <div style={{ textAlign: 'center', marginTop: '25px' }}>
-            <p className="small muted" style={{ fontSize: '0.75rem' }}>
-                © 2025 PMP Suite v8.9. Acceso restringido.
-            </p>
         </div>
-      </div>
-    </div>
+        <div className="login-footnote">PMP Suite · ERP operacional</div>
+      </section>
+
+      <section className="login-form-panel">
+        <div className="login-card animate-fade-in">
+          <header className="login-card-header">
+            <div className="login-mobile-brand">
+              <img className="login-logo-on-light" src="/brand/logo-horizontal-color.svg" alt="PMP Suite" draggable="false" />
+              <img className="login-logo-on-dark" src="/brand/logo-horizontal-white.svg" alt="PMP Suite" draggable="false" />
+            </div>
+            <h2>Acceso seguro</h2>
+            <p>Ingresa con tus credenciales institucionales.</p>
+          </header>
+
+          {status==="unavailable"&&<button className="btn ghost" onClick={()=>void refreshSession()}>Reintentar verificación de sesión</button>}
+          <form onSubmit={onSubmit}>
+            <div className="login-field">
+              <label htmlFor="login-email">Correo electrónico</label>
+              <div className="login-input-wrap">
+                <Mail size={18} aria-hidden="true" />
+                <input id="login-email" className="login-input" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="correo@pmp-suite.cl" type="email" autoComplete="username" required />
+              </div>
+            </div>
+
+            <div className="login-field">
+              <label htmlFor="login-password">Contraseña</label>
+              <div className="login-input-wrap">
+                <Lock size={18} aria-hidden="true" />
+                <input id="login-password" className="login-input" type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Ingresa tu contraseña" autoComplete="current-password" required />
+              </div>
+            </div>
+
+            {(sessionError || error || authMessage) ? <div className="login-alert" role="alert"><AlertCircle size={18} aria-hidden="true" />{sessionError || error || authMessage}</div> : null}
+
+            <button type="submit" className="btn login-submit" disabled={busy}>
+              {busy ? "Validando acceso…" : <><span>Ingresar</span><LogIn size={18} /></>}
+            </button>
+          </form>
+
+          <div className="login-security"><ShieldCheck size={14} /> Autenticación protegida por Firebase</div>
+        </div>
+      </section>
+    </main>
   );
 }

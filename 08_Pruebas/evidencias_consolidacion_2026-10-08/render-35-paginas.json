@@ -1,0 +1,5106 @@
+[
+  {
+    "page": "AdminDespachoPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 2,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminDespachoPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 2,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminDespachoPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 2,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminDespachoPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 2,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminDespachoPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 2,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminDespachoPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 2,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminDespachoPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 2,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminDespachoPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 2,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminDespachoPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 2,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminDespachoPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 2,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminUsersPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Usuarios y accesos",
+    "alerts": [
+      "No se pudo consultar usuarios. Reintenta la consulta."
+    ],
+    "reads": 4,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminUsersPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Usuarios y accesos",
+    "alerts": [
+      "No se pudo consultar usuarios. Reintenta la consulta."
+    ],
+    "reads": 4,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminUsersPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Usuarios y accesos",
+    "alerts": [
+      "No se pudo consultar usuarios. Reintenta la consulta."
+    ],
+    "reads": 4,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminUsersPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Usuarios y accesos",
+    "alerts": [
+      "No se pudo consultar usuarios. Reintenta la consulta."
+    ],
+    "reads": 4,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminUsersPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Usuarios y accesos",
+    "alerts": [
+      "No se pudo consultar usuarios. Reintenta la consulta."
+    ],
+    "reads": 4,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminUsersPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Usuarios y accesos",
+    "alerts": [
+      "No se pudo consultar usuarios. Reintenta la consulta."
+    ],
+    "reads": 4,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminUsersPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Usuarios y accesos",
+    "alerts": [
+      "No se pudo consultar usuarios. Reintenta la consulta."
+    ],
+    "reads": 4,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminUsersPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Usuarios y accesos",
+    "alerts": [
+      "No se pudo consultar usuarios. Reintenta la consulta."
+    ],
+    "reads": 4,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminUsersPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Usuarios y accesos",
+    "alerts": [
+      "No se pudo consultar usuarios. Reintenta la consulta."
+    ],
+    "reads": 4,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AdminUsersPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Usuarios y accesos",
+    "alerts": [
+      "No se pudo consultar usuarios. Reintenta la consulta."
+    ],
+    "reads": 4,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AIPredictionsPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estrategia predictiva IA",
+    "alerts": [
+      "No fue posible consultar el análisis. No hay predicciones verificadas para mostrar."
+    ],
+    "reads": 6,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AIPredictionsPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estrategia predictiva IA",
+    "alerts": [
+      "No fue posible consultar el análisis. No hay predicciones verificadas para mostrar."
+    ],
+    "reads": 6,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AIPredictionsPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estrategia predictiva IA",
+    "alerts": [
+      "No fue posible consultar el análisis. No hay predicciones verificadas para mostrar."
+    ],
+    "reads": 6,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AIPredictionsPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estrategia predictiva IA",
+    "alerts": [
+      "No fue posible consultar el análisis. No hay predicciones verificadas para mostrar."
+    ],
+    "reads": 6,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AIPredictionsPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estrategia predictiva IA",
+    "alerts": [
+      "No fue posible consultar el análisis. No hay predicciones verificadas para mostrar."
+    ],
+    "reads": 6,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AIPredictionsPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estrategia predictiva IA",
+    "alerts": [
+      "No fue posible consultar el análisis. No hay predicciones verificadas para mostrar."
+    ],
+    "reads": 6,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AIPredictionsPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estrategia predictiva IA",
+    "alerts": [
+      "No fue posible consultar el análisis. No hay predicciones verificadas para mostrar."
+    ],
+    "reads": 6,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AIPredictionsPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estrategia predictiva IA",
+    "alerts": [
+      "No fue posible consultar el análisis. No hay predicciones verificadas para mostrar."
+    ],
+    "reads": 6,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AIPredictionsPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estrategia predictiva IA",
+    "alerts": [
+      "No fue posible consultar el análisis. No hay predicciones verificadas para mostrar."
+    ],
+    "reads": 6,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "AIPredictionsPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estrategia predictiva IA",
+    "alerts": [
+      "No fue posible consultar el análisis. No hay predicciones verificadas para mostrar."
+    ],
+    "reads": 6,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaDashboardPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "alerts": [
+      "Error al cargar dashboard"
+    ],
+    "reads": 8,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaDashboardPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "alerts": [
+      "Error al cargar dashboard"
+    ],
+    "reads": 8,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaDashboardPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "alerts": [
+      "Error al cargar dashboard"
+    ],
+    "reads": 8,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaDashboardPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "alerts": [
+      "Error al cargar dashboard"
+    ],
+    "reads": 8,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaDashboardPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "alerts": [
+      "Error al cargar dashboard"
+    ],
+    "reads": 8,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaDashboardPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "alerts": [
+      "Error al cargar dashboard"
+    ],
+    "reads": 8,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaDashboardPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "alerts": [
+      "Error al cargar dashboard"
+    ],
+    "reads": 8,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaDashboardPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "alerts": [
+      "Error al cargar dashboard"
+    ],
+    "reads": 8,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaDashboardPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "alerts": [
+      "Error al cargar dashboard"
+    ],
+    "reads": 8,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaDashboardPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "alerts": [
+      "Error al cargar dashboard"
+    ],
+    "reads": 8,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaModulosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de equipos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 10,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaModulosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de equipos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 10,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaModulosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de equipos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 10,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaModulosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de equipos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 10,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaModulosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de equipos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 10,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaModulosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de equipos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 10,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaModulosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de equipos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 10,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaModulosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de equipos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 10,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaModulosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de equipos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 10,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaModulosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de equipos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 10,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bodega y logística",
+    "alerts": [
+      "Error cargando operaciones de bodega."
+    ],
+    "reads": 12,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bodega y logística",
+    "alerts": [
+      "Error cargando operaciones de bodega."
+    ],
+    "reads": 12,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bodega y logística",
+    "alerts": [
+      "Error cargando operaciones de bodega."
+    ],
+    "reads": 12,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bodega y logística",
+    "alerts": [
+      "Error cargando operaciones de bodega."
+    ],
+    "reads": 12,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bodega y logística",
+    "alerts": [
+      "Error cargando operaciones de bodega."
+    ],
+    "reads": 12,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bodega y logística",
+    "alerts": [
+      "Error cargando operaciones de bodega."
+    ],
+    "reads": 12,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bodega y logística",
+    "alerts": [
+      "Error cargando operaciones de bodega."
+    ],
+    "reads": 12,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bodega y logística",
+    "alerts": [
+      "Error cargando operaciones de bodega."
+    ],
+    "reads": 12,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bodega y logística",
+    "alerts": [
+      "Error cargando operaciones de bodega."
+    ],
+    "reads": 12,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bodega y logística",
+    "alerts": [
+      "Error cargando operaciones de bodega."
+    ],
+    "reads": 12,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaRepuestosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de repuestos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 14,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaRepuestosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de repuestos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 14,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaRepuestosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de repuestos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 14,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaRepuestosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de repuestos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 14,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaRepuestosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de repuestos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 14,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaRepuestosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de repuestos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 14,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaRepuestosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de repuestos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 14,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaRepuestosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de repuestos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 14,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaRepuestosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de repuestos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 14,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BodegaRepuestosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Inventario de repuestos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 14,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BridgeFlowPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bridge · Referencias externas",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 16,
+    "overlays": 0,
+    "culprits": [
+      "TABLE.",
+      "THEAD.",
+      "TR.",
+      "TH.",
+      "TH."
+    ]
+  },
+  {
+    "page": "BridgeFlowPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bridge · Referencias externas",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 16,
+    "overlays": 0,
+    "culprits": [
+      "TABLE.",
+      "THEAD.",
+      "TR.",
+      "TH.",
+      "TH."
+    ]
+  },
+  {
+    "page": "BridgeFlowPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bridge · Referencias externas",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 16,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BridgeFlowPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bridge · Referencias externas",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 16,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BridgeFlowPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bridge · Referencias externas",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 16,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BridgeFlowPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bridge · Referencias externas",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 16,
+    "overlays": 0,
+    "culprits": [
+      "TABLE.",
+      "THEAD.",
+      "TR.",
+      "TH.",
+      "TH."
+    ]
+  },
+  {
+    "page": "BridgeFlowPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bridge · Referencias externas",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 16,
+    "overlays": 0,
+    "culprits": [
+      "TABLE.",
+      "THEAD.",
+      "TR.",
+      "TH.",
+      "TH."
+    ]
+  },
+  {
+    "page": "BridgeFlowPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bridge · Referencias externas",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 16,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BridgeFlowPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bridge · Referencias externas",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 16,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "BridgeFlowPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Bridge · Referencias externas",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 16,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DashboardPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Dashboard operativo",
+    "alerts": [
+      "Error al cargar el dashboard.No se pudieron cargar las métricas operacionales. Reintentar"
+    ],
+    "reads": 18,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DashboardPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Dashboard operativo",
+    "alerts": [
+      "Error al cargar el dashboard.No se pudieron cargar las métricas operacionales. Reintentar"
+    ],
+    "reads": 18,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DashboardPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Dashboard operativo",
+    "alerts": [
+      "Error al cargar el dashboard.No se pudieron cargar las métricas operacionales. Reintentar"
+    ],
+    "reads": 18,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DashboardPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Dashboard operativo",
+    "alerts": [
+      "Error al cargar el dashboard.No se pudieron cargar las métricas operacionales. Reintentar"
+    ],
+    "reads": 18,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DashboardPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Dashboard operativo",
+    "alerts": [
+      "Error al cargar el dashboard.No se pudieron cargar las métricas operacionales. Reintentar"
+    ],
+    "reads": 18,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DashboardPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Dashboard operativo",
+    "alerts": [
+      "Error al cargar el dashboard.No se pudieron cargar las métricas operacionales. Reintentar"
+    ],
+    "reads": 18,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DashboardPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Dashboard operativo",
+    "alerts": [
+      "Error al cargar el dashboard.No se pudieron cargar las métricas operacionales. Reintentar"
+    ],
+    "reads": 18,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DashboardPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Dashboard operativo",
+    "alerts": [
+      "Error al cargar el dashboard.No se pudieron cargar las métricas operacionales. Reintentar"
+    ],
+    "reads": 18,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DashboardPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Dashboard operativo",
+    "alerts": [
+      "Error al cargar el dashboard.No se pudieron cargar las métricas operacionales. Reintentar"
+    ],
+    "reads": 18,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DashboardPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Dashboard operativo",
+    "alerts": [
+      "Error al cargar el dashboard.No se pudieron cargar las métricas operacionales. Reintentar"
+    ],
+    "reads": 18,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DespachoEscaneoPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho por escaneo",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 24,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DespachoEscaneoPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho por escaneo",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 24,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DespachoEscaneoPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho por escaneo",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 24,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DespachoEscaneoPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho por escaneo",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 24,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DespachoEscaneoPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho por escaneo",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 24,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DespachoEscaneoPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho por escaneo",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 24,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DespachoEscaneoPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho por escaneo",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 24,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DespachoEscaneoPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho por escaneo",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 24,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DespachoEscaneoPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho por escaneo",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 24,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "DespachoEscaneoPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho por escaneo",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 24,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquipmentScanPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estación de escaneo",
+    "alerts": [],
+    "reads": 25,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquipmentScanPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estación de escaneo",
+    "alerts": [],
+    "reads": 25,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquipmentScanPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estación de escaneo",
+    "alerts": [],
+    "reads": 25,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquipmentScanPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estación de escaneo",
+    "alerts": [],
+    "reads": 25,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquipmentScanPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estación de escaneo",
+    "alerts": [],
+    "reads": 25,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquipmentScanPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estación de escaneo",
+    "alerts": [],
+    "reads": 25,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquipmentScanPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estación de escaneo",
+    "alerts": [],
+    "reads": 25,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquipmentScanPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estación de escaneo",
+    "alerts": [],
+    "reads": 25,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquipmentScanPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estación de escaneo",
+    "alerts": [],
+    "reads": 25,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquipmentScanPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Estación de escaneo",
+    "alerts": [],
+    "reads": 25,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquiposOperativosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Equipos en operación",
+    "alerts": [
+      "Error cargando datos de la API"
+    ],
+    "reads": 27,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquiposOperativosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Equipos en operación",
+    "alerts": [
+      "Error cargando datos de la API"
+    ],
+    "reads": 27,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquiposOperativosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Equipos en operación",
+    "alerts": [
+      "Error cargando datos de la API"
+    ],
+    "reads": 27,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquiposOperativosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Equipos en operación",
+    "alerts": [
+      "Error cargando datos de la API"
+    ],
+    "reads": 27,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquiposOperativosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Equipos en operación",
+    "alerts": [
+      "Error cargando datos de la API"
+    ],
+    "reads": 27,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquiposOperativosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Equipos en operación",
+    "alerts": [
+      "Error cargando datos de la API"
+    ],
+    "reads": 27,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquiposOperativosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Equipos en operación",
+    "alerts": [
+      "Error cargando datos de la API"
+    ],
+    "reads": 27,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquiposOperativosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Equipos en operación",
+    "alerts": [
+      "Error cargando datos de la API"
+    ],
+    "reads": 27,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquiposOperativosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Equipos en operación",
+    "alerts": [
+      "Error cargando datos de la API"
+    ],
+    "reads": 27,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "EquiposOperativosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Equipos en operación",
+    "alerts": [
+      "Error cargando datos de la API"
+    ],
+    "reads": 27,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "ForbiddenPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Acceso restringido",
+    "alerts": [
+      "Error 403Acceso restringidoTu rol no posee la capacidad requerida para acceder a esta ruta.Ruta no autorizada Volver al inicio"
+    ],
+    "reads": 28,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "ForbiddenPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Acceso restringido",
+    "alerts": [
+      "Error 403Acceso restringidoTu rol no posee la capacidad requerida para acceder a esta ruta.Ruta no autorizada Volver al inicio"
+    ],
+    "reads": 28,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "ForbiddenPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Acceso restringido",
+    "alerts": [
+      "Error 403Acceso restringidoTu rol no posee la capacidad requerida para acceder a esta ruta.Ruta no autorizada Volver al inicio"
+    ],
+    "reads": 28,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "ForbiddenPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Acceso restringido",
+    "alerts": [
+      "Error 403Acceso restringidoTu rol no posee la capacidad requerida para acceder a esta ruta.Ruta no autorizada Volver al inicio"
+    ],
+    "reads": 28,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "ForbiddenPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Acceso restringido",
+    "alerts": [
+      "Error 403Acceso restringidoTu rol no posee la capacidad requerida para acceder a esta ruta.Ruta no autorizada Volver al inicio"
+    ],
+    "reads": 28,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "ForbiddenPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Acceso restringido",
+    "alerts": [
+      "Error 403Acceso restringidoTu rol no posee la capacidad requerida para acceder a esta ruta.Ruta no autorizada Volver al inicio"
+    ],
+    "reads": 28,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "ForbiddenPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Acceso restringido",
+    "alerts": [
+      "Error 403Acceso restringidoTu rol no posee la capacidad requerida para acceder a esta ruta.Ruta no autorizada Volver al inicio"
+    ],
+    "reads": 28,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "ForbiddenPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Acceso restringido",
+    "alerts": [
+      "Error 403Acceso restringidoTu rol no posee la capacidad requerida para acceder a esta ruta.Ruta no autorizada Volver al inicio"
+    ],
+    "reads": 28,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "ForbiddenPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Acceso restringido",
+    "alerts": [
+      "Error 403Acceso restringidoTu rol no posee la capacidad requerida para acceder a esta ruta.Ruta no autorizada Volver al inicio"
+    ],
+    "reads": 28,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "ForbiddenPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Acceso restringido",
+    "alerts": [
+      "Error 403Acceso restringidoTu rol no posee la capacidad requerida para acceder a esta ruta.Ruta no autorizada Volver al inicio"
+    ],
+    "reads": 28,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "GestionActivosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de activos",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "GestionActivosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de activos",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "GestionActivosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de activos",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "GestionActivosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de activos",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "GestionActivosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de activos",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "GestionActivosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de activos",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "GestionActivosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de activos",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "GestionActivosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de activos",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "GestionActivosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de activos",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "GestionActivosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de activos",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoOSPage",
+    "role": "tecnico_terreno",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Reportar falla",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoOSPage",
+    "role": "tecnico_terreno",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Reportar falla",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoOSPage",
+    "role": "tecnico_terreno",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Reportar falla",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoOSPage",
+    "role": "tecnico_terreno",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Reportar falla",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoOSPage",
+    "role": "tecnico_terreno",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Reportar falla",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoOSPage",
+    "role": "tecnico_terreno",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Reportar falla",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoOSPage",
+    "role": "tecnico_terreno",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Reportar falla",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoOSPage",
+    "role": "tecnico_terreno",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Reportar falla",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoOSPage",
+    "role": "tecnico_terreno",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Reportar falla",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoOSPage",
+    "role": "tecnico_terreno",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Reportar falla",
+    "alerts": [],
+    "reads": 29,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoRequerimientosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Ingreso de requerimientos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 32,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoRequerimientosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Ingreso de requerimientos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 32,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoRequerimientosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Ingreso de requerimientos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 32,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoRequerimientosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Ingreso de requerimientos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 32,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoRequerimientosPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Ingreso de requerimientos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 32,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoRequerimientosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Ingreso de requerimientos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 32,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoRequerimientosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Ingreso de requerimientos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 32,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoRequerimientosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Ingreso de requerimientos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 32,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoRequerimientosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Ingreso de requerimientos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 32,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "IngresoRequerimientosPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Ingreso de requerimientos",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 32,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabAsignacionPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de carga",
+    "alerts": [
+      "Error cargando las órdenes de servicio."
+    ],
+    "reads": 36,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabAsignacionPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de carga",
+    "alerts": [
+      "Error cargando las órdenes de servicio."
+    ],
+    "reads": 36,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabAsignacionPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de carga",
+    "alerts": [
+      "Error cargando las órdenes de servicio."
+    ],
+    "reads": 36,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabAsignacionPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de carga",
+    "alerts": [
+      "Error cargando las órdenes de servicio."
+    ],
+    "reads": 36,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabAsignacionPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de carga",
+    "alerts": [
+      "Error cargando las órdenes de servicio."
+    ],
+    "reads": 36,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabAsignacionPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de carga",
+    "alerts": [
+      "Error cargando las órdenes de servicio."
+    ],
+    "reads": 36,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabAsignacionPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de carga",
+    "alerts": [
+      "Error cargando las órdenes de servicio."
+    ],
+    "reads": 36,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabAsignacionPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de carga",
+    "alerts": [
+      "Error cargando las órdenes de servicio."
+    ],
+    "reads": 36,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabAsignacionPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de carga",
+    "alerts": [
+      "Error cargando las órdenes de servicio."
+    ],
+    "reads": 36,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabAsignacionPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Gestión de carga",
+    "alerts": [
+      "Error cargando las órdenes de servicio."
+    ],
+    "reads": 36,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabConsolasPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Consolas",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 38,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabConsolasPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Consolas",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 38,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabConsolasPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Consolas",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 38,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabConsolasPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Consolas",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 38,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabConsolasPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Consolas",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 38,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabConsolasPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Consolas",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 38,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabConsolasPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Consolas",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 38,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabConsolasPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Consolas",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 38,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabConsolasPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Consolas",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 38,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabConsolasPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Consolas",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 38,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabCustodyPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción en Laboratorio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 40,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabCustodyPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción en Laboratorio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 40,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabCustodyPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción en Laboratorio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 40,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabCustodyPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción en Laboratorio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 40,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabCustodyPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción en Laboratorio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 40,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabCustodyPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción en Laboratorio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 40,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabCustodyPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción en Laboratorio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 40,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabCustodyPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción en Laboratorio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 40,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabCustodyPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción en Laboratorio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 40,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabCustodyPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción en Laboratorio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 40,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDashboardPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Resumen de laboratorio",
+    "alerts": [
+      "No fue posible consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 44,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDashboardPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Resumen de laboratorio",
+    "alerts": [
+      "No fue posible consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 44,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDashboardPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Resumen de laboratorio",
+    "alerts": [
+      "No fue posible consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 44,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDashboardPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Resumen de laboratorio",
+    "alerts": [
+      "No fue posible consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 44,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDashboardPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Resumen de laboratorio",
+    "alerts": [
+      "No fue posible consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 44,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDashboardPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Resumen de laboratorio",
+    "alerts": [
+      "No fue posible consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 44,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDashboardPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Resumen de laboratorio",
+    "alerts": [
+      "No fue posible consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 44,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDashboardPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Resumen de laboratorio",
+    "alerts": [
+      "No fue posible consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 44,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDashboardPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Resumen de laboratorio",
+    "alerts": [
+      "No fue posible consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 44,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDashboardPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Resumen de laboratorio",
+    "alerts": [
+      "No fue posible consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 44,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDespachoQaPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 46,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDespachoQaPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 46,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDespachoQaPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 46,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDespachoQaPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 46,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDespachoQaPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 46,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDespachoQaPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 46,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDespachoQaPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 46,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDespachoQaPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 46,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDespachoQaPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 46,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabDespachoQaPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Despacho a Bodega",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 46,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabReportesPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Reportes",
+    "alerts": [],
+    "reads": 48,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabReportesPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Reportes",
+    "alerts": [],
+    "reads": 48,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabReportesPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Reportes",
+    "alerts": [],
+    "reads": 48,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabReportesPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Reportes",
+    "alerts": [],
+    "reads": 48,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabReportesPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Reportes",
+    "alerts": [],
+    "reads": 48,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabReportesPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Reportes",
+    "alerts": [],
+    "reads": 48,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabReportesPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Reportes",
+    "alerts": [],
+    "reads": 48,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabReportesPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Reportes",
+    "alerts": [],
+    "reads": 48,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabReportesPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Reportes",
+    "alerts": [],
+    "reads": 48,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabReportesPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Reportes",
+    "alerts": [],
+    "reads": 48,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabValidadoresPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Validadores",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 50,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabValidadoresPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Validadores",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 50,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabValidadoresPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Validadores",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 50,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabValidadoresPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Validadores",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 50,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabValidadoresPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Validadores",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 50,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabValidadoresPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Validadores",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 50,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabValidadoresPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Validadores",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 50,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabValidadoresPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Validadores",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 50,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabValidadoresPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Validadores",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 50,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabValidadoresPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Laboratorio · Validadores",
+    "alerts": [
+      "No se pudo consultar la carga de Laboratorio. Reintenta la consulta."
+    ],
+    "reads": 50,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabWorkPage",
+    "role": "tecnico_laboratorio",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Trabajo técnico · MV-FIXTURE",
+    "alerts": [
+      "No se pudo consultar tu carga. Vuelve a la bandeja e intenta nuevamente."
+    ],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabWorkPage",
+    "role": "tecnico_laboratorio",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Trabajo técnico · MV-FIXTURE",
+    "alerts": [
+      "No se pudo consultar tu carga. Vuelve a la bandeja e intenta nuevamente."
+    ],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabWorkPage",
+    "role": "tecnico_laboratorio",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Trabajo técnico · MV-FIXTURE",
+    "alerts": [
+      "No se pudo consultar tu carga. Vuelve a la bandeja e intenta nuevamente."
+    ],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabWorkPage",
+    "role": "tecnico_laboratorio",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Trabajo técnico · MV-FIXTURE",
+    "alerts": [
+      "No se pudo consultar tu carga. Vuelve a la bandeja e intenta nuevamente."
+    ],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabWorkPage",
+    "role": "tecnico_laboratorio",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Trabajo técnico · MV-FIXTURE",
+    "alerts": [
+      "No se pudo consultar tu carga. Vuelve a la bandeja e intenta nuevamente."
+    ],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabWorkPage",
+    "role": "tecnico_laboratorio",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Trabajo técnico · MV-FIXTURE",
+    "alerts": [
+      "No se pudo consultar tu carga. Vuelve a la bandeja e intenta nuevamente."
+    ],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabWorkPage",
+    "role": "tecnico_laboratorio",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Trabajo técnico · MV-FIXTURE",
+    "alerts": [
+      "No se pudo consultar tu carga. Vuelve a la bandeja e intenta nuevamente."
+    ],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabWorkPage",
+    "role": "tecnico_laboratorio",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Trabajo técnico · MV-FIXTURE",
+    "alerts": [
+      "No se pudo consultar tu carga. Vuelve a la bandeja e intenta nuevamente."
+    ],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabWorkPage",
+    "role": "tecnico_laboratorio",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Trabajo técnico · MV-FIXTURE",
+    "alerts": [
+      "No se pudo consultar tu carga. Vuelve a la bandeja e intenta nuevamente."
+    ],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LabWorkPage",
+    "role": "tecnico_laboratorio",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Trabajo técnico · MV-FIXTURE",
+    "alerts": [
+      "No se pudo consultar tu carga. Vuelve a la bandeja e intenta nuevamente."
+    ],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LoginPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Control operacional, mantenimiento y trazabilidad.",
+    "alerts": [],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LoginPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Control operacional, mantenimiento y trazabilidad.",
+    "alerts": [],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LoginPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Control operacional, mantenimiento y trazabilidad.",
+    "alerts": [],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LoginPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Control operacional, mantenimiento y trazabilidad.",
+    "alerts": [],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LoginPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Control operacional, mantenimiento y trazabilidad.",
+    "alerts": [],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LoginPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Control operacional, mantenimiento y trazabilidad.",
+    "alerts": [],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LoginPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Control operacional, mantenimiento y trazabilidad.",
+    "alerts": [],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LoginPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Control operacional, mantenimiento y trazabilidad.",
+    "alerts": [],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LoginPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Control operacional, mantenimiento y trazabilidad.",
+    "alerts": [],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "LoginPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Control operacional, mantenimiento y trazabilidad.",
+    "alerts": [],
+    "reads": 52,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "MyServiceOrdersPage",
+    "role": "tecnico_terreno",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mis órdenes de servicio",
+    "alerts": [
+      "No fue posible cargar tus órdenes de servicio."
+    ],
+    "reads": 53,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "MyServiceOrdersPage",
+    "role": "tecnico_terreno",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mis órdenes de servicio",
+    "alerts": [
+      "No fue posible cargar tus órdenes de servicio."
+    ],
+    "reads": 53,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "MyServiceOrdersPage",
+    "role": "tecnico_terreno",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mis órdenes de servicio",
+    "alerts": [
+      "No fue posible cargar tus órdenes de servicio."
+    ],
+    "reads": 53,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "MyServiceOrdersPage",
+    "role": "tecnico_terreno",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mis órdenes de servicio",
+    "alerts": [
+      "No fue posible cargar tus órdenes de servicio."
+    ],
+    "reads": 53,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "MyServiceOrdersPage",
+    "role": "tecnico_terreno",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mis órdenes de servicio",
+    "alerts": [
+      "No fue posible cargar tus órdenes de servicio."
+    ],
+    "reads": 53,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "MyServiceOrdersPage",
+    "role": "tecnico_terreno",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mis órdenes de servicio",
+    "alerts": [
+      "No fue posible cargar tus órdenes de servicio."
+    ],
+    "reads": 53,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "MyServiceOrdersPage",
+    "role": "tecnico_terreno",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mis órdenes de servicio",
+    "alerts": [
+      "No fue posible cargar tus órdenes de servicio."
+    ],
+    "reads": 53,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "MyServiceOrdersPage",
+    "role": "tecnico_terreno",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mis órdenes de servicio",
+    "alerts": [
+      "No fue posible cargar tus órdenes de servicio."
+    ],
+    "reads": 53,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "MyServiceOrdersPage",
+    "role": "tecnico_terreno",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mis órdenes de servicio",
+    "alerts": [
+      "No fue posible cargar tus órdenes de servicio."
+    ],
+    "reads": 53,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "MyServiceOrdersPage",
+    "role": "tecnico_terreno",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mis órdenes de servicio",
+    "alerts": [
+      "No fue posible cargar tus órdenes de servicio."
+    ],
+    "reads": 53,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "NotFoundPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Página no encontrada",
+    "alerts": [],
+    "reads": 54,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "NotFoundPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Página no encontrada",
+    "alerts": [],
+    "reads": 54,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "NotFoundPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Página no encontrada",
+    "alerts": [],
+    "reads": 54,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "NotFoundPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Página no encontrada",
+    "alerts": [],
+    "reads": 54,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "NotFoundPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Página no encontrada",
+    "alerts": [],
+    "reads": 54,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "NotFoundPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Página no encontrada",
+    "alerts": [],
+    "reads": 54,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "NotFoundPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Página no encontrada",
+    "alerts": [],
+    "reads": 54,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "NotFoundPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Página no encontrada",
+    "alerts": [],
+    "reads": 54,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "NotFoundPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Página no encontrada",
+    "alerts": [],
+    "reads": 54,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "NotFoundPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Página no encontrada",
+    "alerts": [],
+    "reads": 54,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "OrdenesServicioPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Órdenes de servicio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 56,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "OrdenesServicioPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Órdenes de servicio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 56,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "OrdenesServicioPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Órdenes de servicio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 56,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "OrdenesServicioPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Órdenes de servicio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 56,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "OrdenesServicioPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Órdenes de servicio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 56,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "OrdenesServicioPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Órdenes de servicio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 56,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "OrdenesServicioPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Órdenes de servicio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 56,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "OrdenesServicioPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Órdenes de servicio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 56,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "OrdenesServicioPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Órdenes de servicio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 56,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "OrdenesServicioPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Órdenes de servicio",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 56,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi trabajo QA",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 58,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi trabajo QA",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 58,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi trabajo QA",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 58,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi trabajo QA",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 58,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi trabajo QA",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 58,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi trabajo QA",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 58,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi trabajo QA",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 58,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi trabajo QA",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 58,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi trabajo QA",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 58,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi trabajo QA",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 58,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaWorkPage",
+    "role": "qa",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "MV-FIXTURE",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 59,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaWorkPage",
+    "role": "qa",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "MV-FIXTURE",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 59,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaWorkPage",
+    "role": "qa",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "MV-FIXTURE",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 59,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaWorkPage",
+    "role": "qa",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "MV-FIXTURE",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 59,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaWorkPage",
+    "role": "qa",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "MV-FIXTURE",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 59,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaWorkPage",
+    "role": "qa",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "MV-FIXTURE",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 59,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaWorkPage",
+    "role": "qa",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "MV-FIXTURE",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 59,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaWorkPage",
+    "role": "qa",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "MV-FIXTURE",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 59,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaWorkPage",
+    "role": "qa",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "MV-FIXTURE",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 59,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "QaWorkPage",
+    "role": "qa",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "MV-FIXTURE",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 59,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RetirosTerrenoPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Retiros de terreno",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 62,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RetirosTerrenoPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Retiros de terreno",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 62,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RetirosTerrenoPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Retiros de terreno",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 62,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RetirosTerrenoPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Retiros de terreno",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 62,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RetirosTerrenoPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Retiros de terreno",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 62,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RetirosTerrenoPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Retiros de terreno",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 62,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RetirosTerrenoPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Retiros de terreno",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 62,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RetirosTerrenoPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Retiros de terreno",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 62,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RetirosTerrenoPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Retiros de terreno",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 62,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RetirosTerrenoPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Retiros de terreno",
+    "alerts": [
+      "Consulta no disponible · fixture aislada"
+    ],
+    "reads": 62,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RoleDashboardPage",
+    "role": "tecnico_terreno",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi jornada · Persona de prueba",
+    "alerts": [
+      "No fue posible cargar las OS asignadas."
+    ],
+    "reads": 63,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RoleDashboardPage",
+    "role": "tecnico_terreno",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi jornada · Persona de prueba",
+    "alerts": [
+      "No fue posible cargar las OS asignadas."
+    ],
+    "reads": 63,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RoleDashboardPage",
+    "role": "tecnico_terreno",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi jornada · Persona de prueba",
+    "alerts": [
+      "No fue posible cargar las OS asignadas."
+    ],
+    "reads": 63,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RoleDashboardPage",
+    "role": "tecnico_terreno",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi jornada · Persona de prueba",
+    "alerts": [
+      "No fue posible cargar las OS asignadas."
+    ],
+    "reads": 63,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RoleDashboardPage",
+    "role": "tecnico_terreno",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi jornada · Persona de prueba",
+    "alerts": [
+      "No fue posible cargar las OS asignadas."
+    ],
+    "reads": 63,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RoleDashboardPage",
+    "role": "tecnico_terreno",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi jornada · Persona de prueba",
+    "alerts": [
+      "No fue posible cargar las OS asignadas."
+    ],
+    "reads": 63,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RoleDashboardPage",
+    "role": "tecnico_terreno",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi jornada · Persona de prueba",
+    "alerts": [
+      "No fue posible cargar las OS asignadas."
+    ],
+    "reads": 63,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RoleDashboardPage",
+    "role": "tecnico_terreno",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi jornada · Persona de prueba",
+    "alerts": [
+      "No fue posible cargar las OS asignadas."
+    ],
+    "reads": 63,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RoleDashboardPage",
+    "role": "tecnico_terreno",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi jornada · Persona de prueba",
+    "alerts": [
+      "No fue posible cargar las OS asignadas."
+    ],
+    "reads": 63,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "RoleDashboardPage",
+    "role": "tecnico_terreno",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Mi jornada · Persona de prueba",
+    "alerts": [
+      "No fue posible cargar las OS asignadas."
+    ],
+    "reads": 63,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "SettingsPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Seguridad",
+    "alerts": [],
+    "reads": 64,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "SettingsPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Seguridad",
+    "alerts": [],
+    "reads": 64,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "SettingsPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Seguridad",
+    "alerts": [],
+    "reads": 64,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "SettingsPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Seguridad",
+    "alerts": [],
+    "reads": 64,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "SettingsPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Seguridad",
+    "alerts": [],
+    "reads": 64,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "SettingsPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Seguridad",
+    "alerts": [],
+    "reads": 64,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "SettingsPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Seguridad",
+    "alerts": [],
+    "reads": 64,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "SettingsPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Seguridad",
+    "alerts": [],
+    "reads": 64,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "SettingsPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Seguridad",
+    "alerts": [],
+    "reads": 64,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "SettingsPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Seguridad",
+    "alerts": [],
+    "reads": 64,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "TrazabilidadPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Historial de activos y casos",
+    "alerts": [],
+    "reads": 65,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "TrazabilidadPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Historial de activos y casos",
+    "alerts": [],
+    "reads": 65,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "TrazabilidadPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Historial de activos y casos",
+    "alerts": [],
+    "reads": 65,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "TrazabilidadPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Historial de activos y casos",
+    "alerts": [],
+    "reads": 65,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "TrazabilidadPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Historial de activos y casos",
+    "alerts": [],
+    "reads": 65,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "TrazabilidadPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Historial de activos y casos",
+    "alerts": [],
+    "reads": 65,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "TrazabilidadPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Historial de activos y casos",
+    "alerts": [],
+    "reads": 65,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "TrazabilidadPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Historial de activos y casos",
+    "alerts": [],
+    "reads": 65,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "TrazabilidadPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Historial de activos y casos",
+    "alerts": [],
+    "reads": 65,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "TrazabilidadPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Historial de activos y casos",
+    "alerts": [],
+    "reads": 65,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "WarehouseOperationPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción desde Terreno",
+    "alerts": [
+      "No se pudo consultar el equipo."
+    ],
+    "reads": 67,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "WarehouseOperationPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción desde Terreno",
+    "alerts": [
+      "No se pudo consultar el equipo."
+    ],
+    "reads": 67,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "WarehouseOperationPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción desde Terreno",
+    "alerts": [
+      "No se pudo consultar el equipo."
+    ],
+    "reads": 67,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "WarehouseOperationPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción desde Terreno",
+    "alerts": [
+      "No se pudo consultar el equipo."
+    ],
+    "reads": 67,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "WarehouseOperationPage",
+    "role": "admin",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción desde Terreno",
+    "alerts": [
+      "No se pudo consultar el equipo."
+    ],
+    "reads": 67,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "WarehouseOperationPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción desde Terreno",
+    "alerts": [
+      "No se pudo consultar el equipo."
+    ],
+    "reads": 67,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "WarehouseOperationPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 390,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción desde Terreno",
+    "alerts": [
+      "No se pudo consultar el equipo."
+    ],
+    "reads": 67,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "WarehouseOperationPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 768,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción desde Terreno",
+    "alerts": [
+      "No se pudo consultar el equipo."
+    ],
+    "reads": 67,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "WarehouseOperationPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1024,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción desde Terreno",
+    "alerts": [
+      "No se pudo consultar el equipo."
+    ],
+    "reads": 67,
+    "overlays": 0,
+    "culprits": []
+  },
+  {
+    "page": "WarehouseOperationPage",
+    "role": "admin",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false,
+    "errors": [],
+    "heading": "Recepción desde Terreno",
+    "alerts": [
+      "No se pudo consultar el equipo."
+    ],
+    "reads": 67,
+    "overlays": 0,
+    "culprits": []
+  }
+]

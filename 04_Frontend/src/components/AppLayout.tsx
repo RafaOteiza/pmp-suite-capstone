@@ -1,13 +1,17 @@
+import '../styles/admin-control.css';
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
+import FeedbackBanner from "./ui/FeedbackBanner";
 import { useSession } from "../app/SessionContext";
 import { READ_ONLY_DENIED_EVENT, READ_ONLY_ROLE_MESSAGE } from "../api/errors";
 
 export default function AppLayout() {
   const { me } = useSession();
   const [readOnlyError, setReadOnlyError] = useState<string | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem("pmp_sidebar") === "collapsed");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const onReadOnlyDenied = (event: Event) => {
@@ -18,33 +22,45 @@ export default function AppLayout() {
     return () => window.removeEventListener(READ_ONLY_DENIED_EVENT, onReadOnlyDenied);
   }, []);
 
+  const toggleSidebar = () => {
+    setSidebarCollapsed((current) => {
+      const next = !current;
+      localStorage.setItem("pmp_sidebar", next ? "collapsed" : "expanded");
+      return next;
+    });
+  };
+
   return (
-    <div className="app-shell">
-      <Sidebar me={me} />
+    <div className={`app-shell ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
+      <a className="skip-link" href="#main-content">Saltar al contenido principal</a>
+      <Sidebar
+        me={me}
+        collapsed={sidebarCollapsed}
+        mobileOpen={mobileMenuOpen}
+        onToggleCollapse={toggleSidebar}
+        onNavigate={() => setMobileMenuOpen(false)}
+      />
+      <button
+        className={`sidebar-backdrop ${mobileMenuOpen ? "is-visible" : ""}`}
+        onClick={() => setMobileMenuOpen(false)}
+        aria-label="Cerrar navegación"
+        tabIndex={mobileMenuOpen ? 0 : -1}
+      />
       <div className="app-main">
-        <TopBar me={me} />
-        <div className="app-content">
-          {readOnlyError && (
-            <div
-              role="alert"
-              style={{
-                marginBottom: 16,
-                padding: "12px 16px",
-                borderRadius: 8,
-                border: "1px solid rgba(239,68,68,0.35)",
-                background: "rgba(239,68,68,0.1)",
-                color: "#FCA5A5",
-                display: "flex",
-                justifyContent: "space-between",
-                gap: 16
-              }}
-            >
-              <span>{readOnlyError}</span>
-              <button className="btn ghost" onClick={() => setReadOnlyError(null)}>Cerrar</button>
-            </div>
-          )}
+        <TopBar
+          me={me}
+          sidebarCollapsed={sidebarCollapsed}
+          onOpenMenu={() => setMobileMenuOpen(true)}
+          onToggleSidebar={toggleSidebar}
+        />
+        <main className={`app-content ${["admin","gerente","jefe_laboratorio"].includes(me?.rol||"")?"admin-workspace":""}`} id="main-content" tabIndex={-1}>
+          {readOnlyError ? (
+            <FeedbackBanner tone="warning" onDismiss={() => setReadOnlyError(null)}>
+              <strong>Acción no disponible.</strong> {readOnlyError}
+            </FeedbackBanner>
+          ) : null}
           <Outlet context={me} />
-        </div>
+        </main>
       </div>
     </div>
   );

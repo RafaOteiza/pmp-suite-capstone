@@ -1,0 +1,117 @@
+{
+  "ok": true,
+  "isolation": "clúster PostgreSQL efímero con schema-only y fixtures propias",
+  "steps": [
+    {
+      "step": 1,
+      "action": "Terreno escanea QR/AMID y crea OS",
+      "status": 201,
+      "state": 2
+    },
+    {
+      "step": 2,
+      "action": "Bodega recibe equipo validado físicamente",
+      "status": 200,
+      "state": 3
+    },
+    {
+      "step": 3,
+      "action": "Bodega envía a laboratorio",
+      "status": 200,
+      "state": 4
+    },
+    {
+      "step": 4,
+      "action": "Admin recibe físicamente; técnico de laboratorio diagnostica y repara",
+      "status": 200,
+      "state": 10
+    },
+    {
+      "step": 5,
+      "action": "Admin, como jefe de laboratorio, envía a bodega",
+      "status": 200,
+      "state": 11
+    },
+    {
+      "step": 6,
+      "action": "Bodega recibe, asigna responsable y envía a QA",
+      "status": 200,
+      "state": 6
+    },
+    {
+      "step": 7,
+      "action": "QA asignado escanea, prueba y aprueba",
+      "status": 200,
+      "state": 11
+    },
+    {
+      "step": 8,
+      "action": "QA stock without IN placeholder",
+      "state": 13
+    },
+    {
+      "step": 9,
+      "action": "Confirm physical dispatch creates installation order",
+      "state": 1,
+      "installationCode": "IN-000001"
+    }
+  ],
+  "expectedBlocks": [
+    {
+      "action": "Bodega recibe sin escaneo",
+      "status": 409,
+      "data": {
+        "error": "PHYSICAL_SCAN_REQUIRED",
+        "message": "Escanea físicamente el equipo en BODEGA antes de continuar"
+      }
+    },
+    {
+      "action": "Laboratorio repara sin escaneo",
+      "status": 409,
+      "data": {
+        "error": "PHYSICAL_SCAN_REQUIRED",
+        "message": "Escanea físicamente el equipo en LABORATORIO antes de continuar"
+      }
+    },
+    {
+      "action": "QA escanea antes del despacho físico",
+      "status": 409,
+      "data": {
+        "error": "UNEXPECTED_SCAN_STATION",
+        "message": "La OS MV-000001 no espera el equipo en QA"
+      }
+    },
+    {
+      "action": "Bodega despacha a QA sin asignación",
+      "status": 422,
+      "data": {
+        "error": "QA_ASSIGNEE_REQUIRED",
+        "message": "Selecciona un responsable QA activo antes del despacho"
+      }
+    }
+  ],
+  "findings": [],
+  "cleanup": {
+    "sourceDatabaseUnchanged": true,
+    "temporaryClusterRemoved": true
+  },
+  "nomenclature": {
+    "assignmentWithoutDispatch": 0,
+    "scanWithoutDispatch": 0,
+    "confirmedDispatch": 1,
+    "installedInRoute": 0,
+    "installedOperational": 1
+  },
+  "audit": {
+    "scans_validated": 6,
+    "scans_rejected": 1,
+    "stations": 3,
+    "repairs": 1
+  },
+  "flow": {
+    "maintenanceCode": "MV-000001",
+    "installationCode": "IN-000001",
+    "originalFinalState": 13,
+    "installationFinalState": 13
+  }
+}

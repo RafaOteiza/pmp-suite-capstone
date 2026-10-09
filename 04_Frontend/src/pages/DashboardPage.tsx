@@ -1,346 +1,67 @@
-import React, { useEffect, useState } from "react";
-import { useOutletContext, useNavigate } from "react-router-dom";
-import { getDashboardSummary, DashboardSummary } from "../api/dashboard"; 
-import { Me } from "../api/me";
-import { 
-  PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid 
-} from "recharts";
-import { Wrench, CheckCircle, Bus, Cpu, RefreshCw, AlertTriangle, Archive, Microscope, Clock, Brain } from "lucide-react"; 
-import AIRiskPanel from "../components/AIRiskPanel";
-import ReadOnlyNotice from "../components/ReadOnlyNotice";
-import { can, PERMISSIONS } from "../app/rbac";
-// Colores definidos para consistencia
-const COLOR_CONSOLA = '#3B82F6';   // Azul
-const COLOR_VALIDADOR = '#10B981'; // Verde
+﻿import {useEffect,useState,type ReactNode} from 'react';
+import {Link,useNavigate,useOutletContext} from 'react-router-dom';
+import {Activity,Archive,ArrowRight,CheckCircle,ClipboardList,Cpu,FlaskConical,LayoutDashboard,Monitor,PackageCheck,RefreshCw,ShieldCheck,Warehouse} from 'lucide-react';
+import {getExecutiveDashboard,type ExecutiveDashboard} from '../api/executive';
+import type {Me} from '../api/me';
+import {can,PERMISSIONS} from '../app/rbac';
+import {labSLA} from '../utils/labWorkload';
+import type {HealthState} from '../utils/health';
+import PageHeader from '../components/ui/PageHeader';
+import StatCard from '../components/ui/StatCard';
+import StatusBadge from '../components/ui/StatusBadge';
+import FeedbackBanner from '../components/ui/FeedbackBanner';
+import EmptyState from '../components/ui/EmptyState';
+import ReadOnlyNotice from '../components/ReadOnlyNotice';
+import AIRiskPanel from '../components/AIRiskPanel';
+import '../styles/logistics-assets.css';
+import '../styles/admin-control.css';
 
-export default function DashboardPage() {
-  const me = useOutletContext<Me | null>();
-  const navigate = useNavigate();
-  const [data, setData] = useState<DashboardSummary | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    loadDashboard();
-  }, []);
-
-  const loadDashboard = async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const res = await getDashboardSummary();
-      setData(res);
-    } catch (err: any) {
-      console.error(err);
-      setError("No se pudieron cargar las métricas.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) return (
-    <div className="panel" style={{ padding: '40px', textAlign: 'center' }}>
-      <RefreshCw className="animate-spin" style={{ margin: '0 auto 10px', opacity: 0.5 }} />
-      <span className="muted">Cargando métricas...</span>
-    </div>
-  );
-
-  if (error) {
-    return (
-        <div className="panel">
-            <h2 className="title">Dashboard Operativo</h2>
-            <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid #EF4444', color: '#EF4444', padding: '20px', borderRadius: '8px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                    <AlertTriangle size={20} />
-                    <strong>Error de Sistema</strong>
-                </div>
-                {error}
-                <button onClick={loadDashboard} className="btn" style={{ marginLeft: '15px', backgroundColor: '#EF4444', color: 'white', border: 'none' }}>Reintentar</button>
-            </div>
-        </div>
-    );
-  }
-
-  if (!data) return null;
-
-  const showGlobalData = can(me, PERMISSIONS.DASHBOARD_VIEW);
-  // Nota: tecnico_terreno, qa y logistica nunca llegan aqui (redirigen a sus propias rutas)
-
-  // PREPARACIÓN DE DATOS PARA GRÁFICOS
-  const pieChartData = [
-    { name: 'Consolas', value: data.kpis.consolasEnLab, color: COLOR_CONSOLA },
-    { name: 'Validadores', value: data.kpis.validadoresEnLab, color: COLOR_VALIDADOR }
-  ];
-
-  const hasDataInLab = data.kpis.totalEnProceso > 0;
-
-  // ESTILO PARA TOOLTIPS (AJUSTADO)
-  // Se cambia el fondo de blanco puro (#ffffff) a un gris muy claro (#f9fafb)
-  // para mejorar la diferenciación en modo claro sin afectar el contraste.
-  const tooltipStyle = {
-    backgroundColor: '#f9fafb', // <--- CAMBIO AQUÍ (Gris sutil)
-    border: '1px solid #e5e7eb',
-    borderRadius: '6px',
-    color: '#1f2937', // Texto oscuro
-    padding: '8px 12px',
-    boxShadow: '0 4px 6px rgba(0,0,0,0.05)', // Sombra más suave
-    fontSize: '0.9rem',
-    fontWeight: 500
-  };
-
-  return (
-    <div className="panel animate-fade-in">
-      <ReadOnlyNotice me={me} />
-      
-      {/* HEADER */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-        <div>
-          <h2 className="title" style={{ marginBottom: '5px' }}>Dashboard Operativo</h2>
-          <p className="muted" style={{ margin: 0 }}>Bienvenido, <strong>{me?.nombre ?? "Usuario"}</strong></p>
-        </div>
-        <button onClick={loadDashboard} className="btn ghost" title="Actualizar datos" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <RefreshCw size={16} /> <span className="hide-mobile">Actualizar</span>
-        </button>
-      </div>
-
-      {/* KPI GRID */}
-      <div className="grid" style={{ gap: '20px', marginBottom: '32px', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
-        
-        {/* KPI: En Tránsito */}
-        {showGlobalData && (
-        <div 
-          className="card kpi interactive" 
-          onClick={() => navigate("/bodega")}
-          style={{ borderLeft: '4px solid #F59E0B', textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px', cursor: 'pointer' }}
-        >
-          <div>
-            <div className="small muted" style={{ textTransform: 'uppercase', fontWeight: '800', marginBottom: '8px' }}>En Tránsito</div>
-            <div className="title" style={{ fontSize: '2.5rem', margin: 0, lineHeight: 1 }}>{data.kpis.totalEnTransito ?? 0}</div>
-            <div className="small muted" style={{ marginTop: '8px' }}>Desde Terreno / Lab</div>
-          </div>
-          <div style={{ padding: '16px', backgroundColor: 'rgba(245, 158, 11, 0.1)', borderRadius: '14px' }}>
-            <RefreshCw size={28} color="#F59E0B" />
-          </div>
-        </div>
-        )}
-
-        {/* KPI: En Bodega */}
-        {showGlobalData && (
-        <div 
-          className="card kpi interactive" 
-          onClick={() => navigate("/bodega")}
-          style={{ borderLeft: '4px solid #10B981', textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px', cursor: 'pointer' }}
-        >
-          <div>
-            <div className="small muted" style={{ textTransform: 'uppercase', fontWeight: '800', marginBottom: '8px' }}>En Bodega</div>
-            <div className="title" style={{ fontSize: '2.5rem', margin: 0, lineHeight: 1 }}>{data.kpis.totalEnBodega ?? 0}</div>
-            <div className="small muted" style={{ marginTop: '8px' }}>Stock por Clasificar</div>
-          </div>
-          <div style={{ padding: '16px', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderRadius: '14px' }}>
-            <Archive size={28} color="#10B981" />
-          </div>
-        </div>
-        )}
-
-        {/* KPI: OS Activas Lab */}
-        {showGlobalData && (
-        <div 
-          className="card kpi interactive" 
-          onClick={() => navigate("/admin/despacho")}
-          style={{ borderLeft: '4px solid #3B82F6', textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px', cursor: 'pointer' }}
-        >
-          <div>
-            <div className="small muted" style={{ textTransform: 'uppercase', fontWeight: '800', marginBottom: '8px' }}>OS Activas Lab</div>
-            <div className="title" style={{ fontSize: '2.5rem', margin: 0, lineHeight: 1 }}>{data.kpis.totalEnProceso}</div>
-            <div className="small muted" style={{ marginTop: '8px' }}>
-              {data.kpis.consolasEnLab} Consolas | {data.kpis.validadoresEnLab} Val.
-            </div>
-            <div className="small font-bold" style={{ color: '#10B981', marginTop: '4px' }}>
-              {data.kpis.totalReparadosLab} Listos para enviar
-            </div>
-          </div>
-          <div style={{ padding: '16px', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderRadius: '14px' }}>
-            <Wrench size={28} color="#3B82F6" />
-          </div>
-        </div>
-        )}
-
-        {/* KPI: Equipos Disponibles */}
-        {showGlobalData && (
-        <div className="card kpi" style={{ borderLeft: '4px solid #10B981', textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px' }}>
-          <div>
-            <div className="small muted" style={{ textTransform: 'uppercase', fontWeight: '800', marginBottom: '8px' }}>Disponibles</div>
-            <div className="title" style={{ fontSize: '2.5rem', margin: 0, lineHeight: 1 }}>{data.kpis.totalReparados}</div>
-            <div className="small muted" style={{ marginTop: '8px' }}>Listos en Bodega/Pañol</div>
-          </div>
-          <div style={{ padding: '16px', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderRadius: '14px' }}>
-            <CheckCircle size={28} color="#10B981" />
-          </div>
-        </div>
-        )}
-
-        {/* KPI: Operativos */}
-        {showGlobalData && (
-        <div className="card kpi" style={{ borderLeft: '4px solid #06B6D4', textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px' }}>
-          <div>
-            <div className="small muted" style={{ textTransform: 'uppercase', fontWeight: '800', marginBottom: '8px' }}>Operativos</div>
-            <div className="title" style={{ fontSize: '2.5rem', margin: 0, lineHeight: 1 }}>{data.kpis.totalOperativos}</div>
-            <div className="small muted" style={{ marginTop: '8px' }}>Funcionando OK</div>
-          </div>
-          <div style={{ padding: '16px', backgroundColor: 'rgba(6, 182, 212, 0.1)', borderRadius: '14px' }}>
-            <Bus size={28} color="#06B6D4" />
-          </div>
-        </div>
-        )}
-
-        {/* KPI: PODs */}
-        {showGlobalData && (
-        <div className="card kpi" style={{ borderLeft: '4px solid #EC4899', textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px' }}>
-          <div>
-            <div className="small muted" style={{ textTransform: 'uppercase', fontWeight: '800', marginBottom: '8px' }}>PODs Totales</div>
-            <div className="title" style={{ fontSize: '2.5rem', margin: 0, lineHeight: 1 }}>{data.kpis.totalPods}</div>
-            <div className="small muted" style={{ marginTop: '8px' }}>
-              {data.kpis.podsReparados} Reparados
-            </div>
-          </div>
-          <div style={{ padding: '16px', backgroundColor: 'rgba(236, 72, 153, 0.1)', borderRadius: '14px' }}>
-            <Cpu size={28} color="#EC4899" />
-          </div>
-        </div>
-        )}
-
-        {/* KPI: Pendientes QA */}
-        {showGlobalData && (
-        <div 
-          className="card kpi interactive" 
-          onClick={() => navigate("/qa")}
-          style={{ borderLeft: '4px solid #8B5CF6', textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px', cursor: 'pointer' }}
-        >
-          <div>
-            <div className="small muted" style={{ textTransform: 'uppercase', fontWeight: '800', marginBottom: '8px' }}>Pendientes QA</div>
-            <div className="title" style={{ fontSize: '2.5rem', margin: 0, lineHeight: 1 }}>{data.kpis.totalEnQa ?? 0}</div>
-            <div className="small muted" style={{ marginTop: '8px' }}>Por certificar</div>
-          </div>
-          <div style={{ padding: '16px', backgroundColor: 'rgba(139, 92, 246, 0.1)', borderRadius: '14px' }}>
-            <Microscope size={28} color="#8B5CF6" />
-          </div>
-        </div>
-        )}
-
-        {/* KPI: SLA / Tiempo Promedio */}
-        {showGlobalData && (
-        <div 
-          className="card kpi" 
-          style={{ borderLeft: '4px solid #F43F5E', textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px' }}
-        >
-          <div>
-            <div className="small muted" style={{ textTransform: 'uppercase', fontWeight: '800', marginBottom: '8px' }}>Tiempo Promedio (SLA)</div>
-            <div className="title" style={{ fontSize: '2.5rem', margin: 0, lineHeight: 1 }}>{data.kpis.tiempoPromedio ?? 0}h</div>
-            <div className="small muted" style={{ marginTop: '8px' }}>Resolución Taller</div>
-          </div>
-          <div style={{ padding: '16px', backgroundColor: 'rgba(244, 63, 94, 0.1)', borderRadius: '14px' }}>
-            <Clock size={28} color="#F43F5E" />
-          </div>
-        </div>
-        )}
-      </div>
-
-      {/* GRÁFICOS Y ANÁLISIS IA */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '20px' }}>
-        
-        {/* Gráfico de Barras: Estado de la Flota (solo Admin/Jefe) */}
-        {showGlobalData && (
-        <div className="card" style={{ padding: '24px', minHeight: '400px' }}>
-          <h3 className="title" style={{ fontSize: '1.2rem', marginBottom: '20px' }}>Estado de la Flota</h3>
-          <div style={{ width: '100%', height: '300px' }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.charts.barData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" opacity={0.1} vertical={false} />
-                <XAxis 
-                  dataKey="name" 
-                  stroke="var(--text-muted, #9CA3AF)" 
-                  fontSize={11} 
-                  tickLine={false} 
-                  axisLine={false} 
-                  dy={10}
-                />
-                <YAxis 
-                  stroke="var(--text-muted, #9CA3AF)" 
-                  fontSize={12} 
-                  tickLine={false} 
-                  axisLine={false} 
-                />
-                <Tooltip 
-                    cursor={{fill: 'rgba(0,0,0,0.05)'}}
-                    contentStyle={tooltipStyle}
-                    itemStyle={{ color: '#1f2937' }}
-                />
-                <Bar dataKey="cantidad" fill="#3B82F6" radius={[4, 4, 0, 0]} barSize={50}>
-                    {
-                        data.charts.barData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={index === 0 ? '#3B82F6' : (index === 1 ? '#EF4444' : '#F59E0B')} />
-                        ))
-                    }
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-        )}
-
-        {/* Gráfico de Torta: Detalle Taller */}
-        {showGlobalData && (
-        <div className="card" style={{ padding: '24px', minHeight: '400px' }}>
-          <h3 className="title" style={{ fontSize: '1.2rem', marginBottom: '20px' }}>Detalle Equipos en Laboratorio</h3>
-          {!hasDataInLab ? (
-              <div style={{ height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="muted">
-                  <div style={{ textAlign: 'center' }}>
-                      <CheckCircle size={40} style={{ marginBottom: '10px', opacity: 0.5 }} />
-                      <p>Sin equipos en laboratorio</p>
-                  </div>
-              </div>
-          ) : (
-              <div style={{ width: '100%', height: '300px' }}>
-              <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                  <Pie
-                      data={pieChartData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={80}
-                      outerRadius={110}
-                      paddingAngle={5}
-                      dataKey="value"
-                      stroke="none"
-                  >
-                      {pieChartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                  </Pie>
-                  <Tooltip 
-                    contentStyle={tooltipStyle} 
-                    itemStyle={{ color: '#1f2937' }}
-                  />
-                  <Legend 
-                    verticalAlign="bottom" 
-                    height={36} 
-                    iconType="circle" 
-                    align="center"
-                  />
-                  </PieChart>
-              </ResponsiveContainer>
-              </div>
-          )}
-        </div>
-        )}
-
-        {/* INTEGRACIÓN DE IA EN EL DASHBOARD */}
-        {showGlobalData && (
-          <AIRiskPanel />
-        )}
-      </div>
-
-    </div>
-  );
+export default function DashboardPage(){
+ const me=useOutletContext<Me|null>(),navigate=useNavigate();
+ const [data,setData]=useState<ExecutiveDashboard|null>(null),[loading,setLoading]=useState(true),[error,setError]=useState(''),[refresh,setRefresh]=useState(0);
+ useEffect(()=>{const controller=new AbortController();setLoading(true);setError('');getExecutiveDashboard(controller.signal).then(value=>{if(!controller.signal.aborted)setData(value);}).catch(()=>{if(!controller.signal.aborted)setError('No se pudo consultar el centro de control. Actualiza para reintentar.');}).finally(()=>{if(!controller.signal.aborted)setLoading(false);});return()=>controller.abort();},[refresh]);
+ const operations=can(me,PERMISSIONS.BODEGA_OPERATIONS_VIEW),assign=can(me,PERMISSIONS.LAB_ASSIGN);
+ const inventory=(filters:Record<string,string>={})=>(operations?'/bodega/modulos?':'/bodega/dashboard?consulta=1&')+new URLSearchParams(filters);
+ const labLink=(filter='all')=>assign?'/lab/asignacion?tab='+filter:'/lab/recepcion?tab=recibidos';
+ const stat=(label:string,value:number,detail:string,icon:ReactNode,path:string,health:HealthState='info')=><StatCard key={label} label={label} value={value} detail={detail} icon={icon} health={value===0?'neutral':health} healthLabel={value===0?'Sin registros':undefined} variant="compact" onClick={()=>navigate(path)}/>;
+ const process=(title:string,rows:[string,number,string,HealthState?][]) => <section className="panel process-summary" key={title}><h2 className="section-title">{title}</h2><dl>{rows.map(([label,value,path,health])=><div key={label}><dt><Link to={path}>{label}<ArrowRight size={14}/></Link></dt><dd><StatusBadge health={value===0?'neutral':health||'info'}>{value}</StatusBadge></dd></div>)}</dl></section>;
+ const slas=data?.labWorkload.map(labSLA)||[];
+ return <div className="page logistics-assets executive-dashboard">
+  <PageHeader eyebrow="Centro de control" title={me?.rol==='admin'?'Supervisión global':'Dashboard ejecutivo'} description="Parque global, continuidad operacional y prioridades de supervisión." icon={<LayoutDashboard size={21}/>} actions={<button className="btn ghost" disabled={loading} onClick={()=>setRefresh(n=>n+1)}><RefreshCw size={16}/> Actualizar</button>}/>
+  <ReadOnlyNotice me={me}/>
+  {loading?<p role="status">Consultando indicadores…</p>:error?<FeedbackBanner tone="danger">{error}</FeedbackBanner>:data&&<>
+   <div className="section-heading"><h2 className="section-title">Parque registrado</h2><span className="small muted">Actualizado {new Date(data.updatedAt).toLocaleString('es-CL')}</span></div>
+   <section className="asset-kpis" aria-label="Indicadores de activos">
+    {stat('Total activos',data.assets.total,'Identidad única: tipo + serie',<Archive size={19}/>,inventory())}
+    {stat('Validadores',data.assets.validadores,'Todo el parque',<Cpu size={19}/>,inventory({tipo:'VALIDADOR'}))}
+    {stat('Consolas',data.assets.consolas,'Todo el parque',<Monitor size={19}/>,inventory({tipo:'CONSOLA'}))}
+    {stat('En operación',data.assets.operacion,'Instalación vigente',<Activity size={19}/>,inventory({etapa:'OPERACION'}),'success')}
+    {stat('Disponibles',data.assets.disponibles,'Elegibles para instalación',<PackageCheck size={19}/>,inventory({etapa:'DISPONIBLE'}),'success')}
+    {stat('En Bodega',data.assets.bodega,'Stock físico disponible y no disponible',<Warehouse size={19}/>,inventory({alcance:'BODEGA'}))}
+    {stat('En Laboratorio',data.assets.laboratorio,'Carga físicamente recibida',<FlaskConical size={19}/>,inventory({etapa:'LABORATORIO'}))}
+    {stat('En QA',data.assets.qa,'Recibidos en control de calidad',<ShieldCheck size={19}/>,inventory({etapa:'QA'}))}
+   </section>
+   <section className="panel"><div className="section-heading"><div><h2 className="section-title">Distribución del parque</h2><p className="small muted">Cada activo cuenta una vez en esta matriz. Los indicadores superiores y procesos secundarios pueden solaparse.</p></div></div>
+    {!data.assets.total?<EmptyState icon={<Archive size={24}/>} title="Sin activos registrados" description="Las órdenes y los activos se contabilizan por separado."/>:<table className="asset-matrix"><thead><tr><th>Etapa / ubicación</th><th><span className="asset-wide-label">Validadores</span><abbr className="asset-short-label" title="Validadores">Val.</abbr></th><th><span className="asset-wide-label">Consolas</span><abbr className="asset-short-label" title="Consolas">Cons.</abbr></th><th>Total</th></tr></thead><tbody>{data.distribution.map(d=><tr key={d.etapa}><th scope="row"><Link to={inventory({etapa:d.etapa})}>{d.label}</Link></th><td>{d.validadores}</td><td>{d.consolas}</td><td><button className="asset-count" onClick={()=>navigate(inventory({etapa:d.etapa}))} aria-label={`Consultar ${d.label}: ${d.total}`}>{d.total}</button></td></tr>)}</tbody><tfoot><tr><th>Total activos</th><td>{data.assets.validadores}</td><td>{data.assets.consolas}</td><td>{data.assets.total}</td></tr></tfoot></table>}
+    <div className="executive-context"><Link to={inventory({disponibilidad:'NO'})}><StatusBadge health="neutral">{data.assets.noDisponibles} no disponibles para instalación</StatusBadge></Link><Link to={inventory({etapa:'TRANSITO'})}><StatusBadge health="info">{data.assets.transito} en tránsito</StatusBadge></Link>{data.transit.map(t=><Link key={t.destino} to={inventory({etapa:'TRANSITO',estado:t.destino})}>{t.destino}: {t.total}</Link>)}</div>
+   </section>
+   <section className="panel"><div className="section-heading"><div><h2 className="section-title">Órdenes y prioridades</h2><p className="small muted">OS reales y casos; no se suman al parque. SLA sobre carga activa de Laboratorio, desde la recepción vigente.</p></div></div><div className="asset-kpis">
+    {stat('OS activas',data.orders.activas,'Excluye estados finales',<ClipboardList size={19}/>,'/operacion/os?grupo=activas')}
+    {stat('OS cerradas / finalizadas',data.orders.cerradas,'Estados finales vigentes',<CheckCircle size={19}/>,'/operacion/os?grupo=cerradas','success')}
+    {stat('Casos PoD',data.podCases,'Casos vinculados a OS PoD',<ShieldCheck size={19}/>,'/operacion/os?grupo=pod',data.podCases?'warning':'neutral')}
+    {stat('Fallas registradas',data.orders.fallas,'OS de mantenimiento / PoD · histórico',<Activity size={19}/>,'/operacion/os?grupo=fallas',data.orders.fallas?'warning':'neutral')}
+   </div><div className="executive-context">{slas.length===0?<span className="muted">SLA: sin mediciones de carga activa.</span>:<>{(['vigente','critico','vencido','sinSla'] as const).map((key,i)=>{const count=slas.filter(s=>key==='vigente'?!s.sinSla&&!s.critico&&!s.vencido:!!s[key]).length;return <Link key={key} to={assign?`/lab/asignacion?tab=all&sla=${key}`:'/lab/dashboard'}><StatusBadge health={(['success','warning','danger','neutral'] as const)[i]}>{['SLA vigente','SLA crítico','SLA vencido','Sin fecha de ingreso'][i]}: {count}</StatusBadge></Link>;})}</>}</div></section>
+   <div className="executive-process-grid">
+    {process('Terreno',[
+     ['IN pendientes',data.orders.instalaciones,'/operacion/os?grupo=instalaciones'],['En ruta a terreno',data.orders.enRuta,inventory({estado:'En ruta hacia terreno'})],['Retiros pendientes',data.orders.retiros,can(me,PERMISSIONS.WITHDRAWAL_ASSIGN)?'/operacion/retiros':'/operacion/os?grupo=retiros','warning']])}
+    {process('Bodega',[
+     ['Recepciones pendientes',data.orders.recepciones,operations?'/bodega?tab=transito':'/bodega/dashboard','warning'],['Disponibles para instalación',data.assets.disponibles,inventory({etapa:'DISPONIBLE'}),'success'],['Pendientes de despacho',data.orders.despachos,operations?'/bodega?tab=para-lab':'/bodega/dashboard'],['Alertas de stock',data.stockAlerts,operations?'/bodega/repuestos':'/bodega/dashboard',data.stockAlerts?'danger':'neutral']])}
+    {process('Laboratorio',[
+     ['En camino · no asignables',data.lab.camino,'/lab/recepcion?tab=camino'],['Recibidos sin técnico',data.lab.pendientes,labLink('pending'),'warning'],['En diagnóstico',data.lab.diagnostico,assign?'/lab/asignacion?tab=all&estado=4':labLink()],['En reparación',data.lab.reparacion,assign?'/lab/asignacion?tab=all&estado=5':labLink()],['Espera de repuesto',data.lab.repuestos,assign?'/lab/asignacion?tab=all&estado=9':labLink(),'warning'],['Listos para salida',data.lab.salida,can(me,PERMISSIONS.LAB_DISPATCH)?'/lab/despacho-qa':'/lab/recepcion?tab=recibidos','success']])}
+    {process('Control QA',[
+     ['Pendientes de recepción',data.qa.RECEPCION||0,'/qa?etapa=RECEPCION'],['Instalación Ambiente',data.qa.AMBIENTE||0,'/qa?etapa=AMBIENTE'],['Pruebas / dictamen',data.qa.PRUEBAS||0,'/qa?etapa=PRUEBAS'],['Pendientes de despacho',data.qa.DESPACHO||0,'/qa?etapa=DESPACHO','warning'],['Por verificar',data.qa.POR_VERIFICAR||0,'/qa?etapa=POR_VERIFICAR','warning']])}
+   </div>
+   <AIRiskPanel/>
+  </>}
+ </div>;
 }

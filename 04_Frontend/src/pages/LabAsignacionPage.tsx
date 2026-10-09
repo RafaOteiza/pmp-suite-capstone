@@ -1,238 +1,104 @@
-import React, { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
-import { Me } from "../api/me";
-import { getLabQueue, getLabTechnicians, assignTicket, LabTicket, LabTech } from "../api/lab";
-import { RefreshCw, User, Cpu, Monitor, Check, AlertTriangle, CheckCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useOutletContext, useSearchParams } from "react-router-dom";
+import { AlertTriangle, CheckCircle, Cpu, RefreshCw, User, Users } from "lucide-react";
+import type { Me } from "../api/me";
+import { assignTicket, getLabQueue, getLabTechnicians, type LabTech, type LabTicket } from "../api/lab";
 import { can, PERMISSIONS } from "../app/rbac";
 import { getApiErrorMessage } from "../api/errors";
+import EmptyState from "../components/ui/EmptyState";
+import FeedbackBanner from "../components/ui/FeedbackBanner";
+import PageHeader from "../components/ui/PageHeader";
+import StatCard from "../components/ui/StatCard";
+import StatusBadge from "../components/ui/StatusBadge";
+import { formatDate, formatTime, formatOperationalStatus } from "../utils/formatters";
 
-const selectStyle = {
-  padding: '8px 12px',
-  borderRadius: '6px',
-  border: '1px solid var(--border-color, #374151)',
-  backgroundColor: 'var(--bg-input, #111827)',
-  color: 'var(--text-main, white)',
-  outline: 'none',
-  fontSize: '0.9rem',
-  cursor: 'pointer',
-  width: '100%',
-  minWidth: '200px'
-};
+import { healthFromSla, slaHealthLabel } from '../utils/health';
+import { compareLabWorkload, labArrival, labSLA, labArrivalLabel } from '../utils/labWorkload';
 
 export default function LabAsignacionPage() {
   const me = useOutletContext<Me | null>();
   const canAssign = can(me, PERMISSIONS.LAB_ASSIGN);
+  const [params,setParams]=useSearchParams();
+  const tab=params.get('tab')==='assigned'?'assigned':params.get('tab')==='all'?'all':'pending';
+  const setTab=(value:string)=>setParams({...Object.fromEntries(params),tab:value});
+  const [selection,setSelection]=useState<Record<string,string>>({});
   const [tickets, setTickets] = useState<LabTicket[]>([]);
   const [techs, setTechs] = useState<LabTech[]>([]);
   const [loading, setLoading] = useState(true);
   const [changing, setChanging] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
-  
-  // Estado para la notificación (Toast)
-  const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
+  const [notification, setNotification] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
   const loadData = async () => {
-    setLoading(true);
-    setErrorMsg("");
+    setLoading(true); setErrorMsg("");
+    try { setTechs(await getLabTechnicians()); } catch (error) { console.error("Error cargando técnicos:", error); setErrorMsg("No se pudo cargar la lista de técnicos."); }
     try {
-      try {
-        const tecnicos = await getLabTechnicians();
-        setTechs(tecnicos);
-      } catch (e) {
-        console.error("Error cargando técnicos:", e);
-        setErrorMsg("No se pudo cargar la lista de técnicos.");
-      }
-
-      try {
-        const [val, con] = await Promise.all([
-            getLabQueue('VALIDADOR'),
-            getLabQueue('CONSOLA')
-        ]);
-        const sorted = [...val, ...con].sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
-        setTickets(sorted);
-      } catch (e) {
-        console.error("Error cargando OS:", e);
-        setErrorMsg("Error cargando las Órdenes de Servicio.");
-      }
-    } finally {
-      setLoading(false);
-    }
+      const [validators, consoles] = await Promise.all([getLabQueue("VALIDADOR"), getLabQueue("CONSOLA")]);
+      setTickets([...validators, ...consoles]);
+    } catch (error) { console.error("Error cargando OS:", error); setErrorMsg("Error cargando las órdenes de servicio."); }
+    finally { setLoading(false); }
   };
-
-  useEffect(() => { loadData(); }, []);
-
-  // Efecto para ocultar la notificación automáticamente a los 3 segundos
-  useEffect(() => {
-    if (notification) {
-        const timer = setTimeout(() => setNotification(null), 3000);
-        return () => clearTimeout(timer);
-    }
-  }, [notification]);
+  useEffect(() => { void loadData(); }, []);
+  useEffect(() => { if (!notification) return; const timer = window.setTimeout(() => setNotification(null), 3000); return () => window.clearTimeout(timer); }, [notification]);
 
   const handleAssign = async (os: string, techId: string) => {
     if (!canAssign) return;
     setChanging(os);
     try {
       await assignTicket(os, techId);
-      
-      // Actualizamos UI
-      setTickets(prev => prev.map(t => 
-        t.codigo_os === os ? { ...t, tecnico_laboratorio_id: techId } : t
-      ));
-
-      // 🔔 MOSTRAR TOAST DE ÉXITO
-      // Buscamos el nombre del técnico para que el mensaje sea más pro
-      const techName = techs.find(t => t.id === techId)?.nombre || "Técnico";
-      const mensaje = techId ? `Asignado a ${techName} correctamente.` : "Asignación eliminada.";
-      
-      setNotification({ message: mensaje, type: 'success' });
-
-    } catch (error: any) {
-      console.error("Error asignando:", error);
-      const serverMsg = getApiErrorMessage(error, "Error de conexión");
-      
-      // 🔔 MOSTRAR TOAST DE ERROR
-      setNotification({ message: `Error: ${serverMsg}`, type: 'error' });
-    } finally {
-      setChanging(null);
-    }
+      setTickets((current) => current.map((ticket) => ticket.codigo_os === os ? { ...ticket, tecnico_laboratorio_id: techId, tecnico_laboratorio: techs.filter(t=>t.id===techId).map(t=>[t.nombre,t.apellido].filter(Boolean).join(" "))[0] || "" } : ticket));
+      const techName = techs.find((tech) => tech.id === techId)?.nombre || "Técnico";
+      setNotification({ message: techId ? `Asignado a ${techName} correctamente.` : "Asignación eliminada.", type: "success" });
+    } catch (error) { console.error("Error asignando:", error); setNotification({ message: `Error: ${getApiErrorMessage(error, "Error de conexión")}`, type: "error" }); }
+    finally { setChanging(null); }
   };
 
+  const pending=tickets.filter(t=>!t.tecnico_laboratorio_id);
+  const assigned=tickets.filter(t=>Boolean(t.tecnico_laboratorio_id));
+  const visible=[...(tab==="pending"?pending:tab==="assigned"?assigned:tickets) ].filter(ticket=>{
+    if(params.get('estado')&&String(ticket.estado_id)!==params.get('estado'))return false;
+    if(params.get('tecnico')&&ticket.tecnico_laboratorio_id!==params.get('tecnico'))return false;
+    const sla=labSLA(ticket),filter=params.get('sla');
+    return !filter||(filter==='vigente'?!sla.sinSla&&!sla.critico&&!sla.vencido:filter==='critico'?sla.critico:filter==='vencido'?sla.vencido:sla.sinSla);
+  }).sort(compareLabWorkload);
+  const tabs=[{key:"pending" as const,label:"Pendientes de asignación",count:pending.length},{key:"assigned" as const,label:"Asignados",count:assigned.length},{key:"all" as const,label:"Todos",count:tickets.length}];
+  const empty=tab==="pending"?"No hay equipos pendientes de asignación.":tab==="assigned"?"No hay equipos asignados actualmente.":"No hay equipos en Laboratorio.";
   return (
-    <div className="panel animate-fade-in" style={{ position: 'relative' }}>
-      
-      {/* --- TOAST NOTIFICATION (FLOTANTE) --- */}
-      {notification && (
-        <div style={{
-            position: 'fixed',
-            bottom: '30px',
-            right: '30px',
-            backgroundColor: notification.type === 'success' ? '#10B981' : '#EF4444',
-            color: 'white',
-            padding: '12px 24px',
-            borderRadius: '8px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            zIndex: 1000,
-            animation: 'slideUp 0.3s ease-out',
-            fontWeight: 500
-        }}>
-            {notification.type === 'success' ? <CheckCircle size={20} /> : <AlertTriangle size={20} />}
-            <span>{notification.message}</span>
-        </div>
-      )}
+    <div className="page lab-assignment">
+      {notification ? <div className="toast" data-tone={notification.type} role="status">{notification.type === "success" ? <CheckCircle size={18} /> : <AlertTriangle size={18} />}<span>{notification.message}</span></div> : null}
+      <PageHeader eyebrow="Planificación de laboratorio" title="Gestión de carga" description="Distribuye las órdenes de servicio entre los técnicos disponibles." icon={<Users size={21} />} actions={<button onClick={loadData} className="btn ghost" disabled={loading}><RefreshCw size={17} className={loading ? "animate-spin" : ""} /> Actualizar</button>} />
+      {errorMsg ? <FeedbackBanner tone="danger">{errorMsg}</FeedbackBanner> : null}
 
-      {/* HEADER */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
-        <div>
-          <h2 className="title" style={{ fontSize: '1.8rem', marginBottom: 5 }}>Gestión de Carga</h2>
-          <p className="muted" style={{ margin: 0 }}>Distribuye las órdenes de servicio a los técnicos.</p>
-        </div>
-        <button onClick={loadData} className="btn ghost" disabled={loading} title="Recargar datos">
-            <RefreshCw size={20} className={loading ? "animate-spin" : ""} />
-        </button>
+      {loading ? <p role="status">Consultando carga...</p> : errorMsg ? null : <><section className="assignment-stats"><StatCard label="Tickets en laboratorio" value={tickets.length} detail="Carga técnica total" icon={<Cpu size={19} />} tone="technical" /><StatCard label="Sin asignar" value={tickets.filter((ticket) => !ticket.tecnico_laboratorio_id).length} detail="Requieren responsable" icon={<User size={19} />} health={tickets.some((ticket) => !ticket.tecnico_laboratorio_id) ? "warning" : "success"} healthLabel={tickets.some((ticket) => !ticket.tecnico_laboratorio_id) ? "Asignación pendiente" : "Carga asignada"} /></section>
+
+      <div className="operation-tabs" role="tablist" aria-label="Carga de laboratorio">
+        {tabs.map(item=><button key={item.key} role="tab" aria-selected={tab===item.key} data-active={tab===item.key} onClick={()=>setTab(item.key)}>{item.label}<span className="tab-count">{item.count}</span></button>)}
       </div>
-
-      {errorMsg && (
-        <div style={{ padding: 15, backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#EF4444', borderRadius: 8, marginBottom: 20, display: 'flex', gap: 10, alignItems: 'center' }}>
-            <AlertTriangle size={20} /> {errorMsg}
-        </div>
-      )}
-
-      {/* STATS */}
-      <div className="grid" style={{ gap: 20, marginBottom: 30, gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
-        <div className="card" style={{ padding: 20, borderLeft: '4px solid #3B82F6' }}>
-            <div className="muted small">TICKETS EN TALLER</div>
-            <div className="title" style={{fontSize: '2rem'}}>{tickets.length}</div>
-        </div>
-        <div className="card" style={{ padding: 20, borderLeft: '4px solid #F59E0B' }}>
-            <div className="muted small">SIN ASIGNAR</div>
-            <div className="title" style={{fontSize: '2rem'}}>
-                {tickets.filter(t => !t.tecnico_laboratorio_id).length}
-            </div>
-        </div>
-      </div>
-
-      {/* TABLA */}
-      <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
-              <thead>
-                  <tr style={{ backgroundColor: 'rgba(128,128,128,0.05)', textAlign: 'left', borderBottom: '1px solid var(--border-color)' }}>
-                      <th style={{ padding: 15 }}>Ticket</th>
-                      <th style={{ padding: 15 }}>Equipo</th>
-                      <th style={{ padding: 15 }}>Falla Reportada</th>
-                      <th style={{ padding: 15, width: 280 }}>Asignado a</th>
-                      <th style={{ padding: 15, width: 50 }}></th>
-                  </tr>
-              </thead>
-              <tbody>
-                  {tickets.length === 0 && !loading && (
-                      <tr><td colSpan={5} style={{ padding: 40, textAlign: 'center' }} className="muted">No hay equipos pendientes en laboratorio.</td></tr>
-                  )}
-
-                  {tickets.map(t => (
-                      <tr key={t.codigo_os} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                          <td style={{ padding: 15 }}>
-                              <span style={{ fontWeight: 'bold' }}>{t.codigo_os}</span>
-                              <div className="small muted" style={{marginTop: 4}}>
-                                {new Date(t.fecha).toLocaleDateString()}
-                              </div>
-                          </td>
-                          <td style={{ padding: 15 }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                  {t.codigo_os.startsWith('MV') || t.codigo_os.startsWith('PDV') ? 
-                                      <Cpu size={16} color="#10B981"/> : <Monitor size={16} color="#3B82F6"/>
-                                  }
-                                  <span style={{ fontWeight: 500 }}>{t.serie}</span>
-                              </div>
-                              <div className="small muted" style={{marginTop: 4}}>Bus: {t.bus_ppu}</div>
-                          </td>
-                          <td style={{ padding: 15, maxWidth: 250, opacity: 0.9 }}>
-                              {t.falla}
-                          </td>
-                          <td style={{ padding: 15 }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                  <div style={{ padding: 8, borderRadius: '50%', background: 'rgba(128,128,128,0.1)' }}>
-                                    <User size={16} className="muted" />
-                                  </div>
-                                  {canAssign ? <select 
-                                      style={selectStyle}
-                                      value={t.tecnico_laboratorio_id || ""}
-                                      onChange={(e) => handleAssign(t.codigo_os, e.target.value)}
-                                      disabled={changing === t.codigo_os}
-                                  >
-                                      <option value="">-- Sin Asignar --</option>
-                                      {techs.map(tech => (
-                                          <option key={tech.id} value={tech.id}>
-                                              {tech.nombre} {tech.apellido}
-                                          </option>
-                                      ))}
-                                  </select> : <span>{t.tecnico_laboratorio || "Sin asignar"}</span>}
-                              </div>
-                          </td>
-                          <td style={{ padding: 15, textAlign: 'center' }}>
-                              {changing === t.codigo_os ? 
-                                <RefreshCw size={18} className="animate-spin muted"/> : 
-                                (t.tecnico_laboratorio_id && <Check size={20} color="#10B981"/>)
-                              }
-                          </td>
-                      </tr>
-                  ))}
-              </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Animación simple para el Toast */}
-      <style>{`
-        @keyframes slideUp {
-          from { transform: translateY(20px); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-      `}</style>
+      {(params.has('estado')||params.has('sla')||params.has('tecnico'))&&<FeedbackBanner tone="info">Consulta filtrada desde el resumen. <button className="btn ghost sm" onClick={()=>setParams({tab})}>Mostrar toda la carga</button></FeedbackBanner>}
+      <section className="panel data-panel" aria-label={tabs.find(t=>t.key===tab)?.label}>
+        {visible.length===0&&!loading?<EmptyState icon={<CheckCircle size={24}/>} title={empty}/>:(
+          <div className="table-wrap withdrawal-table-wrap"><table className="withdrawal-table lab-assignment-table">
+            <thead><tr><th>OS</th><th>Equipo / PPU</th><th>Falla</th><th>Ingreso a Laboratorio</th><th>SLA</th><th>Estado</th><th>Técnico / Acción</th></tr></thead>
+            <tbody>{visible.map(ticket=>{
+              const sla=labSLA(ticket);
+              const value=selection[ticket.codigo_os]??ticket.tecnico_laboratorio_id??"";
+              const techName=ticket.tecnico_laboratorio||techs.filter(t=>t.id===ticket.tecnico_laboratorio_id).map(t=>[t.nombre,t.apellido].join(" "))[0];
+              return <tr key={ticket.codigo_os}>
+                <td data-label="OS"><strong>{ticket.codigo_os}</strong></td>
+                <td data-label="Equipo / PPU"><strong>{ticket.serie}</strong><span className="withdrawal-secondary">{ticket.tipo_equipo||(ticket.codigo_os.startsWith("MV")||ticket.codigo_os.startsWith("PDV")?"VALIDADOR":"CONSOLA")}{ticket.modelo?" · "+ticket.modelo:""}</span><span className="withdrawal-secondary">PPU {ticket.bus_ppu||"Sin registro"}</span></td>
+                <td data-label="Falla">{ticket.falla}</td>
+                <td data-label="Ingreso a Laboratorio">{formatDate(labArrival(ticket))} {formatTime(labArrival(ticket))}<span className="withdrawal-secondary">{labArrivalLabel(ticket)}</span></td>
+                <td data-label="SLA"><StatusBadge health={healthFromSla(sla)}>{slaHealthLabel(sla)}</StatusBadge><span className="withdrawal-secondary" title={labArrivalLabel(ticket)}>{sla.texto}</span></td>
+                <td data-label="Estado"><StatusBadge health="info">{formatOperationalStatus(ticket.estado_nombre)}</StatusBadge>{ticket.ubicacion&&<span className="withdrawal-secondary">{ticket.ubicacion}</span>}</td>
+                <td data-label="Técnico / Acción"><span className="small">{ticket.tecnico_laboratorio_id?(techName||"Técnico asignado"):"Sin asignar"}</span>{canAssign&&<div className="withdrawal-assignment">
+                  <select value={value} onChange={event=>setSelection(current=>({...current,[ticket.codigo_os]:event.target.value}))} disabled={changing===ticket.codigo_os} aria-label={`Asignar ${ticket.codigo_os}`}><option value="">Sin asignar</option>{techs.map(tech=><option key={tech.id} value={tech.id}>{tech.nombre} {tech.apellido}</option>)}</select>
+                  <button className="btn sm" disabled={changing===ticket.codigo_os||value===(ticket.tecnico_laboratorio_id||"")} onClick={()=>void handleAssign(ticket.codigo_os,value)}>{changing===ticket.codigo_os?"Guardando…":ticket.tecnico_laboratorio_id?"Guardar":"Asignar"}</button>
+                </div>}</td>
+              </tr>;
+            })}</tbody>
+          </table></div>
+        )}
+      </section></>}
     </div>
   );
 }

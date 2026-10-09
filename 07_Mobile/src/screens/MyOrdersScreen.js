@@ -1,11 +1,12 @@
+import {AssetIdentitySummary,PmpButton,PmpFeedback,StatusBadge,EmptyState,SectionHeader} from '../components/PmpUi';
 import React, { useEffect, useState } from 'react';
 import { 
-    View, Text, FlatList, StyleSheet, TouchableOpacity, 
-    ActivityIndicator, RefreshControl, Platform, Alert
+    View, Text, FlatList, TouchableOpacity,
+    ActivityIndicator, RefreshControl
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import api from '../services/api';
-import { getGlobalStyles, getTheme, colors } from '../constants/styles';
+import { getGlobalStyles, usePmpTheme, colors } from '../constants/styles';
 import { useNavigation } from '@react-navigation/native';
 
 export default function MyOrdersScreen() {
@@ -13,17 +14,22 @@ export default function MyOrdersScreen() {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [activeTab, setActiveTab] = useState('abiertas'); // 'abiertas' o 'historial'
-    
-    const theme = getTheme();
+    const [error, setError] = useState('');
+    const [installation,setInstallation]=useState(null);
+    const [message,setMessage]=useState('');
+
+    const theme = usePmpTheme();
     const styles = getGlobalStyles(theme);
     const navigation = useNavigation();
 
     const fetchOrders = async () => {
+        setError('');
         try {
             const response = await api.get('/os/mis-ordenes');
             setOrders(response.data);
         } catch (error) {
             console.error('Error fetching orders:', error);
+            setError(error.response?.data?.message || 'No se pudieron cargar tus órdenes. Desliza para reintentar.');
         } finally {
             setLoading(false);
             setRefreshing(false);
@@ -32,14 +38,15 @@ export default function MyOrdersScreen() {
 
     useEffect(() => {
         fetchOrders();
-    }, []);
+        return navigation.addListener('focus',fetchOrders);
+    }, [navigation]);
 
     const onRefresh = () => {
         setRefreshing(true);
         fetchOrders();
     };
 
-    // Terminal states: 8 (ANULADA), 12 (ARCHIVADA), 13 (CERRADA)
+    // Estados finales del catálogo existente.
     const openedOrders = orders.filter(o => ![8, 12, 13].includes(o.estado_id));
     const historyOrders = orders.filter(o => [8, 12, 13].includes(o.estado_id));
 
@@ -53,195 +60,75 @@ export default function MyOrdersScreen() {
                 operativo,
                 bus_ppu: bus_ppu || null 
             });
-            Alert.alert('Éxito', operativo ? 'Equipo instalado correctamente' : 'Equipo devuelto a bodega');
+            setMessage(operativo ? 'Equipo instalado correctamente' : 'Equipo devuelto a bodega'); setInstallation(null);
             fetchOrders();
         } catch (error) {
             console.error('Error al procesar instalación:', error);
-            Alert.alert('Error', 'No se pudo procesar la acción');
+            setError(error.response?.data?.message || error.response?.data?.error || 'No se pudo procesar la acción');
             setLoading(false);
         }
     };
 
     const handlePressAction = (item) => {
-        Alert.alert(
-            "Procesar Equipo",
-            "¿El equipo quedó operativo en el bus?",
-            [
-                {
-                    text: "No (Cargar como Falla)",
-                    onPress: () => processInstallation(item.codigo_os, false),
-                    style: "destructive"
-                },
-                {
-                    text: "Sí (Instalado OK)",
-                    onPress: () => processInstallation(item.codigo_os, true, item.bus_ppu === 'STOCK' ? null : item.bus_ppu),
-                },
-                { text: "Cancelar", style: "cancel" }
-            ]
-        );
+        if(item.estado_nombre==='PENDIENTE_RETIRO'){
+            navigation.navigate('TerrainWithdrawal',{codigo_os:item.codigo_os});return;
+        }
+        if (!item.es_instalacion || item.estado_nombre !== 'EN_RUTA') return;
+        setInstallation(item);
     };
 
     const renderOrderCard = ({ item }) => {
         const isHistory = [8, 12, 13].includes(item.estado_id);
-        const statusColor = item.estado_id === 13 ? colors.success : 
-                           (item.estado_id === 8 ? colors.danger : colors.info);
-
-        return (
-            <TouchableOpacity 
-                style={styles.card}
-                activeOpacity={0.7}
-                onPress={() => !isHistory && handlePressAction(item)}
-            >
-                <View style={localStyles.cardHeader}>
-                    <View style={localStyles.osIdContainer}>
-                        <Text style={[styles.label, { marginBottom: 0, color: colors.primary }]}>{item.codigo_os}</Text>
-                    </View>
-                    <View style={[styles.badge, { backgroundColor: statusColor + '20' }]}>
-                        <Text style={[styles.badgeText, { color: statusColor, fontSize: 10 }]}>
-                            {item.estado_nombre.toUpperCase()}
-                        </Text>
-                    </View>
-                </View>
-
-                <View style={{ marginVertical: 12 }}>
-                    <Text style={{ color: theme.text, fontSize: 16, fontWeight: '700', marginBottom: 4 }}>
-                        {item.tipo_equipo} | Serie: {item.serie || 'N/A'}
-                    </Text>
-                    <Text style={{ color: theme.muted, fontSize: 14 }}>
-                        <Ionicons name="bus-outline" size={14} /> {item.bus_ppu === 'STOCK' ? 'ASIGNAR PPU' : item.bus_ppu}
-                    </Text>
-                </View>
-
-                {activeTab === 'abiertas' && (
-                    <View style={{ backgroundColor: colors.primary + '10', padding: 8, borderRadius: 8, marginTop: 5, marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
-                        <Ionicons name="construct-outline" size={16} color={colors.primary} />
-                        <Text style={{ color: colors.primary, fontWeight: '700', marginLeft: 8, fontSize: 12 }}>PRESIONE PARA INSTALAR / DEVOLVER</Text>
-                    </View>
-                )}
-
-                <View style={localStyles.fallaContainer}>
-                    <Text style={{ color: theme.muted, fontSize: 13, fontStyle: 'italic' }}>
-                        "{item.falla}"
-                    </Text>
-                </View>
-
-                <View style={localStyles.cardFooter}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                         <Ionicons name="calendar-outline" size={12} color={theme.muted} style={{ marginRight: 4 }} />
-                         <Text style={{ color: theme.muted, fontSize: 11 }}>
-                            {new Date(item.fecha).toLocaleDateString()}
-                        </Text>
-                    </View>
-                    <Ionicons name="chevron-forward" size={16} color={theme.border} />
-                </View>
-            </TouchableOpacity>
-        );
+        const canInstall = !isHistory && item.es_instalacion === true && item.estado_nombre === 'EN_RUTA';
+        const canWithdraw=item.estado_nombre==='PENDIENTE_RETIRO';
+        return <View style={styles.card}>
+          <View style={styles.row}><Text selectable style={[styles.label,{color:theme.link,marginBottom:0}]}>{item.codigo_os}</Text><StatusBadge status={item.estado_nombre} tone={item.estado_id===8?'danger':undefined}/></View>
+          <AssetIdentitySummary asset={item}/>
+          <Text style={styles.bodyText}><Ionicons name="bus-outline" size={16} color={theme.muted}/> {item.bus_ppu||'Sin PPU'}</Text>
+          <Text style={styles.secondaryText}>{[item.terminal,item.operador].filter(Boolean).join(' · ')}</Text>
+          <Text style={styles.secondaryText}>{item.tecnico_nombre||item.tecnico_terreno||'Técnico asignado'}</Text>
+          {!!item.os_origen&&<Text style={styles.secondaryText}>OS origen: {item.os_origen}</Text>}
+          {!!item.referencia_externa&&<Text style={styles.secondaryText}>Referencia externa: {item.referencia_externa}</Text>}
+          {!item.es_instalacion&&<Text style={[styles.bodyText,{marginTop:8}]}>{item.falla}</Text>}
+          {canInstall&&<PmpButton title="Instalar / devolver equipo" icon="construct-outline" onPress={()=>handlePressAction(item)}/>}
+          {canWithdraw&&<PmpButton title="Confirmar retiro físico hacia Bodega" icon="scan-outline" onPress={()=>handlePressAction(item)}/>}
+          {!!item.caso_id&&<TouchableOpacity accessibilityRole="button" style={styles.link} onPress={()=>navigation.navigate('AssetHistory',{caso_id:item.caso_id})}><Text style={styles.linkText}>Ver caso {item.codigo_caso||item.caso_id}</Text></TouchableOpacity>}
+          <View style={[styles.row,{borderTopWidth:1,borderColor:theme.border,marginTop:12}]}>
+           <TouchableOpacity accessibilityRole="button" style={styles.link} onPress={()=>navigation.navigate('AssetHistory',{serie:item.serie,tipo_equipo:item.tipo_equipo})}><Text style={styles.linkText}>Historial del activo</Text></TouchableOpacity>
+           <Text style={styles.secondaryText}>{new Date(item.fecha).toLocaleDateString()}</Text>
+          </View>
+        </View>;
     };
 
     if (loading) {
         return (
             <View style={[styles.container, { justifyContent: 'center' }]}>
-                <ActivityIndicator size="large" color={colors.primary} />
+                <ActivityIndicator accessibilityLabel="Cargando órdenes" size="large" color={theme.link} />
             </View>
         );
     }
 
-    return (
-        <View style={styles.container}>
-            {/* TABS DE FILTRO */}
-            <View style={localStyles.tabContainer}>
-                <TouchableOpacity 
-                    style={[localStyles.tab, activeTab === 'abiertas' && localStyles.activeTab]}
-                    onPress={() => setActiveTab('abiertas')}
-                >
-                    <Text style={[localStyles.tabText, activeTab === 'abiertas' && { color: '#000' }]}>
-                        Abiertas ({openedOrders.length})
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                    style={[localStyles.tab, activeTab === 'historial' && localStyles.activeTab]}
-                    onPress={() => setActiveTab('historial')}
-                >
-                    <Text style={[localStyles.tabText, activeTab === 'historial' && { color: '#000' }]}>
-                        Historial ({historyOrders.length})
-                    </Text>
-                </TouchableOpacity>
-            </View>
-
-            <FlatList
-                data={displayedOrders}
-                keyExtractor={(item) => item.codigo_os}
-                renderItem={renderOrderCard}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 30 }}
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
-                }
-                ListEmptyComponent={
-                    <View style={{ marginTop: 100, alignItems: 'center' }}>
-                        <Ionicons name="document-text-outline" size={64} color={theme.border} />
-                        <Text style={{ color: theme.muted, marginTop: 16, fontSize: 16 }}>
-                            No hay órdenes en esta sección.
-                        </Text>
-                    </View>
-                }
-            />
-        </View>
-    );
+    return <View style={styles.screen}>
+      <FlatList data={displayedOrders} keyExtractor={item=>item.codigo_os} renderItem={renderOrderCard}
+        contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled"
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.link}/>}
+        ListHeaderComponent={<>
+          {!!message&&<PmpFeedback tone="success">{message}</PmpFeedback>}
+          {!!error&&<PmpFeedback tone="danger">{error}</PmpFeedback>}
+          {!!error&&<PmpButton title="Reintentar" secondary onPress={onRefresh}/>}
+          {installation&&<View style={styles.card}>
+            <SectionHeader title={`Instalación ${installation.codigo_os}`} description="Confirma el resultado del equipo asignado."/>
+            <AssetIdentitySummary asset={installation}/>
+            <Text style={styles.bodyText}>Bus {installation.bus_ppu} · ¿El equipo quedó operativo?</Text>
+            <PmpButton title="Confirmar instalado OK" tone="success" icon="checkmark-circle-outline" onPress={()=>processInstallation(installation.codigo_os,true,installation.bus_ppu)}/>
+            <PmpButton title="Confirmar con falla" tone="danger" icon="return-down-back-outline" onPress={()=>processInstallation(installation.codigo_os,false)}/>
+            <PmpButton title="Cancelar" secondary onPress={()=>setInstallation(null)}/>
+          </View>}
+          <View style={[styles.card,{flexDirection:'row',padding:4,gap:4}]}>
+           {[['abiertas','Abiertas',openedOrders.length],['historial','Historial',historyOrders.length]].map(([id,label,count])=><TouchableOpacity key={id} accessibilityRole="tab" accessibilityState={{selected:activeTab===id}} onPress={()=>setActiveTab(id)} style={{flex:1,minHeight:48,justifyContent:'center',alignItems:'center',padding:8,borderRadius:8,backgroundColor:activeTab===id?colors.primary:theme.panel}}><Text style={[styles.label,{marginBottom:0,color:activeTab===id?colors.white:theme.muted}]}>{label} ({count})</Text></TouchableOpacity>)}
+          </View>
+        </>}
+        ListEmptyComponent={!error?<EmptyState title={activeTab==='abiertas'?'Sin órdenes abiertas':'Sin intervenciones cerradas'} description={activeTab==='abiertas'?'Tus tareas asignadas aparecerán aquí. Desliza para actualizar.':'Las órdenes finalizadas aparecerán en esta sección.'}/>:null}
+      />
+    </View>;
 }
-
-const localStyles = StyleSheet.create({
-    tabContainer: {
-        flexDirection: 'row',
-        backgroundColor: '#E2E8F0',
-        borderRadius: 16,
-        padding: 4,
-        marginBottom: 20,
-    },
-    tab: {
-        flex: 1,
-        paddingVertical: 12,
-        alignItems: 'center',
-        borderRadius: 12,
-    },
-    activeTab: {
-        backgroundColor: colors.primary,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
-    },
-    tabText: {
-        fontWeight: '700',
-        color: '#64748B',
-        fontSize: 14,
-    },
-    cardHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    osIdContainer: {
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        backgroundColor: 'rgba(240, 185, 11, 0.1)',
-        borderRadius: 8,
-    },
-    fallaContainer: {
-        padding: 10,
-        backgroundColor: Platform.OS === 'ios' ? 'rgba(0,0,0,0.02)' : 'rgba(0,0,0,0.02)',
-        borderRadius: 10,
-        borderLeftWidth: 2,
-        borderLeftColor: colors.primary,
-        marginBottom: 10,
-    },
-    cardFooter: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        borderTopWidth: 1,
-        borderTopColor: 'rgba(0,0,0,0.03)',
-        paddingTop: 10,
-    }
-});

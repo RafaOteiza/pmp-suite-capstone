@@ -1,151 +1,66 @@
-# Guía de Pase a Pre-Producción (Ubuntu Server) - v5.0 (Edición Gold)
-**Proyecto:** PMP Suite
-**Sistema Operativo Destino:** Ubuntu 22.04 / 24.04 LTS
+# Despliegue de PMP Suite y proyección Ubuntu
 
-¡Lanzar la plataforma a un servidor real le dará muchísimo peso a la Tesis y a la presentación! Para lograr esto de forma robusta e industrial, la mejor manera de montar todo (Base de Datos, Backend y Frontend) en el mismo servidor de Ubuntu es utilizando la triada de **Nginx** (para servir la web), **PM2** (para mantener el backend vivo) y **PostgreSQL nativo**.
+Actualización documental: 23 de septiembre de 2026. Fuente normativa: [artefactos Capstone v2.0](../Documentacion%20Capstone/Artefactos%20Metodologia%20Cascada/README_VIGENCIA_v2.0.md), especialmente el Manual Técnico. Esta actualización no acredita una nueva instalación ni ejecución de pruebas.
 
-Sigue este paso a paso en tu servidor Ubuntu:
+## Entorno validado y alcance
 
----
+El entorno comprobado utiliza PostgreSQL, API Node/Express, frontend Vite, Python para IA y Expo SDK 57. Consultar el manual v2.0 y [Arquitectura de ejecución local](Arquitectura_05_Despliegue.md).
 
-## 🛑 PASO 1: Preparar el Entorno (Ubuntu)
+Ubuntu con Nginx y PM2 es una **proyección de preproducción**, pendiente de validación específica. Docker, Dockerfile y docker-compose están fuera del alcance. Los contenedores lógicos C4 no representan infraestructura Docker.
 
-Ingresa a tu servidor Ubuntu y actualiza todo el sistema:
-```bash
-sudo apt update && sudo apt upgrade -y
+## Datos y migraciones
+
+1. Identificar entorno/base de destino, respaldar datos y comprobar su restauración.
+2. Restaurar el esquema base y comprobar los prerrequisitos de Bridge/correlación y escaneo existentes.
+3. Revisar y aplicar en orden las migraciones de `05_BaseDatos/migraciones/requerimientos/`:
+
+| Migración | Efecto vigente |
+|---|---|
+| 003 — casos operacionales | Casos y relaciones entre intervenciones. Su numeración IN original fue sustituida por 004. |
+| 004 — OS independientes y alta de activos | Correlativo PMP independiente para IN y modelo desconocido nullable, sin renumerar históricos. |
+| 005 — gestión de activos | Procedencia, fecha, observación y autor del maestro. |
+| 006 — recepción inicial sin OS | Eventos/escaneos por activo sin OS y origen de stock inicial relacionado con la primera IN. |
+
+4. Usar primero el ensayo del verificador y revisar su salida. Desde `03_Backend/pmp-api`:
+
+```powershell
+node verification/apply_requirements.mjs
+# Aplicación posterior en el entorno de destino revisado:
+node verification/apply_requirements.mjs --apply
 ```
 
-Instala Node.js (versión 20, requerida por el backend) y NPM:
-```bash
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs
-```
+Son instrucciones reproducibles, **no ejecutadas en esta revisión documental**. Para una base con 003–005, `verification/apply_initial_reception.mjs` ensaya 006 y `--apply` la aplica. La [evidencia de recepción inicial](../08_Pruebas/RECEPCION_INICIAL_SIN_OS.md) registra las aplicaciones locales anteriores.
 
-Instala las herramientas globales necesarias:
-```bash
-# PM2 mantiene vivo el backend indefinidamente y lo reinicia si se cae
-sudo npm install -g pm2
-```
+## Carga inicial
 
-Instala Python 3 y dependencias del Módulo de IA:
-```bash
-sudo apt install -y python3 python3-pip python3-venv
-# Instalar librerías de IA globalmente o en venv (recomendado global para scripts simples)
-pip3 install pandas scikit-learn psycopg2-binary python-dotenv
-```
+Una puesta en producción debe cargar parque instalado y stock con identidad **tipo + serie**, procedencia y relaciones verificadas. El importador masivo sigue documentado como extensión futura.
 
----
+- Gestión de activos registra maestro y ALTA_ACTIVO, sin OS ni stock automático.
+- La recepción nueva exige lectura física en la ubicación BODEGA y conformidad inicial explícita. No utiliza bus ficticio ni crea MV/MC/PDV/PDC/IN.
+- El stock inicial se respalda en RECEPCION_INICIAL y HABILITADO_INSTALACION; el reparado exige reparación/QA y recepción física.
+- Las relaciones con buses y las OS históricas deben provenir de evidencia real. No inventar mantenimientos para representar equipos preexistentes.
+- No ejecutar scripts de limpieza, siembra o reinicio de demo como carga productiva. Se retira esa recomendación de esta guía.
 
-## 🗄️ PASO 2: Instalar y Configurar PostgreSQL
+## Ejecución local
 
-1. Instala el motor de base de datos de PostgreSQL:
-```bash
-sudo apt install -y postgresql postgresql-contrib
-```
+Configurar variables conforme al manual v2.0, sin credenciales en el repositorio. Mobile usa `EXPO_PUBLIC_API_URL` alcanzable desde el dispositivo.
 
-2. Ingresa a la consola de Postgres para crear la BD y las credenciales:
-```bash
-sudo -u postgres psql
-```
+| Componente | Inicio desde su directorio |
+|---|---|
+| PostgreSQL | Iniciar servicio y comprobar la base configurada. |
+| API, `03_Backend/pmp-api` | `npm ci`, `npm run dev`; comprobar `GET /api/health`. |
+| Web, `04_Frontend` | `npm ci`, `npm run dev`. |
+| IA, `06_ModelosIA` | Preparar entorno virtual y dependencias del manual; la API invoca el analizador. |
+| Mobile, `07_Mobile` | `npm ci`, `npm start`, conservando Expo SDK 57. |
 
-3. Dentro del prompt `postgres=#`, corre estos comandos:
-```sql
-CREATE DATABASE pmp_suite;
-CREATE USER postgres WITH ENCRYPTED PASSWORD 'admin';
-ALTER DATABASE pmp_suite OWNER TO postgres;
-GRANT ALL PRIVILEGES ON DATABASE pmp_suite TO postgres;
-\q
-```
+## Proyección Ubuntu
 
-4. **Inicialización de Datos de Producción (Importante):**
-Para que el sistema tenga vida desde el primer minuto en producción, una vez clonado el repo en el servidor, ejecuta:
-```bash
-cd /var/www/pmp-suite/03_Backend/pmp-api
-# Crea las tablas (vía dump o scripts iniciales)
-# Luego, limpia equipos de test y carga la flota operativa:
-node clean_test_inventory.js
-node seed_from_real_inventory.js
-node seed_installed_equipment.js
-```
+Validar versiones y dependencias del proyecto en Ubuntu antes de adoptarlo. Usar entorno virtual para Python y una cuenta PostgreSQL propia del servicio; no recrear el usuario administrativo ni publicar contraseñas de ejemplo.
 
----
+Nginx serviría el build web y redirigiría `/api` a la API administrada con PM2. Documentar configuración, conectividad móvil, TLS, respaldo y reinicio del entorno final. Las pruebas locales no certifican este despliegue propuesto.
 
-## ⚙️ PASO 3: Levantar el Backend (API Node.js)
+## Verificación posterior
 
-1. Sube o clona tu código desde Git al servidor.
-2. Ingresa a la carpeta del backend y descarga las dependencias:
-```bash
-cd /var/www/pmp-suite/03_Backend/pmp-api
-npm install
-```
+Las suites actuales, build y exportaciones Android/iOS están documentadas en [Recepción inicial sin OS](../08_Pruebas/RECEPCION_INICIAL_SIN_OS.md). Los E2E deben conservar aislamiento y limpieza. Los scripts históricos `e2e_full_v2.js` y `stress_test.js` no son instrucciones para probar sobre la base principal.
 
-3. Asegúrate de configurar tu `.env` con la `DATABASE_URL` correcta apuntando a `localhost`.
-
-4. Enciende el backend bajo **PM2**:
-```bash
-pm2 start server.js --name "pmp-api"
-pm2 save
-pm2 startup
-```
-
----
-
-## 🖥️ PASO 4: Construir el Frontend (React/Vite)
-
-1. Ingresa la carpeta del frontend en tu servidor:
-```bash
-cd /var/www/pmp-suite/04_Frontend
-```
-
-2. Instala dependencias y compila (Build):
-```bash
-npm install
-npm run build
-```
-Esto generará la carpeta `/dist/` con la aplicación optimizada.
-
----
-
-## 🌐 PASO 5: Nginx (Servidor Web y Proxy Inverso)
-
-1. Instala Nginx:
-```bash
-sudo apt install -y nginx
-```
-
-2. Configura el bloque de servidor para redirigir el tráfico:
-```nginx
-server {
-    listen 80;
-    server_name tu-ip-de-ubuntu;
-
-    location / {
-        root /var/www/pmp-suite/04_Frontend/dist;
-        index index.html index.htm;
-        try_files $uri $uri/ /index.html;
-    }
-
-    location /api/ {
-        proxy_pass http://localhost:4000/api/;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-}
-```
-
-3. Reinicia Nginx para aplicar cambios:
-```bash
-sudo systemctl restart nginx
-```
-
----
-
-## 🎉 PASO 6: Fase de Pruebas Final
-Una vez en línea, puedes ejecutar la suite de validación final para certificar el despliegue:
-```bash
-cd /var/www/pmp-suite/03_Backend/pmp-api
-node e2e_full_v2.js
-```
+El guion vigente comprueba alta sin OS/stock, rechazo de desconocidos en Requerimientos, recepción escaneada/conforme y despacho physical-first. Solo confirmar salida crea `IN-xxxxxx` independiente y SALIDA_BODEGA_TERRENO; elegir técnico no aumenta En ruta. Equipos en operación no es stock asignable. Bridge solo correlaciona. Exportar Expo no sustituye la prueba con lector y teléfono reales.
