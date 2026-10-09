@@ -1,65 +1,233 @@
-# Casos, requerimientos y despacho Physical First
+# Casos, Requerimientos y Despacho Physical First — PMP Suite V2.0
 
-**Versión:** V2.0
+**Versión:** V2.0  
+**Estado:** vigente
 
-**Estado:** vigente — 09-10-2026
+## 1. Propósito
 
-## Conceptos
+Documentar la relación entre necesidad de negocio, activo físico, OS PMP, referencia externa y futura instalación.
 
-| Concepto | Identidad | Uso |
-|---|---|---|
-| Caso | código interno / referencia | agrupa necesidad |
-| OS PMP | `codigo_os` | intervención de un activo |
-| Activo | tipo + serie | historial físico |
-| Referencia externa | sistema + texto | correlación Bridge |
+## 2. Entidades conceptuales
 
-## Requerimiento
+### Activo
 
-Ingreso de requerimientos trabaja sobre un activo registrado. No crea ni corrige maestros. Para un activo instalado, PPU/terminal/operador deben provenir de relaciones vigentes; el backend revalida antes de escribir.
+Identidad física: `tipo_equipo + serie`.
 
-## Prefijos
+### Caso
 
-- MV: mantenimiento validador.
-- MC: mantenimiento consola.
-- PDV: PoD validador.
-- PDC: PoD consola.
-- IN: instalación.
+Agrupa una necesidad operacional. Puede relacionar intervenciones distintas sin fusionar sus activos.
 
-## Bridge
+### OS PMP
 
-Bridge registra correlaciones hacia OS/activos existentes. Las operaciones legacy que asignaban, creaban mantenimiento o movían equipos no forman parte del contrato vigente.
+Representa una intervención concreta.
 
-## Stock e instalación
+### Referencia externa
 
-Un activo puede estar disponible por:
+Identificador de otro sistema, por ejemplo Aranda. Se correlaciona, no reemplaza PMP.
 
-1. recepción inicial conforme; o
-2. reparación aprobada por QA y recepción posterior en Bodega.
+## 3. Caso ARANDA
 
-La instalación sigue:
+Entrada:
+
+- referencia;
+- activo;
+- bus;
+- terminal;
+- operador;
+- falla;
+- fecha;
+- observación;
+- tipo mantenimiento/PoD.
+
+Normalización:
 
 ```text
-contexto (caso/bus/técnico)
-→ lectura del activo físico
-→ validación de elegibilidad
-→ confirmación de salida
-→ creación atómica de IN
-→ En ruta
+12345678
+AR12345678
+AR-12345678
+→ AR-12345678
 ```
 
-La recepción desde QA no crea la IN.
+La referencia externa se mantiene como texto y no se usa para inferir parentesco por coincidencia numérica.
 
-## Coherencia relacional
+## 4. Caso INTERNO
 
-PPU, terminal y operador son datos relacionados. El sistema debe autocompletar cuando la relación es inequívoca; si existen varias opciones legítimas, debe pedir selección explícita. No se debe permitir una combinación incompatible por digitación libre.
+Cuando el origen no es Aranda, PMP genera `INT-xxxxxx`.
 
-## Historial
+## 5. Alta vs requerimiento
 
-La búsqueda por serie/OS/referencia conduce al historial del activo correspondiente. Un caso puede enlazar intervenciones de activos distintos, pero no fusiona sus vidas.
+**Gestión de activos** registra el maestro.
 
-## Evidencia
+**Ingreso de requerimientos** selecciona un activo ya existente.
 
-La verificación vigente se consolida en:
+No existe alta silenciosa dentro de Requerimientos.
+
+## 6. Selección de activo
+
+La búsqueda retorna activos operacionales por:
+
+- tipo;
+- serie;
+- bus.
+
+Presenta:
+
+- serie;
+- modelo;
+- marca;
+- bus;
+- terminal;
+- operador.
+
+Cambiar filtros/contexto invalida una selección anterior cuando ya no coincide.
+
+## 7. Validación de contexto
+
+Backend verifica:
+
+- activo existe;
+- está en operación;
+- corresponde al bus;
+- terminal coincide;
+- PST/operador coincide;
+- referencia no está duplicada;
+- no existe intervención activa incompatible.
+
+## 8. Creación de caso + mantenimiento
+
+Dentro de transacción:
+
+1. lock por activo;
+2. crear caso;
+3. crear MV/MC/PDV/PDC;
+4. correlacionar referencia;
+5. registrar REQUERIMIENTO_INGRESADO;
+6. commit.
+
+Un fallo revierte todas las inserciones.
+
+## 9. Retiro y mantenimiento
+
+La OS de mantenimiento pertenece siempre al activo que originó la falla.
+
+Su serie no cambia aunque luego se instale un reemplazo.
+
+## 10. Stock de reemplazo
+
+Puede provenir de:
+
+### Stock inicial
+
+Activo registrado y recibido inicialmente sin OS.
+
+### Stock reparado
+
+Activo reparado, aprobado QA y recibido en Bodega.
+
+## 11. Despacho de instalación
+
+Secuencia:
+
+```text
+contexto destino/técnico
+→ activo elegible
+→ captura física
+→ validar
+→ confirmar
+→ crear IN
+→ registrar SALIDA_BODEGA_TERRENO
+```
+
+La validación no crea IN.
+
+## 12. Tipos de captura
+
+### SCANNER
+
+Evidencia física aceptada según reglas del scanner.
+
+### MANUAL
+
+Puede resolver/consultar identidad, pero no necesariamente habilita movimiento.
+
+### MANUAL_AUTORIZADO
+
+Contingencia explícita con:
+
+- presencia física confirmada;
+- motivo;
+- usuario;
+- propósito;
+- contexto;
+- activo.
+
+No debe describirse como scanner.
+
+## 13. Creación atómica de IN
+
+La transacción:
+
+- valida stock;
+- valida técnico;
+- valida bus/terminal/PST;
+- valida evidencia;
+- bloquea origen;
+- inserta IN;
+- relaciona caso/os_origen/stock;
+- registra evento salida.
+
+## 14. Relaciones
+
+### Nueva instalación independiente
+
+Puede no tener caso ni OS origen. Usa stock inicial.
+
+### Reemplazo
+
+Puede incluir:
+
+- `caso_id`;
+- `os_origen`;
+- `stock_origen_evento` o `stock_origen_os`.
+
+## 15. Reintentos
+
+Se conserva fingerprint/contexto.
+
+- mismo contexto → idempotencia;
+- contexto distinto → `DISPATCH_RETRY_CONFLICT`.
+
+## 16. Historial
+
+Buscar serie muestra historia de ese activo, aunque el caso tenga otro equipo.
+
+Buscar caso/referencia permite navegar intervenciones relacionadas sin mezclar historias.
+
+## 17. Ejemplo conceptual
+
+```text
+Caso INT-000001
+  ├─ MV-000210 → Validador A (falla/reparación)
+  └─ IN-xxxxxx → Validador B (reemplazo)
+```
+
+A y B mantienen timelines independientes.
+
+## 18. Casos negativos
+
+- serie no registrada;
+- activo no operativo;
+- bus incorrecto;
+- terminal/PST incompatible;
+- referencia duplicada;
+- OS activa ya existente;
+- stock no elegible;
+- evidencia de otra serie;
+- evidencia vieja;
+- stock ya consumido;
+- reintento con otro contexto.
+
+## 19. Evidencia
 
 - `08_Pruebas/FLUJOS_OPERACIONALES_V2.0.md`
-- `08_Pruebas/INFORME_PRUEBAS_V2.0.md`
+- `08_Pruebas/MATRIZ_TRAZABILIDAD_V2.0.md`

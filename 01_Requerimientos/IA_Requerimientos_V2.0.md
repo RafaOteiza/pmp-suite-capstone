@@ -1,32 +1,125 @@
-# Inteligencia operacional / analítica
+# Inteligencia Operacional / Analítica — PMP Suite V2.0
 
-**Versión:** V2.0
+**Versión:** V2.0  
+**Estado:** PoC funcional de apoyo
 
-**Estado:** vigente — 09-10-2026
+## 1. Objetivo
 
-## Propósito
+Priorizar activos con señales de reincidencia utilizando información histórica, sin automatizar decisiones de mantenimiento.
 
-La capa analítica prioriza activos para revisión usando históricos de PostgreSQL. Es una función de apoyo y **no toma decisiones operacionales ni modifica datos**.
+## 2. Arquitectura
 
-## Requisitos funcionales
+```text
+GET /api/ai/predictive-report
+→ Backend autorizado
+→ analyzer.py --json
+→ SELECT PostgreSQL
+→ DataFrame
+→ score heurístico
+→ JSON
+→ Web
+```
 
-- **RF-IA-01:** El backend ejecuta el analizador Python configurado para el proyecto.
-- **RF-IA-02:** El analizador consulta PostgreSQL en modo lectura.
-- **RF-IA-03:** La salida debe ser JSON válido y no exponer secretos.
-- **RF-IA-04:** Admin y Gerente pueden consultar el reporte vigente.
-- **RF-IA-05:** Roles no autorizados reciben 403.
-- **RF-IA-06:** Una fila representa un activo tipo + serie; no deben mostrarse duplicados por OS.
-- **RF-IA-07:** El frontend debe indicar el método de análisis realmente utilizado.
-- **RF-IA-08:** Un score es criterio de inspección/priorización, no diagnóstico ni orden automática.
+## 3. Datos de entrada
 
-## Estado técnico actual
+Por OS:
 
-La aplicación utiliza `06_ModelosIA/src/analyzer.py`, que calcula una **heurística de reincidencia** sobre históricos de PostgreSQL. Los experimentos y artefactos de entrenamiento que no forman parte del flujo vigente fueron retirados del repositorio para mantener una única implementación documentada.
+- serie;
+- tipo;
+- falla;
+- fecha;
+- cantidad de fallas previas de la misma serie.
 
-## Requisitos no funcionales
+## 4. Variables derivadas
 
-- Entorno Python aislado.
-- Dependencias declaradas.
-- Error controlado ante caída de Python/PostgreSQL.
-- Sin credenciales/rutas sensibles en la respuesta.
-- Dataset, features, umbral y métricas deben quedar fechados cuando se evalúe un modelo ML.
+### es_emv
+
+1 cuando la falla contiene `EMV`.
+
+### es_barcode
+
+1 cuando contiene `BARCODE`, `QR` o `LECTOR`.
+
+### fallas_previas
+
+Conteo de OS anteriores de la misma serie.
+
+## 5. Score vigente
+
+```text
+riesgo_score =
+clip(
+  fallas_previas * 0.3 +
+  es_emv * 0.5,
+  0,
+  1
+)
+```
+
+## 6. Interpretación correcta
+
+El score:
+
+- **sí** sirve para priorizar inspección;
+- **sí** refleja señales definidas explícitamente;
+- **no** es probabilidad calibrada;
+- **no** es diagnóstico;
+- **no** predice componente exacto;
+- **no** ejecuta mantenimiento;
+- **no** crea alertas operacionales automáticas;
+- **no** modifica PostgreSQL.
+
+## 7. Salida
+
+Cuando se solicita JSON, stdout debe contener exclusivamente JSON.
+
+Se presentan los equipos/filas de mayor score según la implementación.
+
+## 8. Autorización
+
+Solo `supervision.read`:
+
+- Admin;
+- Gerente.
+
+Otros roles: 403.
+
+## 9. Requisitos
+
+- **RF-IA-001:** invocar analizador desde API.
+- **RF-IA-002:** conexión por DATABASE_URL.
+- **RF-IA-003:** lectura únicamente.
+- **RF-IA-004:** JSON válido.
+- **RF-IA-005:** error de Python/DB controlado.
+- **RF-IA-006:** no exponer credenciales.
+- **RF-IA-007:** describir método real en UI.
+- **RF-IA-008:** no declarar métricas inventadas.
+- **RF-IA-009:** restringir por RBAC.
+- **RF-IA-010:** mantener el análisis separado de las mutaciones operacionales.
+
+## 10. Limitaciones
+
+- regla heurística manual;
+- no existe calibración probabilística;
+- términos de falla dependen de calidad del texto histórico;
+- no se declara desempeño ML actual.
+
+## 11. Evolución posible
+
+Una futura versión podría incorporar un modelo ML siempre que exista:
+
+- dataset versionado;
+- definición de target;
+- separación train/test;
+- features;
+- métricas;
+- matriz de confusión;
+- umbral;
+- validación temporal;
+- monitoreo de drift.
+
+Esto es proyección y no estado implementado V2.0.
+
+## 12. Fuente
+
+`06_ModelosIA/src/analyzer.py`.

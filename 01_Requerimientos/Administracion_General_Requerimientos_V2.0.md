@@ -1,47 +1,162 @@
-# Administración y supervisión general
+# Administración y Supervisión General — PMP Suite V2.0
 
-**Versión:** V2.0
+**Versión:** V2.0  
+**Estado:** vigente
 
-**Estado:** vigente — 09-10-2026
+## 1. Separación conceptual
 
-## Propósito
+PMP Suite diferencia:
 
-Administración del sistema y supervisión operacional son responsabilidades distintas. El rol `admin` gestiona identidades, roles y funciones administrativas; el rol `gerente` consume información ejecutiva; `jefe_laboratorio` administra el dominio de Laboratorio.
+- **administrar el sistema**;
+- **supervisar la operación**;
+- **ejecutar la operación**.
 
-## Requisitos funcionales
+La pertenencia a Admin no convierte al usuario en Logística, QA, Jefe Lab o Técnico.
 
-- **RF-ADM-01:** Admin debe consultar Supervisión global, OS, parque, trazabilidad y reportes autorizados.
-- **RF-ADM-02:** Admin debe gestionar usuarios y roles oficiales.
-- **RF-ADM-03:** Admin no debe heredar automáticamente custodia de Bodega, QA, Terreno o Laboratorio.
-- **RF-ADM-04:** Gerente debe consultar Dashboard ejecutivo y vistas de supervisión sin escrituras operacionales.
-- **RF-ADM-05:** Jefe Laboratorio debe disponer de resumen, recepción, asignación, equipos y despacho de Laboratorio.
-- **RF-ADM-06:** Las rutas directas deben aplicar el mismo RBAC que la navegación.
-- **RF-ADM-07:** Supervisión debe contar activos únicos por tipo + serie y separar OS/casos del parque.
-- **RF-ADM-08:** Los KPI deben diferenciar cero real, sin medición y error.
-- **RF-ADM-09:** La predicción/reincidencia es de consulta y no ejecuta acciones automáticas.
-- **RF-ADM-10:** Las operaciones administrativas de cuentas deben proteger el último Admin y la autoedición de privilegios.
+## 2. Admin
 
-## No implementado como configuración global
+### Puede
 
-No se declara implementado un CRUD dinámico de roles, transiciones, ubicaciones o catálogos generales ni un panel de configuración global. La pantalla llamada anteriormente «Configuración autorizada» corresponde a seguridad personal. Los roles son explícitos en código.
+- consultar Supervisión global;
+- consultar OS;
+- consultar parque/equipos;
+- consultar trazabilidad;
+- consultar Laboratorio/Bodega/QA mediante proyecciones autorizadas;
+- consultar IA;
+- listar/crear/editar usuarios;
+- gestionar recuperación/contraseña administrativa autorizada;
+- usar seguridad personal.
 
-## Requisitos no funcionales
+### No puede por defecto
 
-- Denegación por defecto en backend.
-- Logs de autorización sin credenciales.
-- Dashboards y navegación derivados de capacidades.
-- Componentes UI compartidos, temas claro/oscuro y estados semánticos.
-- Consultas de supervisión no deben modificar custodia ni stock.
+- recibir/despachar físicamente en Bodega;
+- confirmar recepción/salida Lab;
+- asignar carga Lab;
+- reparar;
+- ejecutar QA;
+- asignar retiro Terreno;
+- consumir stock.
 
-## Roles de supervisión
+## 3. Gerente
 
-| Dominio | Admin | Gerente | Jefe Laboratorio |
-|---|---|---|---|
-| Supervisión global | Sí | Sí | No |
-| Usuarios y roles | Sí | No | No |
-| Laboratorio — consulta | Sí | Sí | Sí |
-| Laboratorio — custodia/asignación | No | No | Sí |
-| Bodega — consulta | Sí | Sí | No |
-| Bodega — movimientos | No | No | No |
-| QA — consulta | Sí | Sí | No |
-| QA — ejecución | No | No | No |
+### Puede
+
+- Dashboard ejecutivo;
+- OS;
+- parque;
+- Bodega/Lab/QA de consulta;
+- trazabilidad;
+- reportes;
+- IA.
+
+### No puede
+
+- administrar usuarios;
+- crear requerimientos;
+- mover equipos;
+- modificar stock;
+- reparar;
+- dictaminar QA;
+- asignar técnicos.
+
+## 4. Jefe Laboratorio
+
+### Puede
+
+- Resumen Lab;
+- Recepción;
+- Incidencias/Historial;
+- Asignar/Reasignar;
+- consultar Validadores/Consolas;
+- supervisar SLA/carga;
+- validar y confirmar salida Lab;
+- reportes Lab;
+- trazabilidad técnica permitida.
+
+### No puede
+
+- gestionar usuarios;
+- operar Bodega;
+- ejecutar QA;
+- trabajar como Técnico Lab salvo tener dicho rol (modelo de rol único actual);
+- asignar Terreno;
+- modificar stock.
+
+## 5. Supervisión global
+
+Indicadores deben representar **activos únicos** y diferenciar OS del parque.
+
+Dominios:
+
+- parque;
+- operación;
+- Bodega;
+- Laboratorio;
+- QA;
+- tránsito;
+- disponibilidad;
+- órdenes;
+- casos;
+- fallas/reincidencia.
+
+## 6. Requisitos
+
+- **RF-ADM-001:** Dashboard ejecutivo solo Admin/Gerente.
+- **RF-ADM-002:** navegación adaptada a rol.
+- **RF-ADM-003:** URL directa aplica la misma capacidad.
+- **RF-ADM-004:** Backend aplica autorización final.
+- **RF-ADM-005:** Admin administra usuarios.
+- **RF-ADM-006:** Gerente es read-only.
+- **RF-ADM-007:** Jefe Lab restringido a Lab.
+- **RF-ADM-008:** supervisión Lab para Admin/Gerente no concede custodia.
+- **RF-ADM-009:** supervisión Bodega no concede movimiento.
+- **RF-ADM-010:** supervisión QA no concede trabajo.
+- **RF-ADM-011:** KPI parque no duplica un activo por tener varias OS.
+- **RF-ADM-012:** error de API tiene estado visual propio.
+- **RF-ADM-013:** IA no ejecuta acciones.
+- **RF-ADM-014:** búsqueda global respeta rol.
+- **RF-ADM-015:** configuración personal no se describe como motor global de configuración.
+
+## 7. Navegación Web
+
+### Admin
+
+- Supervisión global.
+- OS.
+- Equipos.
+- Trazabilidad.
+- Bridge.
+- Reportes.
+- supervisión Lab/Bodega/QA.
+- Usuarios.
+- Seguridad/Configuración personal.
+- IA.
+
+### Gerente
+
+Similar a supervisión, sin Usuarios ni escrituras.
+
+### Jefe Lab
+
+- Gestión de Laboratorio.
+- Recepción.
+- Asignación.
+- Validadores/Consolas.
+- Despacho.
+- Reportes.
+- antecedentes técnicos.
+
+## 8. Criterios de aceptación
+
+1. Admin POST operacional prohibido devuelve 403.
+2. Gerente no puede mutar recursos.
+3. Jefe Lab no puede llamar Bodega/QA.
+4. El Sidebar no muestra acciones no autorizadas.
+5. Acceder manualmente por URL no salta ProtectedRoute/API.
+6. Dashboard distingue error/vacío/cero.
+
+## 9. Evidencia
+
+- `08_Pruebas/RBAC_SEGURIDAD_V2.0.md`
+- `08_Pruebas/UX_EXPERIENCIA_V2.0.md`
+- `Documentacion Capstone/07_REPORTES_KPI_V2.0.md`

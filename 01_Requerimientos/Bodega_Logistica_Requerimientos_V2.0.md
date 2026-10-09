@@ -1,61 +1,253 @@
-# Bodega y Logística
+# Bodega y Logística — PMP Suite V2.0
 
-**Versión:** V2.0
+**Versión:** V2.0  
+**Estado:** vigente
 
-**Estado:** vigente — 09-10-2026
+## 1. Responsabilidad
 
-## Propósito
+Logística es propietaria de:
 
-Logística controla la custodia en Bodega, recepción y despacho físico, inventario de equipos, repuestos y stock, requerimientos, retiros y preparación de instalaciones.
+- custodia Bodega;
+- recepción física;
+- despacho físico;
+- inventario;
+- stock de repuestos;
+- entrega de repuestos;
+- asignación de retiros;
+- alta/recepción inicial de activos;
+- ingreso de requerimientos;
+- preparación/despacho de instalaciones.
 
-## Requisitos funcionales
+Admin/Gerente pueden consultar proyecciones, pero no ejecutar movimientos.
 
-- **RF-BOD-01:** Logística debe ver parque, Bodega, disponibilidad, tránsito y pendientes sin duplicar activos.
-- **RF-BOD-02:** Inventario debe diferenciar parque global, stock físico, disponibles y no disponibles.
-- **RF-BOD-03:** La recepción desde Terreno, Laboratorio o QA requiere evidencia física nueva del destino.
-- **RF-BOD-04:** Un equipo en tránsito no se considera ubicado en Bodega.
-- **RF-BOD-05:** El despacho hacia Laboratorio/QA/Terreno requiere validación y confirmación separadas.
-- **RF-BOD-06:** La recepción inicial de un activo nuevo habilita stock sin crear OS de mantenimiento.
-- **RF-BOD-07:** Disponible para instalación requiere custodia Bodega + elegibilidad vigente.
-- **RF-BOD-08:** La IN se crea solo al confirmar despacho físico a Terreno.
-- **RF-BOD-09:** PPU, terminal y operador deben permanecer coherentes; relaciones conocidas se autocompletan y las ambiguas requieren selección explícita.
-- **RF-BOD-10:** Repuestos bajo umbral deben generar alertas visuales.
-- **RF-BOD-11:** Entregar repuesto descuenta stock una sola vez, transaccionalmente.
-- **RF-BOD-12:** Ajustes directos de stock permanecen bloqueados hasta existir una política legítima de ajuste.
-- **RF-BOD-13:** Admin/Gerente pueden consultar Bodega según política; solo Logística ejecuta movimientos/stock.
-- **RF-BOD-14:** Errores de API no deben presentarse como inventario vacío.
-
-## Physical First
+## 2. Modelo de custodia
 
 ```text
-contexto operacional
-→ validar identidad/evidencia física
+validar identidad/contexto
+→ evidencia válida
 → confirmar movimiento
-→ registrar evento y nueva custodia
+→ evento de salida/recepción
+→ nueva custodia
 ```
 
-La lectura de recepción no sirve como evidencia de una salida posterior.
+Un equipo EN TRÁNSITO no pertenece todavía al destino.
 
-## Instalación
+## 3. Recepción inicial
+
+### Precondiciones
+
+- activo registrado;
+- sin OS/circuito previo;
+- identidad válida.
+
+### Captura
+
+- SCANNER;
+- MANUAL_AUTORIZADO por Logística con presencia física confirmada.
+
+### Resultado
+
+- RECEPCION_INICIAL;
+- HABILITADO_INSTALACION;
+- stock inicial elegible;
+- sin OS.
+
+## 4. Retiro desde Terreno
+
+Logística:
+
+1. consulta pendientes;
+2. asigna Técnico Terreno;
+3. después del retiro, ve equipo en tránsito;
+4. valida recepción en Bodega;
+5. confirma recepción.
+
+La confirmación de retiro de Terreno no equivale a recepción Bodega.
+
+## 5. Despacho a Laboratorio
+
+1. seleccionar OS elegible;
+2. capturar/validar activo;
+3. revalidar estado;
+4. confirmar salida;
+5. registrar SALIDA_BODEGA_LABORATORIO;
+6. limpiar responsabilidad técnica anterior cuando corresponda;
+7. marcar tránsito Lab.
+
+## 6. Retorno desde Laboratorio
+
+Solo después de la salida Lab confirmada, Bodega puede recepcionar.
+
+La recepción:
+
+- usa evidencia Bodega propia;
+- no reutiliza la evidencia de salida Lab;
+- deja al equipo bajo custodia Bodega;
+- habilita la siguiente decisión logística.
+
+## 7. Despacho a QA
+
+Precondiciones:
+
+- reparación técnica finalizada;
+- equipo recibido en Bodega;
+- sin incompatibilidades de flujo.
+
+Secuencia:
 
 ```text
-Bodega disponible
-→ contexto de instalación
-→ seleccionar técnico/destino
-→ leer activo físico
-→ validar
-→ confirmar despacho
-→ crear IN
-→ En ruta
+validar salida Bodega→QA
+→ confirmar
+→ tránsito QA
+→ QA recibe por separado
 ```
 
-Seleccionar técnico o validar lectura no crea la IN.
+## 8. Retorno desde QA
 
-## Repuestos
+### Operativo
 
-Las solicitudes nacen desde trabajo técnico. La entrega física se realiza por Logística. Guardar/finalizar una reparación no debe volver a consumir stock.
+QA sale → Bodega recibe → equipo puede ser elegible para instalación.
 
-## Pendientes conocidos
+### Rechazado
 
-- Política formal para ajustes manuales legítimos de inventario.
-- Entradas de repuestos con documento de respaldo: deben definirse como movimiento auditable; no como sobrescritura de cantidad.
+QA sale → Bodega recibe → Bodega vuelve a despachar a Lab → nuevo ciclo físico/técnico.
+
+## 9. Inventario de equipos
+
+La proyección debe distinguir:
+
+- parque global;
+- stock físico Bodega;
+- disponible;
+- no disponible;
+- tránsito;
+- en operación;
+- Laboratorio;
+- QA;
+- asignado sin despacho;
+- en ruta Terreno.
+
+La existencia de una OS no crea un activo adicional.
+
+## 10. Stock inicial vs reparado
+
+### Inicial
+
+Origen = `stock_origen_evento` (HABILITADO_INSTALACION).
+
+### Reparado
+
+Origen = `stock_origen_os` después de reparación + QA + recepción Bodega.
+
+Ambos llegan a “Disponible para instalación”, pero conservan distinta procedencia.
+
+## 11. Despacho de instalación
+
+### Contexto
+
+- caso/reemplazo o nueva instalación;
+- bus;
+- terminal;
+- operador;
+- técnico Terreno;
+- tipo de equipo.
+
+### Captura
+
+- SCANNER;
+- MANUAL consulta (no habilita);
+- MANUAL_AUTORIZADO con motivo.
+
+### Confirmación
+
+Crea de forma atómica:
+
+- OS IN;
+- relación con stock origen;
+- técnico/destino;
+- SALIDA_BODEGA_TERRENO;
+- correlación externa cuando aplica.
+
+## 12. Repuestos
+
+### Consulta
+
+Bodega visualiza:
+
+- ID/nombre;
+- categoría;
+- stock;
+- stock crítico;
+- solicitudes.
+
+### Entrega
+
+1. bloquear OS;
+2. bloquear solicitud;
+3. bloquear repuesto;
+4. validar categoría;
+5. validar cantidad;
+6. validar stock;
+7. descontar;
+8. marcar DESPACHADA;
+9. registrar LOGISTICA_ENTREGA_REPUESTO;
+10. liberar OS de espera si no quedan pendientes.
+
+### Prohibido
+
+Sobrescribir `stock` directamente sin política de ajuste; endpoint responde conflicto.
+
+## 13. Requerimientos
+
+Logística crea casos desde:
+
+- ARANDA;
+- INTERNO.
+
+Debe seleccionar activo ya existente/en operación.
+
+## 14. Requisitos funcionales
+
+- **RF-BOD-001:** listar cola operacional.
+- **RF-BOD-002:** badge coherente con cola.
+- **RF-BOD-003:** recibir desde Terreno con evidencia propia.
+- **RF-BOD-004:** recibir desde Lab con evidencia propia.
+- **RF-BOD-005:** recibir desde QA con evidencia propia.
+- **RF-BOD-006:** despachar Lab con validación+confirmación.
+- **RF-BOD-007:** despachar QA con validación+confirmación.
+- **RF-BOD-008:** despachar Terreno con validación+confirmación.
+- **RF-BOD-009:** crear IN solo al confirmar Terreno.
+- **RF-BOD-010:** impedir doble consumo de stock.
+- **RF-BOD-011:** inventario asset-centric.
+- **RF-BOD-012:** distinguir disponibilidad física.
+- **RF-BOD-013:** asignar retiro.
+- **RF-BOD-014:** registrar/recibir activo inicial.
+- **RF-BOD-015:** crear requerimiento.
+- **RF-BOD-016:** gestionar repuestos.
+- **RF-BOD-017:** entregar repuesto transaccionalmente.
+- **RF-BOD-018:** impedir ajustes directos no autorizados.
+- **RF-BOD-019:** mantener coherencia PPU/terminal/PST.
+- **RF-BOD-020:** no presentar error como inventario vacío.
+- **RF-BOD-021:** permitir filtros/paginación.
+- **RF-BOD-022:** conservar historial del activo después de cada movimiento.
+
+## 15. Casos negativos
+
+- sin evidencia → 409;
+- evidencia de otra estación → rechazo;
+- evidencia vieja → rechazo;
+- técnico/destino cambió tras validar → repetir captura;
+- stock consumido → rechazo;
+- activo en otra intervención → no elegible;
+- stock insuficiente → no entregar;
+- Admin intenta movimiento → 403;
+- serie/tipo no coinciden → rechazo.
+
+## 16. Endpoints
+
+Principalmente `/api/bodega/*`, `/api/activos/*`, `/api/requerimientos/*` y asignación de retiros en `/api/os/*`.
+
+## 17. Evidencia
+
+- `08_Pruebas/FLUJOS_OPERACIONALES_V2.0.md`
+- `08_Pruebas/MATRIZ_TRAZABILIDAD_V2.0.md`
