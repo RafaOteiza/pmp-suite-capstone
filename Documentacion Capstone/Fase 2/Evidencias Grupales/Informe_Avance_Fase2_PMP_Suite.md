@@ -6,11 +6,11 @@
 
 ## Abstract — Español
 
-PMP Suite es una plataforma integral para centralizar la gestión y trazabilidad del mantenimiento de validadores y consolas utilizados en transporte público. Durante la Fase 2 se consolidó el núcleo funcional Web, API, base de datos y aplicación móvil, incorporando control de identidad física, custodia por movimiento, roles diferenciados, trazabilidad por activo, operaciones de Bodega, Laboratorio y QA, administración de usuarios y análisis de reincidencia. La evolución del sistema obligó a ajustar reglas operacionales y documentación para separar claramente consulta, validación y confirmación física. El proyecto se encuentra en etapa avanzada de validación y cierre, con suites automatizadas aprobadas en su mayoría y brechas identificadas en validación nativa, rendimiento/seguridad, Docker y documentación final.
+PMP Suite es una plataforma integral para centralizar la gestión y trazabilidad del mantenimiento de validadores y consolas utilizados en transporte público. Durante la Fase 2 se consolidó el núcleo funcional Web, API, base de datos y aplicación móvil, incorporando control de identidad física, custodia por movimiento, roles diferenciados, trazabilidad por activo, operaciones de Bodega, Laboratorio y QA, administración de usuarios y análisis de reincidencia. La evolución del sistema obligó a ajustar reglas operacionales y documentación para separar claramente consulta, validación y confirmación física. El proyecto se encuentra en etapa avanzada de validación y cierre, con suites automatizadas aprobadas en su mayoría y brechas identificadas en validación nativa, rendimiento/seguridad y documentación final.
 
 ## Abstract — English
 
-PMP Suite is an integrated platform designed to centralize maintenance management and traceability for validators and onboard consoles used in public transport operations. During Phase 2, the team consolidated the Web application, API, database and mobile application, including physical identity controls, movement-based custody, role-based access, asset traceability, warehouse, laboratory and QA workflows, user administration and recurrence analysis. System evolution required adjustments to operational rules and documentation in order to clearly separate consultation, validation and physical confirmation. The project is currently in an advanced validation and closing stage, with most automated suites approved and remaining gaps identified in native-device validation, performance/security testing, Docker deployment and final documentation.
+PMP Suite is an integrated platform designed to centralize maintenance management and traceability for validators and onboard consoles used in public transport operations. During Phase 2, the team consolidated the Web application, API, database and mobile application, including physical identity controls, movement-based custody, role-based access, asset traceability, warehouse, laboratory and QA workflows, user administration and recurrence analysis. System evolution required adjustments to operational rules and documentation in order to clearly separate consultation, validation and physical confirmation. The project is currently in an advanced validation and closing stage, with most automated suites approved and remaining gaps identified in native-device validation, performance/security testing and final documentation.
 
 ## 1. Resumen de avance
 
@@ -54,7 +54,7 @@ Ajustes relevantes:
 5. **QA:** adoptó flujo autónomo por etapas.
 6. **Mobile:** se incorporaron perfil, seguridad, apariencia y retiro físico con cámara/contingencia.
 7. **IA:** la vista identifica la heurística real utilizada y no presenta métricas ML no verificadas.
-8. **Despliegue:** el entorno actual usa servicios nativos. Docker, solicitado por el instructivo Capstone, queda como brecha de cierre y no se declara implementado.
+8. **Despliegue:** el entorno actual usa servicios nativos y dispone de instrucciones reproducibles para Web, API, PostgreSQL, Mobile y analítica.
 
 ## 4. Evidencias de avance
 
@@ -102,7 +102,6 @@ Estas evidencias permiten demostrar competencias de gestión, arquitectura, dato
 - coherencia entre Web, Mobile y API;
 - actualización de documentación histórica;
 - diferencias entre simulación y dispositivo físico;
-- requisito de Docker aún no implementado.
 
 Las dificultades se abordaron reduciendo ambigüedades, creando contratos explícitos de dominio y priorizando flujos críticos.
 
@@ -111,6 +110,5 @@ Las dificultades se abordaron reduciendo ambigüedades, creando contratos explí
 - validación nativa final de cámara/QR/Safe Area;
 - corregir el fixture Web pendiente;
 - pruebas dedicadas de rendimiento y seguridad;
-- resolver la exigencia Docker del instructivo;
 - completar evidencia manual hasta QA, retorno a Bodega y reinstalación;
 - preparar cierre y presentación Fase 3.

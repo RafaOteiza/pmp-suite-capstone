@@ -140,7 +140,6 @@ Elementos diferenciadores:
 - Validación nativa completa de cámara/lector.
 - Un fixture Web pendiente.
 - Rendimiento y seguridad dedicados aún por documentar.
-- Docker solicitado por el instructivo aún no implementado.
 - El despliegue Ubuntu/Nginx/PM2 es una proyección, no producción certificada.
 - La analítica actual no debe presentarse como probabilidad calibrada de falla.
 

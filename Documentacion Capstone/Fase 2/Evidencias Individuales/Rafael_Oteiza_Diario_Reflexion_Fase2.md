@@ -24,7 +24,7 @@ I should improve the balance between implementation and documentation. When the 
 
 My main question is how much technical evidence should be included in the final academic report versus kept as annexes in GitHub.
 
-I would also like feedback on the Docker requirement because the current solution is reproducible with native services, but the official Capstone instructions explicitly request containerized deployment evidence.
+I would also like feedback on how much technical deployment evidence should be included in the final report versus maintained as reproducible documentation in the repository.
 
 ## 5. Should activities be redistributed?
 

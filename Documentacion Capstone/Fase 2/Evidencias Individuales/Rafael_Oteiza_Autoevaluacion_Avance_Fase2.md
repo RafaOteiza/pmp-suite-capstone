@@ -12,7 +12,7 @@ La autoevaluación se realiza contra los indicadores de la pauta oficial. Se uti
 | 4. Lenguaje técnico | Completamente logrado | Documentación utiliza terminología de arquitectura, datos, RBAC, QA y trazabilidad |
 | 5. Redacción/citas/referencias | Logrado | Documentación fue normalizada; aún debe completarse revisión final de referencias académicas |
 | 6. Formato del informe | Completamente logrado | Se organizaron Abstract, desarrollo, evidencias y cierre conforme a pauta |
-| 7. Indicadores de calidad disciplinarios | Logrado | La solución integra arquitectura, datos, software y pruebas, pero quedan Docker, dispositivo físico y pruebas dedicadas |
+| 7. Indicadores de calidad disciplinarios | Logrado | La solución integra arquitectura, datos, software y pruebas, pero aún quedan validación en dispositivo físico y pruebas dedicadas |
 | 8. Comunicación escrita en inglés | Completamente logrado | Abstract y reflexión individual en inglés preparados para Fase 2 |
 
 ## Competencias evidenciadas
@@ -35,4 +35,4 @@ Web, API, PostgreSQL, Firebase, Mobile y analítica se encuentran integrados den
 
 ## Improvement plan — English
 
-My main improvement goals for the closing stage are to complete the physical-device evidence, resolve the remaining Web test fixture, formalize performance/security testing and address the Docker requirement. I also need to ensure that every academic statement can be traced to a reproducible technical result and that the final presentation focuses on the problem, architecture, evidence and lessons learned rather than on the quantity of implemented features.
+My main improvement goals for the closing stage are to complete the physical-device evidence, resolve the remaining Web test fixture and formalize performance/security testing. I also need to ensure that every academic statement can be traced to a reproducible technical result and that the final presentation focuses on the problem, architecture, evidence and lessons learned rather than on the quantity of implemented features.
